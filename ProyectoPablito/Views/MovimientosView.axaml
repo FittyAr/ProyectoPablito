@@ -6,21 +6,35 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="ProyectoPablito.Views.MovimientosView"
              x:DataType="vm:MovimientosViewModel">
-    <DockPanel Margin="20">
-        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="10" Margin="0,0,0,20">
-            <TextBlock Text="Gestión de Movimientos" FontSize="24" FontWeight="Bold" VerticalAlignment="Center" />
-            <Button Content="Refrescar" Command="{Binding LoadMovimientosCommand}" />
-        </StackPanel>
-        
-        <DataGrid ItemsSource="{Binding Movimientos}" AutoGenerateColumns="False" IsReadOnly="True" GridLinesVisibility="All">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Fecha" Binding="{Binding Fecha, StringFormat=\{0:dd/MM/yyyy\}}" />
-                <DataGridTextColumn Header="Concepto" Binding="{Binding Concepto}" Width="*" />
-                <DataGridTextColumn Header="Tipo" Binding="{Binding TipoMovimientoNombre}" />
-                <DataGridTextColumn Header="Monto" Binding="{Binding Monto, StringFormat=\{0:C\}}" />
-                <DataGridTextColumn Header="Cant" Binding="{Binding Cantidad}" />
-                <DataGridTextColumn Header="Total" Binding="{Binding Total, StringFormat=\{0:C\}}" />
-            </DataGrid.Columns>
-        </DataGrid>
-    </DockPanel>
+    <Grid>
+        <DockPanel Margin="20" IsVisible="{Binding !IsEditing}">
+            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="10" Margin="0,0,0,20">
+                <TextBlock Text="Gestión de Movimientos" FontSize="24" FontWeight="Bold" VerticalAlignment="Center" />
+                <Button Content="Agregar" Classes="accent" Command="{Binding AddCommand}" />
+                <Button Content="Refrescar" Command="{Binding LoadMovimientosCommand}" />
+            </StackPanel>
+            
+            <DataGrid ItemsSource="{Binding Movimientos}" 
+                      AutoGenerateColumns="False" 
+                      IsReadOnly="True" 
+                      GridLinesVisibility="All"
+                      DoubleTapped="OnDataGridDoubleTapped">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Fecha" Binding="{Binding Fecha, StringFormat=\{0:dd/MM/yyyy\}}" />
+                    <DataGridTextColumn Header="Concepto" Binding="{Binding Concepto}" Width="*" />
+                    <DataGridTextColumn Header="Tipo" Binding="{Binding TipoMovimientoNombre}" />
+                    <DataGridTextColumn Header="Monto" Binding="{Binding Monto, StringFormat=\{0:C\}}" />
+                    <DataGridTextColumn Header="Cant" Binding="{Binding Cantidad}" />
+                    <DataGridTextColumn Header="Total" Binding="{Binding Total, StringFormat=\{0:C\}}" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </DockPanel>
+
+        <!-- Overlay de Edición -->
+        <Border Background="#AA000000" IsVisible="{Binding IsEditing}">
+            <ContentControl Content="{Binding EditViewModel}" 
+                            HorizontalAlignment="Center" 
+                            VerticalAlignment="Center" />
+        </Border>
+    </Grid>
 </UserControl>
