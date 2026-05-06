@@ -17,17 +17,22 @@ public partial class MainViewModel : ViewModelBase
     [ObservableProperty]
     private ViewModelBase? _currentPage;
 
-    public MainViewModel(ILocalizationService localizationService, IServiceProvider serviceProvider)
+    [ObservableProperty]
+    private bool _isSeedEnabled;
+
+    public MainViewModel(ILocalizationService localizationService, IServiceProvider serviceProvider, IDatabaseSeedService seedService)
     {
         _localizationService = localizationService;
         _serviceProvider = serviceProvider;
         _greeting = _localizationService.GetString("General.AppName");
+        _isSeedEnabled = seedService.IsSeedEnabled();
         
         NavigateToDashboardCommand = new RelayCommand(NavigateToDashboard);
         NavigateToMovimientosCommand = new RelayCommand(NavigateToMovimientos);
         NavigateToClientesCommand = new RelayCommand(NavigateToClientes);
         NavigateToEmpleadosCommand = new RelayCommand(NavigateToEmpleados);
         NavigateToTrabajosCommand = new RelayCommand(NavigateToTrabajos);
+        NavigateToSeedCommand = new RelayCommand(NavigateToSeed);
         
         // Pagina inicial
         NavigateToDashboard();
@@ -38,10 +43,12 @@ public partial class MainViewModel : ViewModelBase
     public IRelayCommand NavigateToClientesCommand { get; }
     public IRelayCommand NavigateToEmpleadosCommand { get; }
     public IRelayCommand NavigateToTrabajosCommand { get; }
+    public IRelayCommand NavigateToSeedCommand { get; }
 
     private void NavigateToDashboard() => CurrentPage = _serviceProvider.GetRequiredService<DashboardViewModel>();
     private void NavigateToMovimientos() => CurrentPage = _serviceProvider.GetRequiredService<MovimientosViewModel>();
     private void NavigateToClientes() => CurrentPage = _serviceProvider.GetRequiredService<ClientesViewModel>();
     private void NavigateToEmpleados() => CurrentPage = _serviceProvider.GetRequiredService<EmpleadosViewModel>();
     private void NavigateToTrabajos() => CurrentPage = _serviceProvider.GetRequiredService<TrabajosViewModel>();
+    private void NavigateToSeed() => CurrentPage = _serviceProvider.GetRequiredService<SeedViewModel>();
 }

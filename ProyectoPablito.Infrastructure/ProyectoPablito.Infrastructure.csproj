@@ -22,4 +22,10 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" />
   </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Data\SeedData\SeedPool.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>

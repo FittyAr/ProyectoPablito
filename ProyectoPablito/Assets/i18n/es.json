@@ -24,5 +24,12 @@
     "Date": "Fecha",
     "Type": "Tipo",
     "Category": "Categoría"
+  },
+  "Seed": {
+    "Title": "Sembrado de Base de Datos",
+    "StatusIdle": "Listo para sembrar.",
+    "StatusProcessing": "Sembrando base de datos... Por favor espere.",
+    "StatusSuccess": "¡Sembrado completado con éxito!",
+    "StatusError": "Error durante el sembrado"
   }
 }

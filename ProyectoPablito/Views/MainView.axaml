@@ -45,6 +45,11 @@
                         <TextBlock Text="Trabajos" />
                     </StackPanel>
                 </Button>
+                <Button Command="{Binding NavigateToSeedCommand}" HorizontalAlignment="Stretch" Background="Transparent" IsVisible="{Binding IsSeedEnabled}">
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <TextBlock Text="Seed" Foreground="Orange"/>
+                    </StackPanel>
+                </Button>
             </StackPanel>
         </SplitView.Pane>
 

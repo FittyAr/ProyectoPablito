@@ -1,0 +1,66 @@
+{
+  "Categorias": [
+    "Materiales",
+    "Herramientas",
+    "Servicios",
+    "Impuestos",
+    "Varios",
+    "Viáticos",
+    "Publicidad",
+    "Alquiler"
+  ],
+  "TiposMovimiento": [
+    "Ingreso",
+    "Egreso",
+    "Transferencia",
+    "Ajuste"
+  ],
+  "NombresClientes": [
+    "Juan Pérez",
+    "María García",
+    "Carlos López",
+    "Ana Martínez",
+    "Pedro Rodríguez",
+    "Lucía Fernández",
+    "Diego Sánchez",
+    "Sofía Romero",
+    "Jorge Blanco",
+    "Elena Torres"
+  ],
+  "NombresEmpleados": [
+    "Ricardo Darín",
+    "Guillermo Francella",
+    "Adrián Suar",
+    "Natalia Oreiro",
+    "Luis Brandoni",
+    "Mercedes Morán",
+    "Oscar Martínez",
+    "Érica Rivas",
+    "Diego Peretti",
+    "Julieta Díaz"
+  ],
+  "ConceptosMovimientos": [
+    "Pago de factura",
+    "Compra de insumos",
+    "Anticipo de trabajo",
+    "Ajuste de caja",
+    "Retiro de efectivo",
+    "Pago de haberes",
+    "Compra de repuestos",
+    "Gasto de combustible",
+    "Fondo fijo",
+    "Cobro por servicio"
+  ],
+  "DescripcionesTrabajos": [
+    "Reparación de techo",
+    "Instalación eléctrica",
+    "Pintura general",
+    "Mantenimiento preventivo",
+    "Revisión de cañerías",
+    "Ampliación de cocina",
+    "Construcción de quincho",
+    "Impermeabilización",
+    "Cambio de aberturas",
+    "Refacción de baño"
+  ]
+}

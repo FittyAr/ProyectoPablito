@@ -38,4 +38,9 @@
     <ProjectReference Include="..\ProyectoPablito.Application\ProyectoPablito.Application.csproj" />
     <ProjectReference Include="..\ProyectoPablito.Infrastructure\ProyectoPablito.Infrastructure.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>

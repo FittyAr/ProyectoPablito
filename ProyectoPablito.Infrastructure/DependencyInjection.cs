@@ -21,6 +21,7 @@ public static class DependencyInjection
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddSingleton<ILocalizationService, LocalizationService>();
         services.AddScoped<IExportService, ExportService>();
+        services.AddScoped<IDatabaseSeedService, DatabaseSeedService>();
         
         return services;
     }
