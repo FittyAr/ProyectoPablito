@@ -20,6 +20,10 @@
       <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
     </PackageReference>
     <PackageReference Include="CommunityToolkit.Mvvm" />
+    <PackageReference Include="Serilog" />
+    <PackageReference Include="Serilog.Sinks.Console" />
+    <PackageReference Include="Serilog.Sinks.File" />
+    <PackageReference Include="Serilog.Settings.Configuration" />
     <PackageReference Include="Serilog.Extensions.Hosting" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />

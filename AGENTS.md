@@ -47,10 +47,13 @@ El proyecto se dividirá en las siguientes capas para asegurar el desacoplamient
 *   **Textos (i18n)**: Los textos de la UI se cargarán desde `i18n/es.json`.
 *   **Constantes**: Valores fijos de negocio se definirán en clases de constantes dedicadas.
 
-### 2. Calidad y Testing
+### 2. Calidad, Testing y Logging
 *   **Unit Testing**: Cada objeto (Servicio, ViewModel, Helper) DEBE tener su correspondiente proyecto de test unitario usando `xUnit`.
-*   **Mocking**: Uso de `NSubstitute` o `Moq` para aislar dependencias en tests.
-*   **FluentAssertions**: Para tests más legibles.
+*   **Logging (Auditoría)**: Todo proceso de negocio, error o cambio de estado DEBE ser registrado usando `Serilog`.
+    *   **Fase 1**: Logs en archivos `.log` locales (rotativos).
+    *   **Fase Final**: Migración a base de datos para auditoría centralizada.
+    *   **Entornos**: Diferenciación de logs para Desarrollo y Producción.
+*   **Mocking**: Uso de `NSubstitute` para aislar dependencias en tests.
 
 ### 3. Librerías a Utilizar
 *   **UI**: Avalonia 11+
@@ -74,9 +77,9 @@ El proyecto se dividirá en las siguientes capas para asegurar el desacoplamient
 - [x] Repositorios Base y Unit of Work.
 
 ### Fase 3: Lógica de Aplicación
-- [ ] DTOs y Mappings.
-- [ ] Servicios de Movimientos con validación.
-- [ ] Tests Unitarios de servicios.
+- [x] DTOs y Mappings.
+- [/] Servicios de Movimientos con validación y Logging.
+- [x] Tests Unitarios de servicios.
 
 ### Fase 4: UI Base
 - [ ] MainView con navegación.

@@ -8,6 +8,7 @@ using ProyectoPablito.Application;
 using ProyectoPablito.Infrastructure;
 using ProyectoPablito.ViewModels;
 using ProyectoPablito.Views;
+using Serilog;
 
 namespace ProyectoPablito;
 
@@ -29,7 +30,12 @@ public partial class App : Avalonia.Application
             .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
         Configuration = builder.Build();
 
-        // 2. DI Container
+        // 2. Logging
+        Log.Logger = new LoggerConfiguration()
+            .ReadFrom.Configuration(Configuration)
+            .CreateLogger();
+
+        // 3. DI Container
         var serviceCollection = new ServiceCollection();
         ConfigureServices(serviceCollection);
         Services = serviceCollection.BuildServiceProvider();
@@ -58,6 +64,7 @@ public partial class App : Avalonia.Application
     private void ConfigureServices(IServiceCollection services)
     {
         services.AddSingleton(Configuration!);
+        services.AddLogging(builder => builder.AddSerilog());
         services.AddApplication();
         services.AddInfrastructure(Configuration!);
 

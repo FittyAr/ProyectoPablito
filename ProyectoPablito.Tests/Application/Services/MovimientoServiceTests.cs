@@ -7,6 +7,7 @@ using ProyectoPablito.Application.DTOs;
 using ProyectoPablito.Application.Services;
 using ProyectoPablito.Core.Entities;
 using ProyectoPablito.Core.Interfaces;
+using Microsoft.Extensions.Logging;
 using Xunit;
 
 namespace ProyectoPablito.Tests.Application.Services;
@@ -15,14 +16,16 @@ public class MovimientoServiceTests
 {
     private readonly IUnitOfWork _uow;
     private readonly IRepository<Movimiento> _repo;
+    private readonly ILogger<MovimientoService> _logger;
     private readonly MovimientoService _service;
 
     public MovimientoServiceTests()
     {
         _uow = Substitute.For<IUnitOfWork>();
         _repo = Substitute.For<IRepository<Movimiento>>();
+        _logger = Substitute.For<ILogger<MovimientoService>>();
         _uow.Repository<Movimiento>().Returns(_repo);
-        _service = new MovimientoService(_uow);
+        _service = new MovimientoService(_uow, _logger);
     }
 
     [Fact]

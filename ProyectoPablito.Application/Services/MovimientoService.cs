@@ -7,15 +7,19 @@ using ProyectoPablito.Application.Interfaces;
 using ProyectoPablito.Core.Entities;
 using ProyectoPablito.Core.Interfaces;
 
+using Microsoft.Extensions.Logging;
+
 namespace ProyectoPablito.Application.Services;
 
 public class MovimientoService : IMovimientoService
 {
     private readonly IUnitOfWork _uow;
+    private readonly ILogger<MovimientoService> _logger;
 
-    public MovimientoService(IUnitOfWork uow)
+    public MovimientoService(IUnitOfWork uow, ILogger<MovimientoService> logger)
     {
         _uow = uow;
+        _logger = logger;
     }
 
     public async Task<IEnumerable<MovimientoDto>> GetAllAsync()
@@ -32,9 +36,17 @@ public class MovimientoService : IMovimientoService
 
     public async Task<bool> CreateAsync(MovimientoDto dto)
     {
+        _logger.LogInformation("Iniciando creación de movimiento: {Concepto} por {Monto}", dto.Concepto, dto.Monto);
         var entity = dto.Adapt<Movimiento>();
         await _uow.Repository<Movimiento>().AddAsync(entity);
-        return await _uow.SaveChangesAsync() > 0;
+        var result = await _uow.SaveChangesAsync() > 0;
+        
+        if (result)
+            _logger.LogInformation("Movimiento creado exitosamente con ID: {Id}", entity.Id);
+        else
+            _logger.LogWarning("No se pudo persistir el movimiento: {Concepto}", dto.Concepto);
+
+        return result;
     }
 
     public async Task<bool> UpdateAsync(MovimientoDto dto)
@@ -51,10 +63,21 @@ public class MovimientoService : IMovimientoService
 
     public async Task<bool> DeleteAsync(Guid id)
     {
-        var entity = await _uow.Repository<Movimiento>().GetByIdAsync(id);
-        if (entity == null) return false;
+        _logger.LogInformation("Intentando eliminar movimiento con ID: {Id}", id);
+        var repo = _uow.Repository<Movimiento>();
+        var entity = await repo.GetByIdAsync(id);
+        if (entity == null)
+        {
+            _logger.LogWarning("No se encontró el movimiento con ID: {Id} para eliminar", id);
+            return false;
+        }
 
-        _uow.Repository<Movimiento>().Remove(entity);
-        return await _uow.SaveChangesAsync() > 0;
+        repo.Remove(entity);
+        var result = await _uow.SaveChangesAsync() > 0;
+        
+        if (result)
+            _logger.LogInformation("Movimiento con ID: {Id} eliminado correctamente", id);
+            
+        return result;
     }
 }
