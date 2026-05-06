@@ -13,6 +13,9 @@ public static class DependencyInjection
         services.AddScoped<IMovimientoService, MovimientoService>();
         services.AddScoped<ICategoriaService, CategoriaService>();
         services.AddScoped<ITipoMovimientoService, TipoMovimientoService>();
+        services.AddScoped<IClienteService, ClienteService>();
+        services.AddScoped<IEmpleadoService, EmpleadoService>();
+        services.AddScoped<ITrabajoService, TrabajoService>();
         
         services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
         

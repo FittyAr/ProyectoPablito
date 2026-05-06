@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:ProyectoPablito.ViewModels"
+             xmlns:ic="using:FluentIcons.Avalonia.Fluent"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="ProyectoPablito.Views.MainView"
              x:DataType="vm:MainViewModel">
@@ -20,15 +21,36 @@
                            Margin="10,20" 
                            Foreground="White"/>
                 
-                <Button Content="Tablero" 
-                        Command="{Binding NavigateToDashboardCommand}" 
-                        HorizontalAlignment="Stretch"
-                        HorizontalContentAlignment="Left"/>
-                
-                <Button Content="Movimientos" 
-                        Command="{Binding NavigateToMovimientosCommand}" 
-                        HorizontalAlignment="Stretch"
-                        HorizontalContentAlignment="Left"/>
+                <ListBoxItem Command="{Binding NavigateToDashboardCommand}">
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <ic:SymbolIcon Symbol="Home" />
+                        <TextBlock Text="Dashboard" />
+                    </StackPanel>
+                </ListBoxItem>
+                <ListBoxItem Command="{Binding NavigateToMovimientosCommand}">
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <ic:SymbolIcon Symbol="Collections" />
+                        <TextBlock Text="Movimientos" />
+                    </StackPanel>
+                </ListBoxItem>
+                <ListBoxItem Command="{Binding NavigateToClientesCommand}">
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <ic:SymbolIcon Symbol="People" />
+                        <TextBlock Text="Clientes" />
+                    </StackPanel>
+                </ListBoxItem>
+                <ListBoxItem Command="{Binding NavigateToEmpleadosCommand}">
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <ic:SymbolIcon Symbol="PersonAccounts" />
+                        <TextBlock Text="Empleados" />
+                    </StackPanel>
+                </ListBoxItem>
+                <ListBoxItem Command="{Binding NavigateToTrabajosCommand}">
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <ic:SymbolIcon Symbol="Briefcase" />
+                        <TextBlock Text="Trabajos" />
+                    </StackPanel>
+                </ListBoxItem>
             </StackPanel>
         </SplitView.Pane>
 

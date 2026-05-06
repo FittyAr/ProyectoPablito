@@ -9,9 +9,12 @@ public class ApplicationDbContext : DbContext
     {
     }
 
-    public DbSet<Movimiento> Movimientos => Set<Movimiento>();
-    public DbSet<Categoria> Categorias => Set<Categoria>();
-    public DbSet<TipoMovimiento> TipoMovimientos => Set<TipoMovimiento>();
+    public DbSet<Movimiento> Movimientos { get; set; }
+    public DbSet<TipoMovimiento> TiposMovimiento { get; set; }
+    public DbSet<Categoria> Categorias { get; set; }
+    public DbSet<Cliente> Clientes { get; set; }
+    public DbSet<Empleado> Empleados { get; set; }
+    public DbSet<Trabajo> Trabajos { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

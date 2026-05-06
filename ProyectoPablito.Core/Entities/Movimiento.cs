@@ -17,14 +17,17 @@ public class Movimiento : BaseEntity
     public Moneda Moneda { get; set; } = Moneda.ARS;
     
     // Relaciones
-    public Guid CategoriaId { get; set; }
-    public virtual Categoria Categoria { get; set; } = null!;
+    public Guid? CategoriaId { get; set; }
+    public Categoria? Categoria { get; set; }
+    
+    public Guid? ClienteId { get; set; }
+    public Cliente? Cliente { get; set; }
     
     public Guid? TrabajoId { get; set; }
-    // public virtual Trabajo? Trabajo { get; set; } // Se agregará después
+    public Trabajo? Trabajo { get; set; }
     
     public Guid? EmpleadoId { get; set; }
-    // public virtual Empleado? Empleado { get; set; } // Se agregará después
+    public Empleado? Empleado { get; set; }
     
     public Guid? FacturaId { get; set; }
     // public virtual Factura? Factura { get; set; } // Se agregará después
