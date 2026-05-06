@@ -1,11 +1,15 @@
-﻿<Solution>
+<Solution>
   <Project Path="ProyectoPablito.Android/ProyectoPablito.Android.csproj">
     <Deploy />
   </Project>
+  <Project Path="ProyectoPablito.Application/ProyectoPablito.Application.csproj" />
   <Project Path="ProyectoPablito.Browser/ProyectoPablito.Browser.csproj" />
+  <Project Path="ProyectoPablito.Core/ProyectoPablito.Core.csproj" />
   <Project Path="ProyectoPablito.Desktop/ProyectoPablito.Desktop.csproj" />
+  <Project Path="ProyectoPablito.Infrastructure/ProyectoPablito.Infrastructure.csproj" />
   <Project Path="ProyectoPablito.iOS/ProyectoPablito.iOS.csproj">
     <Deploy />
   </Project>
+  <Project Path="ProyectoPablito.Tests/ProyectoPablito.Tests.csproj" />
   <Project Path="ProyectoPablito/ProyectoPablito.csproj" />
 </Solution>

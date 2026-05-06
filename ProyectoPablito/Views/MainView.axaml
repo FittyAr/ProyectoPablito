@@ -6,11 +6,32 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="ProyectoPablito.Views.MainView"
              x:DataType="vm:MainViewModel">
-  <Design.DataContext>
-    <!-- This only sets the DataContext for the previewer in an IDE,
-         to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-    <vm:MainViewModel />
-  </Design.DataContext>
+    
+    <SplitView IsPaneOpen="True"
+               DisplayMode="CompactInline"
+               OpenPaneLength="200"
+               Background="#1e1e1e"
+               PaneBackground="#252526">
+        <SplitView.Pane>
+            <StackPanel Spacing="5" Margin="5">
+                <TextBlock Text="{Binding Greeting}" 
+                           FontSize="16" 
+                           FontWeight="Bold" 
+                           Margin="10,20" 
+                           Foreground="White"/>
+                
+                <Button Content="Tablero" 
+                        Command="{Binding NavigateToDashboardCommand}" 
+                        HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="Left"/>
+                
+                <Button Content="Movimientos" 
+                        Command="{Binding NavigateToMovimientosCommand}" 
+                        HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="Left"/>
+            </StackPanel>
+        </SplitView.Pane>
 
-  <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <TransitioningContentControl Content="{Binding CurrentPage}" />
+    </SplitView>
 </UserControl>

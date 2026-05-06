@@ -1,0 +1,26 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:ProyectoPablito.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="ProyectoPablito.Views.MovimientosView"
+             x:DataType="vm:MovimientosViewModel">
+    <DockPanel Margin="20">
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="10" Margin="0,0,0,20">
+            <TextBlock Text="Gestión de Movimientos" FontSize="24" FontWeight="Bold" VerticalAlignment="Center" />
+            <Button Content="Refrescar" Command="{Binding LoadMovimientosCommand}" />
+        </StackPanel>
+        
+        <DataGrid ItemsSource="{Binding Movimientos}" AutoGenerateColumns="False" IsReadOnly="True" GridLinesVisibility="All">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Fecha" Binding="{Binding Fecha, StringFormat=\{0:dd/MM/yyyy\}}" />
+                <DataGridTextColumn Header="Concepto" Binding="{Binding Concepto}" Width="*" />
+                <DataGridTextColumn Header="Tipo" Binding="{Binding TipoMovimientoNombre}" />
+                <DataGridTextColumn Header="Monto" Binding="{Binding Monto, StringFormat=\{0:C\}}" />
+                <DataGridTextColumn Header="Cant" Binding="{Binding Cantidad}" />
+                <DataGridTextColumn Header="Total" Binding="{Binding Total, StringFormat=\{0:C\}}" />
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
+</UserControl>

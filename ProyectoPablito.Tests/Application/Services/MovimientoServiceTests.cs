@@ -1,0 +1,58 @@
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using FluentAssertions;
+using NSubstitute;
+using ProyectoPablito.Application.DTOs;
+using ProyectoPablito.Application.Services;
+using ProyectoPablito.Core.Entities;
+using ProyectoPablito.Core.Interfaces;
+using Xunit;
+
+namespace ProyectoPablito.Tests.Application.Services;
+
+public class MovimientoServiceTests
+{
+    private readonly IUnitOfWork _uow;
+    private readonly IRepository<Movimiento> _repo;
+    private readonly MovimientoService _service;
+
+    public MovimientoServiceTests()
+    {
+        _uow = Substitute.For<IUnitOfWork>();
+        _repo = Substitute.For<IRepository<Movimiento>>();
+        _uow.Repository<Movimiento>().Returns(_repo);
+        _service = new MovimientoService(_uow);
+    }
+
+    [Fact]
+    public async Task CreateAsync_ShouldReturnTrue_WhenSaveIsSuccessful()
+    {
+        // Arrange
+        var dto = new MovimientoDto { Concepto = "Test", Monto = 100, CategoriaId = Guid.NewGuid() };
+        _uow.SaveChangesAsync().Returns(1);
+
+        // Act
+        var result = await _service.CreateAsync(dto);
+
+        // Assert
+        result.Should().BeTrue();
+        await _repo.Received(1).AddAsync(Arg.Any<Movimiento>());
+        await _uow.Received(1).SaveChangesAsync();
+    }
+
+    [Fact]
+    public async Task DeleteAsync_ShouldReturnFalse_WhenEntityDoesNotExist()
+    {
+        // Arrange
+        var id = Guid.NewGuid();
+        _repo.GetByIdAsync(id).Returns((Movimiento?)null);
+
+        // Act
+        var result = await _service.DeleteAsync(id);
+
+        // Assert
+        result.Should().BeFalse();
+        _repo.DidNotReceive().Remove(Arg.Any<Movimiento>());
+    }
+}
