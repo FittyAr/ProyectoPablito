@@ -48,7 +48,7 @@ El proyecto se dividirá en las siguientes capas para asegurar el desacoplamient
 *   **Constantes**: Valores fijos de negocio se definirán en clases de constantes dedicadas.
 
 ### 2. Calidad, Testing y Logging
-*   **Unit Testing**: Cada objeto (Servicio, ViewModel, Helper) DEBE tener su correspondiente proyecto de test unitario usando `xUnit`.
+*   **Unit Testing**: Cada objeto (Servicio, ViewModel, Helper) DEBE tener su correspondiente proyecto de test unitario usando `xUnit.v3`.
 *   **Logging (Auditoría)**: Todo proceso de negocio, error o cambio de estado DEBE ser registrado usando `Serilog`.
     *   **Fase 1**: Logs en archivos `.log` locales (rotativos).
     *   **Fase Final**: Migración a base de datos para auditoría centralizada.
@@ -56,12 +56,13 @@ El proyecto se dividirá en las siguientes capas para asegurar el desacoplamient
 *   **Mocking**: Uso de `NSubstitute` para aislar dependencias en tests.
 
 ### 3. Librerías a Utilizar
-*   **UI**: Avalonia 11+
+*   **UI**: Avalonia 12.0+
 *   **ORM**: EF Core 9+ (SQLite)
 *   **Validación**: FluentValidation
 *   **Mapping**: Mapster
 *   **Logging**: Serilog
 *   **Reportes**: QuestPDF & ClosedXML
+*   **Testing**: xUnit.v3 & FluentAssertions
 
 ## 📅 Fases de Implementación
 
@@ -78,23 +79,40 @@ El proyecto se dividirá en las siguientes capas para asegurar el desacoplamient
 
 ### Fase 3: Lógica de Aplicación
 - [x] DTOs y Mappings.
-- [/] Servicios de Movimientos con validación y Logging.
-- [x] Tests Unitarios de servicios.
+- [x] Servicios de Movimientos con validación y Logging.
+- [x] Tests Unitarios de servicios (Migrados a xUnit.v3).
 
 ### Fase 4: UI Base
-- [ ] MainView con navegación.
-- [ ] Listado de Movimientos.
-- [ ] Formulario de Alta/Edición.
+- [x] MainView con navegación lateral funcional.
+- [x] Listado de Movimientos con DataGrid.
+- [x] Formulario de Alta/Edición de Movimientos con soporte para `DateTimeOffset`.
 
 ### Fase 5: Módulos Avanzados
-- [ ] Clientes y Facturación.
-- [ ] Empleados y Liquidaciones.
-- [ ] Gestión de Trabajos y Rentabilidad.
+- [/] Clientes y Facturación (Alta/Edición de Clientes completada).
+- [/] Empleados y Liquidaciones (Alta/Edición de Empleados completada).
+- [/] Gestión de Trabajos y Rentabilidad (Alta/Edición de Trabajos completada).
 
 ### Fase 6: Reportes y Pulido
-- [ ] Exportación a PDF y Excel.
+- [x] Exportación básica a PDF y Excel (Movimientos).
 - [ ] Dashboard de estadísticas.
-- [ ] Optimización de UI y UX.
+- [/] Optimización de UI y UX (Estabilización Avalonia 12).
+
+---
+
+## 📝 Hitos y Decisiones Técnicas Recientes
+
+### Migración a Avalonia 12 (Mayo 2026)
+*   **Motivo**: Mantener el proyecto con las últimas capacidades de performance y estabilidad del framework.
+*   **Desafíos**: Se detectó una incompatibilidad crítica con `FluentIcons.Avalonia` que causaba `MissingMethodException`. Se decidió remover la librería y simplificar los controles de iconos hasta encontrar un sustituto compatible.
+*   **Ajustes**: Se actualizó `SkiaSharp` a versiones preview compatibles y se corrigieron cambios en las APIs de XAML (ej: `Watermark` -> `PlaceholderText`).
+
+### Estabilización de Tipos de Datos (Fechas)
+*   **Problema**: Error de casting entre `System.DateTime` y `System.DateTimeOffset?` en los controles `DatePicker` de Avalonia.
+*   **Solución**: Implementación de propiedades proxy (`FechaOffset`) en los ViewModels para manejar la conversión sin ensuciar las entidades de dominio que prefieren `DateTime`.
+
+### Migración a xUnit.v3
+*   **Cambio**: Actualización de la suite de pruebas a la versión 3 para aprovechar las mejoras en el runner y soporte moderno de .NET.
+*   **Estado**: Todos los tests unitarios (12 actuales) pasan correctamente con la nueva versión.
 
 ---
 **Nota**: Cada paso de la implementación será validado con sus respectivos tests antes de pasar al siguiente.
