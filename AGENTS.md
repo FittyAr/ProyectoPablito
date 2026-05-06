@@ -62,6 +62,9 @@ El proyecto se dividirá en las siguientes capas para asegurar el desacoplamient
 *   **Mapping**: Mapster
 *   **Logging**: Serilog
 *   **Reportes**: QuestPDF & ClosedXML
+*   **Iconos**: Material.Icons.Avalonia (Sustituto compatible para Avalonia 12)
+*   **Gráficos**: LiveChartsCore.SkiaSharpView.Avalonia (Para Dashboard Fase 6)
+*   **Notificaciones**: Avalonia.Labs.Notifications
 *   **Testing**: xUnit.v3 & FluentAssertions
 
 ## 📅 Fases de Implementación
