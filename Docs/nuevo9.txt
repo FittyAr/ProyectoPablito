@@ -1,0 +1,473 @@
+Perfecto. Voy directo a un **modelo de datos final listo para EF Core**, optimizado para tu caso real + escalabilidad, y luego el **diagrama ER claro**.
+
+---
+
+# 🧠 1. CRITERIOS APLICADOS
+
+Este modelo está diseñado con:
+
+* Normalización lógica (sin sobreingeniería)
+* Preparado para multiusuario futuro
+* Compatible con SQLite → migrable a PostgreSQL
+* Soporte completo para:
+
+  * Rentabilidad por trabajo
+  * Pagos complejos empleados
+  * Deuda clientes
+  * Multi-moneda
+
+---
+
+# 🧱 2. ENTIDADES PRINCIPALES (MODELO FINAL)
+
+---
+
+## 🔷 2.1 Movimiento (NÚCLEO)
+
+```plaintext
+Movimiento
+- Id (GUID)
+- Fecha (DateTime)
+- Tipo (enum)
+- Descripcion (string)
+
+- Cantidad (decimal)
+- MontoUnitario (decimal)
+- Total (decimal calculado)
+
+- MonedaId (FK)
+- TipoCambio (decimal)
+
+- CategoriaId (FK nullable)
+
+- TrabajoId (FK nullable)
+- ClienteId (FK nullable)
+- EmpleadoId (FK nullable)
+
+- FacturaId (FK nullable)
+
+- EsAjusteManual (bool)
+- Observaciones (string)
+
+- CreatedAt
+- UpdatedAt
+```
+
+---
+
+## 🔷 2.2 Cliente
+
+```plaintext
+Cliente
+- Id
+- Nombre
+- RazonSocial
+- CUIT
+- Telefono
+- Email
+- Direccion
+- Observaciones
+
+- Activo (bool)
+
+- CreatedAt
+- UpdatedAt
+```
+
+---
+
+## 🔷 2.3 Trabajo (PROYECTO)
+
+```plaintext
+Trabajo
+- Id
+- Nombre
+- Descripcion
+
+- ClienteId (FK)
+
+- FechaInicio
+- FechaFin (nullable)
+
+- Estado (enum: Activo, Finalizado, Cancelado)
+
+- PresupuestoEstimado (decimal nullable)
+
+- CreatedAt
+- UpdatedAt
+```
+
+---
+
+## 🔷 2.4 Factura
+
+```plaintext
+Factura
+- Id
+- Numero
+- ClienteId (FK)
+- TrabajoId (FK nullable)
+
+- FechaEmision
+- FechaVencimiento
+
+- MontoTotal
+- MonedaId
+- TipoCambio
+
+- Estado (calculado: Pendiente, Parcial, Cobrada)
+
+- Observaciones
+
+- CreatedAt
+- UpdatedAt
+```
+
+---
+
+## 🔷 2.5 PagoFactura
+
+```plaintext
+PagoFactura
+- Id
+- FacturaId (FK)
+
+- Fecha
+- Monto
+- MonedaId
+- TipoCambio
+
+- MetodoPago (string)
+
+- Observaciones
+
+- CreatedAt
+```
+
+---
+
+## 🔷 2.6 Empleado
+
+```plaintext
+Empleado
+- Id
+- Nombre
+- Documento
+
+- TipoPago (enum: Diario, Semanal, Quincenal, Mensual)
+
+- TarifaBase (decimal)
+
+- Activo (bool)
+
+- CreatedAt
+- UpdatedAt
+```
+
+---
+
+## 🔷 2.7 Liquidacion (PAGO REAL)
+
+```plaintext
+Liquidacion
+- Id
+- EmpleadoId (FK)
+
+- FechaDesde
+- FechaHasta
+
+- MontoBase
+- Descuentos
+- Adelantos
+- Extras
+
+- TotalFinal
+
+- Pagado (bool)
+
+- Observaciones
+
+- CreatedAt
+```
+
+---
+
+## 🔷 2.8 FaltaEmpleado
+
+```plaintext
+FaltaEmpleado
+- Id
+- EmpleadoId (FK)
+
+- Fecha
+- Tipo (enum: FaltaCompleta, MediaFalta, Justificada)
+
+- ImpactoMonto
+
+- Observaciones
+```
+
+---
+
+## 🔷 2.9 AsignacionEmpleadoTrabajo
+
+```plaintext
+AsignacionEmpleadoTrabajo
+- Id
+- EmpleadoId (FK)
+- TrabajoId (FK)
+
+- TarifaOverride (decimal nullable)
+
+- FechaDesde
+- FechaHasta (nullable)
+```
+
+---
+
+## 🔷 2.10 Categoria (jerárquica)
+
+```plaintext
+Categoria
+- Id
+- Nombre
+
+- PadreId (FK nullable)
+
+- Tipo (enum: Gasto, Ingreso)
+
+- Activo (bool)
+```
+
+---
+
+## 🔷 2.11 CajaMovimiento (opcional pero recomendado)
+
+```plaintext
+CajaMovimiento
+- Id
+
+- Fecha
+- Tipo (Ingreso/Egreso)
+
+- Monto
+
+- Referencia (string)
+- MovimientoId (FK nullable)
+
+- Observaciones
+```
+
+---
+
+## 🔷 2.12 Moneda
+
+```plaintext
+Moneda
+- Id
+- Codigo (ARS, USD)
+- Nombre
+- EsBase (bool)
+```
+
+---
+
+## 🔷 2.13 Adjunto
+
+```plaintext
+Adjunto
+- Id
+
+- NombreArchivo
+- Ruta
+
+- TipoMime
+
+- EntidadTipo (string)
+- EntidadId (GUID)
+
+- CreatedAt
+```
+
+👉 Relación polimórfica simple
+
+---
+
+# 🔗 3. RELACIONES CLAVE
+
+---
+
+## Relaciones principales
+
+```plaintext
+Cliente 1 ─── N Trabajo
+Cliente 1 ─── N Factura
+
+Trabajo 1 ─── N Movimiento
+Trabajo 1 ─── N Factura
+Trabajo 1 ─── N AsignacionEmpleadoTrabajo
+
+Factura 1 ─── N PagoFactura
+
+Empleado 1 ─── N Liquidacion
+Empleado 1 ─── N FaltaEmpleado
+Empleado 1 ─── N AsignacionEmpleadoTrabajo
+
+Categoria 1 ─── N Categoria (jerarquía)
+
+Movimiento N ─── 1 Categoria
+Movimiento N ─── 1 Trabajo
+Movimiento N ─── 1 Cliente
+Movimiento N ─── 1 Empleado
+Movimiento N ─── 1 Factura
+```
+
+---
+
+# 🧩 4. DIAGRAMA ER (SIMPLIFICADO)
+
+---
+
+```plaintext
+[Cliente]
+   ├──< [Trabajo]
+   │         ├──< [Movimiento]
+   │         ├──< [Factura]
+   │         │         └──< [PagoFactura]
+   │         └──< [AsignacionEmpleadoTrabajo] >── [Empleado]
+   │
+   └──< [Factura]
+
+[Empleado]
+   ├──< [Liquidacion]
+   ├──< [FaltaEmpleado]
+   └──< [AsignacionEmpleadoTrabajo]
+
+[Movimiento]
+   ├── [Categoria]
+   ├── [Trabajo]
+   ├── [Empleado]
+   ├── [Cliente]
+   └── [Factura]
+
+[Categoria]
+   └── (self hierarchy)
+
+[Adjunto] → (polimórfico)
+[Moneda]
+[ CajaMovimiento ]
+```
+
+---
+
+# ⚙️ 5. DECISIONES IMPORTANTES (YA RESUELTAS)
+
+---
+
+## ✔ Movimiento como entidad central
+
+Evita duplicar lógica entre:
+
+* pagos
+* gastos
+* ingresos
+
+---
+
+## ✔ Factura separada de Movimiento
+
+Permite:
+
+* pagos parciales reales
+* deuda correcta
+
+---
+
+## ✔ Liquidación separada
+
+Evita mezclar:
+
+* cálculo de sueldo
+* movimientos financieros
+
+---
+
+## ✔ Trabajo como eje de rentabilidad
+
+TODO puede vincularse a trabajo → clave para análisis
+
+---
+
+## ✔ Polimorfismo simple en adjuntos
+
+Evita tablas innecesarias
+
+---
+
+# ⚠️ 6. CONSIDERACIONES PARA EF CORE
+
+---
+
+## 🔹 Decimal en SQLite
+
+```plaintext
+Usar conversión a double o configurar precision manual
+```
+
+---
+
+## 🔹 Relaciones opcionales
+
+Muchas FK son nullable → importante configurar:
+
+```plaintext
+OnDelete: Restrict (evitar cascadas peligrosas)
+```
+
+---
+
+## 🔹 Índices recomendados
+
+* Movimiento.Fecha
+* Movimiento.TrabajoId
+* Factura.ClienteId
+* PagoFactura.FacturaId
+
+---
+
+## 🔹 Enum como int
+
+Más eficiente y portable
+
+---
+
+# 🚀 7. LISTO PARA SIGUIENTE PASO
+
+Con esto ya podés:
+
+✔ Crear DbContext
+✔ Generar migraciones
+✔ Construir CRUDs
+✔ Calcular métricas reales
+
+---
+
+# 👉 SIGUIENTE PASO RECOMENDADO
+
+Te sugiero avanzar con:
+
+### OPCIÓN A
+
+👉 DbContext + configuraciones EF Core completas
+
+### OPCIÓN B
+
+👉 Primer módulo funcional (Movimientos + UI Avalonia)
+
+### OPCIÓN C
+
+👉 Script de migración inicial + seed de datos
+
+---
+
+Decime cómo querés avanzar y lo bajamos directo a implementación.

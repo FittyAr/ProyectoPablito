@@ -1,0 +1,307 @@
+🔄 CAMBIOS DERIVADOS DE TUS RESPUESTAS
+🔷 1. Rentabilidad por trabajo → OBLIGATORIA
+Impacto en diseño
+
+Antes: opcional
+Ahora: feature central
+
+Ajustes:
+Todo Movimiento debe poder vincularse a:
+TrabajoId (nullable pero recomendado)
+Nueva regla:
+Todo gasto o ingreso relevante debería asociarse a un trabajo
+Dashboard agrega:
+Ranking de trabajos:
+Más rentables
+Menos rentables
+🔷 2. Empleados con variación por trabajo
+Nuevo concepto:
+
+Tarifa por trabajo (override)
+
+Lógica:
+Si existe tarifa específica en el trabajo → usar esa
+Si no → usar tarifa base del empleado
+Nueva entidad conceptual:
+EmpleadoTrabajoConfiguracion
+- EmpleadoId
+- TrabajoId
+- TarifaOverride (opcional)
+🔷 3. Caja → modo flexible (pero completo)
+Decisión:
+
+No se fuerza cierre diario obligatorio.
+
+Ajustes:
+Caja es:
+Calculada automáticamente
+Puede registrarse manualmente
+Nuevo concepto:
+MovimientoCaja (opcional)
+
+Permite:
+
+Ajustes manuales
+Auditoría
+🔷 4. Deuda → PRIORIDAD ALTA
+Ajustes:
+Cliente tiene campo calculado:
+Saldo = TotalFacturado - TotalCobrado
+Dashboard incluye:
+Top deudores
+Facturas vencidas
+🔷 5. Reportes → internos pero escalables
+Decisión:
+Se diseñan como estructurados desde el inicio
+Ajuste técnico:
+
+Todos los reportes deben salir de:
+
+DTOs desacoplados del dominio
+
+👉 Esto permite:
+
+PDF formal futuro sin refactor
+🚀 PLAN DE IMPLEMENTACIÓN (PASO A PASO)
+
+Orden optimizado para construir sin romper nada.
+
+🧱 FASE 0 — Setup base
+Crear solución .NET
+Crear proyectos:
+Core
+Application
+Infrastructure
+UI (Avalonia)
+Configurar:
+EF Core + SQLite
+Dependency Injection
+Logging (Serilog)
+🧱 FASE 1 — Núcleo financiero
+Objetivo: poder registrar dinero
+Implementar:
+Entidad Movimiento
+Categorías jerárquicas
+Tipos de movimiento
+UI:
+Alta de movimiento
+Listado
+Filtros
+Resultado:
+
+✔ Ya podés reemplazar Excel básico
+
+🧱 FASE 2 — Clientes + Facturación
+Implementar:
+Cliente
+Factura
+PagoFactura
+Lógica:
+Pagos parciales
+Estado dinámico
+UI:
+CRUD clientes
+Vista de deuda
+Registro de pagos
+Resultado:
+
+✔ Control de ingresos reales
+
+🧱 FASE 3 — Empleados + pagos
+Implementar:
+Empleado
+Liquidación
+Faltas
+Adelantos
+Lógica:
+Cálculo de sueldo real
+UI:
+Historial por empleado
+Estado actual
+Resultado:
+
+✔ Control de sueldos realista
+
+🧱 FASE 4 — Trabajos (CRÍTICO)
+Implementar:
+Trabajo
+Asignación empleado ↔ trabajo
+Asociación con:
+Movimientos
+Facturas
+Lógica:
+Cálculo de rentabilidad
+UI:
+Vista por trabajo
+Balance del trabajo
+Resultado:
+
+✔ Insight real del negocio
+
+🧱 FASE 5 — Caja + dashboard
+Implementar:
+Cálculo de caja
+Ajustes manuales
+Dashboard:
+Balance
+Deuda
+Rentabilidad
+Alertas
+Resultado:
+
+✔ Visión completa
+
+🧱 FASE 6 — Adjuntos + multi-moneda
+Implementar:
+Sistema de archivos
+Conversión moneda
+Resultado:
+
+✔ Sistema robusto
+
+🧱 FASE 7 — Exportaciones
+Implementar:
+Excel
+CSV
+JSON
+PDF (básico)
+Resultado:
+
+✔ Profesionalización
+
+🧱 FASE 8 — Preparación backend
+Implementar:
+DTOs
+Servicios desacoplados
+Interfaces repositorio
+Resultado:
+
+✔ Listo para API
+
+🤖 PROMPT MAESTRO (PARA GENERAR EL SISTEMA)
+
+Este prompt está pensado para que otro agente IA construya TODO el sistema correctamente.
+
+📌 PROMPT
+Actúa como un arquitecto senior de software especializado en .NET, Avalonia UI, EF Core y sistemas empresariales.
+
+Debes generar un sistema completo de gestión operativa para una empresa de mantenimiento/construcción con las siguientes características:
+
+ARQUITECTURA:
+- Clean Architecture
+- Separación en proyectos:
+  - Core (dominio)
+  - Application (casos de uso)
+  - Infrastructure (EF Core + SQLite)
+  - UI (Avalonia MVVM)
+
+TECNOLOGÍAS:
+- .NET 10
+- Avalonia UI
+- EF Core
+- SQLite
+- CommunityToolkit.MVVM
+- FluentValidation
+- Serilog
+
+REQUISITOS FUNCIONALES:
+
+1. Movimientos financieros:
+- Tipos: Ingreso, Gasto, PagoEmpleado, CobroFactura, Ajuste
+- Deben soportar:
+  - Cantidad
+  - Monto unitario
+  - Total calculado
+  - Asociación opcional a Trabajo
+
+2. Clientes:
+- CRUD completo
+- Cálculo de deuda
+- Historial de facturación
+
+3. Facturación:
+- Facturas con:
+  - Pagos parciales
+  - Estado dinámico (Pendiente, Parcial, Cobrada)
+
+4. Empleados:
+- Pago base
+- Faltas
+- Adelantos
+- Liquidaciones por período
+
+5. Trabajos (CRÍTICO):
+- Asociados a cliente
+- Relacionados con:
+  - Movimientos
+  - Facturas
+  - Empleados
+
+- Debe calcular:
+  Rentabilidad = ingresos - costos
+
+6. Configuración empleado por trabajo:
+- Permitir tarifa override por trabajo
+
+7. Caja:
+- Cálculo automático
+- Ajustes manuales
+
+8. Categorías jerárquicas para gastos
+
+9. Adjuntos:
+- Asociables a múltiples entidades
+
+10. Multi-moneda:
+- Conversión a moneda base
+
+11. Dashboard:
+- Balance general
+- Caja
+- Deuda clientes
+- Rentabilidad por trabajo
+- Alertas
+
+12. Exportaciones:
+- Excel
+- CSV
+- JSON
+- PDF
+
+REQUISITOS TÉCNICOS:
+
+- Uso de MVVM en Avalonia
+- Uso de DI
+- Validaciones con FluentValidation
+- Logging con Serilog
+- DTOs desacoplados del dominio
+- Preparado para futura API REST
+
+REGLAS IMPORTANTES:
+
+- No sobrecomplicar
+- Código limpio y mantenible
+- Separación clara de responsabilidades
+- Preparado para escalar a multiusuario
+
+SALIDA ESPERADA:
+
+1. Estructura completa de la solución
+2. Definición de entidades
+3. DbContext
+4. Configuraciones EF
+5. ViewModels base
+6. Ejemplo de CRUD completo (Movimiento)
+7. Ejemplo de cálculo de rentabilidad
+8. Ejemplo de dashboard
+
+No explicar teoría. Generar directamente código y estructura profesional.
+✅ ESTADO ACTUAL
+
+Con esto ya tenés:
+
+Diseño cerrado ✔
+Alcance claro ✔
+Orden de desarrollo ✔
+Base para IA ✔
+

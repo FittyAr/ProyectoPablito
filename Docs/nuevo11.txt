@@ -1,0 +1,361 @@
+Perfecto. Te entrego un **diagrama entidad–relación completo**, claro y listo para implementación (alineado 100% con EF Core y el modelo que definimos).
+
+Lo hago en formato **estructural + Mermaid (renderizable)** + explicación puntual de relaciones críticas.
+
+---
+
+# 🧩 DIAGRAMA ENTIDAD–RELACIÓN (MERMAID)
+
+Podés pegar esto en:
+
+* [https://mermaid.live](https://mermaid.live)
+* VS Code (plugin Mermaid)
+* Markdown renderers compatibles
+
+---
+
+```mermaid
+erDiagram
+
+CLIENTE {
+    GUID Id PK
+    string Nombre
+    string RazonSocial
+    string CUIT
+    string Telefono
+    string Email
+    string Direccion
+    bool Activo
+}
+
+TRABAJO {
+    GUID Id PK
+    string Nombre
+    string Descripcion
+    GUID ClienteId FK
+    datetime FechaInicio
+    datetime FechaFin
+    int Estado
+    decimal PresupuestoEstimado
+}
+
+FACTURA {
+    GUID Id PK
+    string Numero
+    GUID ClienteId FK
+    GUID TrabajoId FK
+    datetime FechaEmision
+    datetime FechaVencimiento
+    decimal MontoTotal
+    GUID MonedaId FK
+    decimal TipoCambio
+    int Estado
+}
+
+PAGO_FACTURA {
+    GUID Id PK
+    GUID FacturaId FK
+    datetime Fecha
+    decimal Monto
+    GUID MonedaId FK
+    decimal TipoCambio
+    string MetodoPago
+}
+
+EMPLEADO {
+    GUID Id PK
+    string Nombre
+    string Documento
+    int TipoPago
+    decimal TarifaBase
+    bool Activo
+}
+
+LIQUIDACION {
+    GUID Id PK
+    GUID EmpleadoId FK
+    datetime FechaDesde
+    datetime FechaHasta
+    decimal MontoBase
+    decimal Descuentos
+    decimal Adelantos
+    decimal Extras
+    decimal TotalFinal
+    bool Pagado
+}
+
+FALTA_EMPLEADO {
+    GUID Id PK
+    GUID EmpleadoId FK
+    datetime Fecha
+    int Tipo
+    decimal ImpactoMonto
+}
+
+ASIGNACION_EMPLEADO_TRABAJO {
+    GUID Id PK
+    GUID EmpleadoId FK
+    GUID TrabajoId FK
+    decimal TarifaOverride
+    datetime FechaDesde
+    datetime FechaHasta
+}
+
+MOVIMIENTO {
+    GUID Id PK
+    datetime Fecha
+    int Tipo
+    string Descripcion
+    decimal Cantidad
+    decimal MontoUnitario
+    decimal Total
+    GUID MonedaId FK
+    decimal TipoCambio
+    GUID CategoriaId FK
+    GUID TrabajoId FK
+    GUID ClienteId FK
+    GUID EmpleadoId FK
+    GUID FacturaId FK
+    bool EsAjusteManual
+}
+
+CATEGORIA {
+    GUID Id PK
+    string Nombre
+    GUID PadreId FK
+    int Tipo
+}
+
+CAJA_MOVIMIENTO {
+    GUID Id PK
+    datetime Fecha
+    int Tipo
+    decimal Monto
+    string Referencia
+    GUID MovimientoId FK
+}
+
+MONEDA {
+    GUID Id PK
+    string Codigo
+    string Nombre
+    bool EsBase
+}
+
+ADJUNTO {
+    GUID Id PK
+    string NombreArchivo
+    string Ruta
+    string TipoMime
+    string EntidadTipo
+    GUID EntidadId
+}
+
+%% RELACIONES
+
+CLIENTE ||--o{ TRABAJO : tiene
+CLIENTE ||--o{ FACTURA : genera
+
+TRABAJO ||--o{ MOVIMIENTO : afecta
+TRABAJO ||--o{ FACTURA : genera
+TRABAJO ||--o{ ASIGNACION_EMPLEADO_TRABAJO : incluye
+
+FACTURA ||--o{ PAGO_FACTURA : recibe
+FACTURA ||--o{ MOVIMIENTO : refleja
+
+EMPLEADO ||--o{ LIQUIDACION : tiene
+EMPLEADO ||--o{ FALTA_EMPLEADO : registra
+EMPLEADO ||--o{ ASIGNACION_EMPLEADO_TRABAJO : participa
+EMPLEADO ||--o{ MOVIMIENTO : genera
+
+CATEGORIA ||--o{ CATEGORIA : jerarquia
+CATEGORIA ||--o{ MOVIMIENTO : clasifica
+
+MOVIMIENTO ||--o{ CAJA_MOVIMIENTO : impacta
+
+MONEDA ||--o{ MOVIMIENTO : usa
+MONEDA ||--o{ FACTURA : usa
+MONEDA ||--o{ PAGO_FACTURA : usa
+
+```
+
+---
+
+# 🧠 LECTURA DEL DIAGRAMA (PUNTOS CLAVE)
+
+---
+
+## 🔷 1. Núcleo: MOVIMIENTO
+
+Es el **hub central**:
+
+* Puede relacionarse con:
+
+  * Trabajo
+  * Cliente
+  * Empleado
+  * Factura
+  * Categoría
+
+👉 Esto permite máxima flexibilidad sin duplicar estructuras.
+
+---
+
+## 🔷 2. Flujo de ingresos (clientes)
+
+```plaintext
+Cliente → Trabajo → Factura → PagoFactura
+                          ↓
+                    Movimiento
+```
+
+✔ Permite:
+
+* pagos parciales
+* deuda real
+* trazabilidad
+
+---
+
+## 🔷 3. Flujo de costos (empresa)
+
+```plaintext
+Movimiento (Gasto)
+    ↓
+Categoría
+    ↓
+Trabajo
+```
+
+✔ Permite:
+
+* análisis por tipo de gasto
+* impacto por proyecto
+
+---
+
+## 🔷 4. Empleados (modelo desacoplado)
+
+```plaintext
+Empleado
+ ├── Liquidacion
+ ├── Falta
+ └── Asignacion → Trabajo
+```
+
+✔ Separación clave:
+
+* cálculo de sueldo ≠ movimiento financiero
+
+---
+
+## 🔷 5. Rentabilidad por trabajo
+
+Se obtiene de:
+
+```plaintext
+Ingresos (Facturas/Pagos)
+-
+Costos (Movimientos asociados)
+```
+
+---
+
+## 🔷 6. Caja
+
+```plaintext
+Movimiento → CajaMovimiento
+```
+
+✔ Permite:
+
+* cálculo automático
+* ajustes manuales
+
+---
+
+## 🔷 7. Categorías jerárquicas
+
+```plaintext
+Categoria → Padre → Padre
+```
+
+✔ Soporta:
+
+* árbol infinito
+* agrupación de gastos
+
+---
+
+## 🔷 8. Adjuntos (polimórfico)
+
+```plaintext
+EntidadTipo + EntidadId
+```
+
+✔ Flexible
+✔ Sin FK rígidas
+
+---
+
+# ⚠️ DECISIONES IMPORTANTES REFLEJADAS
+
+---
+
+## ✔ Relaciones opcionales (nullable FK)
+
+Ejemplo:
+
+* Movimiento puede existir sin:
+
+  * Trabajo
+  * Factura
+  * Empleado
+
+👉 Fundamental para flexibilidad real
+
+---
+
+## ✔ Eliminaciones controladas
+
+* Cliente no elimina trabajos en cascada
+* Trabajo no rompe movimientos históricos
+
+---
+
+## ✔ Separación fuerte
+
+* Factura ≠ Movimiento
+* Liquidación ≠ Pago
+
+---
+
+# 🚀 CON ESTO YA TENÉS
+
+✔ Modelo final validado
+✔ Diagrama completo
+✔ Base para EF Core
+✔ Base para API futura
+✔ Base para UI
+
+---
+
+# 👉 SIGUIENTE PASO RECOMENDADO
+
+Ahora sí estás en punto óptimo para:
+
+### 🔹 Generar:
+
+* Entidades C# completas (listas para copiar)
+* Migrations reales
+* Seed inicial completo
+
+o
+
+### 🔹 Saltar directo a:
+
+* Primer módulo funcional en Avalonia
+
+---
+
+Decime cómo querés avanzar y seguimos directo sin teoría innecesaria.
