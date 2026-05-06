@@ -27,6 +27,19 @@ public partial class MovimientoEditViewModel : ViewModelBase
     [ObservableProperty]
     private string _title = "Nuevo Movimiento";
 
+    public DateTimeOffset? FechaOffset
+    {
+        get => new DateTimeOffset(Movimiento.Fecha);
+        set
+        {
+            if (value.HasValue)
+            {
+                Movimiento.Fecha = value.Value.DateTime;
+                OnPropertyChanged(nameof(FechaOffset));
+            }
+        }
+    }
+
     public MovimientoEditViewModel(
         IMovimientoService movimientoService,
         ICategoriaService categoriaService,
@@ -37,10 +50,12 @@ public partial class MovimientoEditViewModel : ViewModelBase
         _tipoMovimientoService = tipoMovimientoService;
         
         SaveCommand = new AsyncRelayCommand(SaveAsync);
+        CancelCommand = new RelayCommand(Cancel);
         LoadDataCommand = new AsyncRelayCommand(LoadDataAsync);
     }
 
     public IAsyncRelayCommand SaveCommand { get; }
+    public IRelayCommand CancelCommand { get; }
     public IAsyncRelayCommand LoadDataCommand { get; }
 
     public async Task LoadDataAsync()
@@ -67,9 +82,13 @@ public partial class MovimientoEditViewModel : ViewModelBase
 
         if (success)
         {
-            // Podríamos usar un Messenger para avisar a la lista que refresque
             CloseRequest?.Invoke(this, true);
         }
+    }
+
+    private void Cancel()
+    {
+        CloseRequest?.Invoke(this, false);
     }
 
     public event EventHandler<bool>? CloseRequest;

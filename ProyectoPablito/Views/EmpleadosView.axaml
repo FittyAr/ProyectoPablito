@@ -6,21 +6,35 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="ProyectoPablito.Views.EmpleadosView"
              x:DataType="vm:EmpleadosViewModel">
-    <DockPanel Margin="20">
-        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="10" Margin="0,0,0,20">
-            <TextBlock Text="Empleados" FontSize="24" FontWeight="Bold" VerticalAlignment="Center" />
-            <Button Content="Refrescar" Command="{Binding LoadEmpleadosCommand}" />
-        </StackPanel>
-        
-        <DataGrid ItemsSource="{Binding Empleados}" AutoGenerateColumns="False" IsReadOnly="True" GridLinesVisibility="All">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Nombre" Binding="{Binding Nombre}" Width="*" />
-                <DataGridTextColumn Header="DNI" Binding="{Binding Dni}" />
-                <DataGridTextColumn Header="Cargo" Binding="{Binding Cargo}" />
-                <DataGridTextColumn Header="Sueldo Base" Binding="{Binding SueldoBase, StringFormat=\{0:C\}}" />
-                <DataGridTextColumn Header="Ingreso" Binding="{Binding FechaIngreso, StringFormat=\{0:dd/MM/yyyy\}}" />
-                <DataGridCheckBoxColumn Header="Activo" Binding="{Binding Activo}" />
-            </DataGrid.Columns>
-        </DataGrid>
-    </DockPanel>
+    <Grid>
+        <DockPanel Margin="20" IsVisible="{Binding !IsEditing}">
+            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="10" Margin="0,0,0,20">
+                <TextBlock Text="Empleados" FontSize="24" FontWeight="Bold" VerticalAlignment="Center" />
+                <Button Content="Agregar" Classes="accent" Command="{Binding AddCommand}" />
+                <Button Content="Refrescar" Command="{Binding LoadEmpleadosCommand}" />
+            </StackPanel>
+            
+            <DataGrid ItemsSource="{Binding Empleados}" 
+                      AutoGenerateColumns="False" 
+                      IsReadOnly="True" 
+                      GridLinesVisibility="All"
+                      DoubleTapped="OnDataGridDoubleTapped">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Nombre" Binding="{Binding Nombre}" Width="*" />
+                    <DataGridTextColumn Header="DNI" Binding="{Binding Dni}" />
+                    <DataGridTextColumn Header="Cargo" Binding="{Binding Cargo}" />
+                    <DataGridTextColumn Header="Sueldo Base" Binding="{Binding SueldoBase, StringFormat=\{0:C\}}" />
+                    <DataGridTextColumn Header="Ingreso" Binding="{Binding FechaIngreso, StringFormat=\{0:dd/MM/yyyy\}}" />
+                    <DataGridCheckBoxColumn Header="Activo" Binding="{Binding Activo}" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </DockPanel>
+
+        <!-- Overlay de Edición -->
+        <Border Background="#AA000000" IsVisible="{Binding IsEditing}">
+            <ContentControl Content="{Binding EditViewModel}" 
+                            HorizontalAlignment="Center" 
+                            VerticalAlignment="Center" />
+        </Border>
+    </Grid>
 </UserControl>

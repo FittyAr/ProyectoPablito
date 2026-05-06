@@ -6,20 +6,34 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="ProyectoPablito.Views.ClientesView"
              x:DataType="vm:ClientesViewModel">
-    <DockPanel Margin="20">
-        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="10" Margin="0,0,0,20">
-            <TextBlock Text="Clientes" FontSize="24" FontWeight="Bold" VerticalAlignment="Center" />
-            <Button Content="Refrescar" Command="{Binding LoadClientesCommand}" />
-        </StackPanel>
-        
-        <DataGrid ItemsSource="{Binding Clientes}" AutoGenerateColumns="False" IsReadOnly="True" GridLinesVisibility="All">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Nombre" Binding="{Binding Nombre}" Width="*" />
-                <DataGridTextColumn Header="CUIT" Binding="{Binding Cuit}" />
-                <DataGridTextColumn Header="Teléfono" Binding="{Binding Telefono}" />
-                <DataGridTextColumn Header="Email" Binding="{Binding Email}" />
-                <DataGridTextColumn Header="Cond. IVA" Binding="{Binding CondicionIva}" />
-            </DataGrid.Columns>
-        </DataGrid>
-    </DockPanel>
+    <Grid>
+        <DockPanel Margin="20" IsVisible="{Binding !IsEditing}">
+            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="10" Margin="0,0,0,20">
+                <TextBlock Text="Clientes" FontSize="24" FontWeight="Bold" VerticalAlignment="Center" />
+                <Button Content="Agregar" Classes="accent" Command="{Binding AddCommand}" />
+                <Button Content="Refrescar" Command="{Binding LoadClientesCommand}" />
+            </StackPanel>
+            
+            <DataGrid ItemsSource="{Binding Clientes}" 
+                      AutoGenerateColumns="False" 
+                      IsReadOnly="True" 
+                      GridLinesVisibility="All"
+                      DoubleTapped="OnDataGridDoubleTapped">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Nombre" Binding="{Binding Nombre}" Width="*" />
+                    <DataGridTextColumn Header="CUIT" Binding="{Binding Cuit}" />
+                    <DataGridTextColumn Header="Teléfono" Binding="{Binding Telefono}" />
+                    <DataGridTextColumn Header="Email" Binding="{Binding Email}" />
+                    <DataGridTextColumn Header="Cond. IVA" Binding="{Binding CondicionIva}" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </DockPanel>
+
+        <!-- Overlay de Edición -->
+        <Border Background="#AA000000" IsVisible="{Binding IsEditing}">
+            <ContentControl Content="{Binding EditViewModel}" 
+                            HorizontalAlignment="Center" 
+                            VerticalAlignment="Center" />
+        </Border>
+    </Grid>
 </UserControl>

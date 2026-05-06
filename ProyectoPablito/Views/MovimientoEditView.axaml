@@ -56,10 +56,11 @@
 
             <StackPanel Spacing="5">
                 <TextBlock Text="Fecha" FontSize="12" Foreground="#aaa"/>
-                <DatePicker SelectedDate="{Binding Movimiento.Fecha}" HorizontalAlignment="Stretch"/>
+                <DatePicker SelectedDate="{Binding FechaOffset}" HorizontalAlignment="Stretch"/>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10" Margin="0,20,0,0">
+                <Button Content="Cancelar" Command="{Binding CancelCommand}" />
                 <Button Content="Guardar" Classes="accent" Command="{Binding SaveCommand}" />
             </StackPanel>
         </StackPanel>

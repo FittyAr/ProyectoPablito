@@ -74,7 +74,10 @@ public partial class App : Avalonia.Application
         services.AddTransient<MovimientosViewModel>();
         services.AddTransient<MovimientoEditViewModel>();
         services.AddTransient<ClientesViewModel>();
+        services.AddTransient<ClienteEditViewModel>();
         services.AddTransient<EmpleadosViewModel>();
+        services.AddTransient<EmpleadoEditViewModel>();
         services.AddTransient<TrabajosViewModel>();
+        services.AddTransient<TrabajoEditViewModel>();
     }
 }
