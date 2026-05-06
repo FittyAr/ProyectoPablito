@@ -20,6 +20,7 @@ public static class DependencyInjection
 
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddSingleton<ILocalizationService, LocalizationService>();
+        services.AddScoped<IExportService, ExportService>();
         
         return services;
     }

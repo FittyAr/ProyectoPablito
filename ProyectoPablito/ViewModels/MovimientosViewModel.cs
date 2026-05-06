@@ -1,5 +1,6 @@
 using System;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -12,6 +13,8 @@ namespace ProyectoPablito.ViewModels;
 public partial class MovimientosViewModel : ViewModelBase
 {
     private readonly IMovimientoService _movimientoService;
+    private readonly IExportService _exportService;
+    private readonly IServiceProvider _serviceProvider;
 
     [ObservableProperty]
     private ObservableCollection<MovimientoDto> _movimientos = new();
@@ -22,20 +25,23 @@ public partial class MovimientosViewModel : ViewModelBase
     [ObservableProperty]
     private MovimientoEditViewModel? _editViewModel;
 
-    private readonly IServiceProvider _serviceProvider;
-
-    public MovimientosViewModel(IMovimientoService movimientoService, IServiceProvider serviceProvider)
+    public MovimientosViewModel(IMovimientoService movimientoService, IExportService exportService, IServiceProvider serviceProvider)
     {
         _movimientoService = movimientoService;
+        _exportService = exportService;
         _serviceProvider = serviceProvider;
         LoadMovimientosCommand = new AsyncRelayCommand(LoadMovimientosAsync);
         AddCommand = new RelayCommand(OnAdd);
         EditCommand = new RelayCommand<MovimientoDto>(OnEdit);
+        ExportPdfCommand = new AsyncRelayCommand(ExportPdfAsync);
+        ExportExcelCommand = new AsyncRelayCommand(ExportExcelAsync);
     }
 
     public IAsyncRelayCommand LoadMovimientosCommand { get; }
     public IRelayCommand AddCommand { get; }
     public IRelayCommand<MovimientoDto> EditCommand { get; }
+    public IAsyncRelayCommand ExportPdfCommand { get; }
+    public IAsyncRelayCommand ExportExcelCommand { get; }
 
     private void OnAdd()
     {
@@ -61,6 +67,20 @@ public partial class MovimientosViewModel : ViewModelBase
     {
         IsEditing = false;
         if (saved) _ = LoadMovimientosAsync();
+    }
+
+    private async Task ExportPdfAsync()
+    {
+        var bytes = await _exportService.ExportMovimientosToPdfAsync(Movimientos);
+        var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), $"Movimientos_{DateTime.Now:yyyyMMddHHmmss}.pdf");
+        await File.WriteAllBytesAsync(path, bytes);
+    }
+
+    private async Task ExportExcelAsync()
+    {
+        var bytes = await _exportService.ExportMovimientosToExcelAsync(Movimientos);
+        var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), $"Movimientos_{DateTime.Now:yyyyMMddHHmmss}.xlsx");
+        await File.WriteAllBytesAsync(path, bytes);
     }
 
     private async Task LoadMovimientosAsync()

@@ -13,7 +13,8 @@ public class MovimientoDto
     public decimal Total { get; set; }
     
     public Guid TipoMovimientoId { get; set; }
-    public string? TipoMovimientoNombre { get; set; }
+    public string TipoMovimientoNombre { get; set; } = string.Empty;
+    public bool TipoMovimientoSuma { get; set; }
     public bool EsIngreso { get; set; }
 
     public Moneda Moneda { get; set; }

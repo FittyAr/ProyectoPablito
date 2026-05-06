@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:ProyectoPablito.ViewModels"
+             xmlns:ic="using:FluentIcons.Avalonia.Fluent"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="ProyectoPablito.Views.MovimientosView"
              x:DataType="vm:MovimientosViewModel">
@@ -12,6 +13,13 @@
                 <TextBlock Text="Gestión de Movimientos" FontSize="24" FontWeight="Bold" VerticalAlignment="Center" />
                 <Button Content="Agregar" Classes="accent" Command="{Binding AddCommand}" />
                 <Button Content="Refrescar" Command="{Binding LoadMovimientosCommand}" />
+                <Separator Margin="5,0"/>
+                <Button Command="{Binding ExportPdfCommand}" ToolTip.Tip="Exportar a PDF">
+                    <ic:SymbolIcon Symbol="DocumentPdf" />
+                </Button>
+                <Button Command="{Binding ExportExcelCommand}" ToolTip.Tip="Exportar a Excel">
+                    <ic:SymbolIcon Symbol="Table" />
+                </Button>
             </StackPanel>
             
             <DataGrid ItemsSource="{Binding Movimientos}" 

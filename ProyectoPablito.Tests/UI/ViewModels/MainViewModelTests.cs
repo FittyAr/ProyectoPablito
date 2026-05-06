@@ -22,8 +22,10 @@ public class MainViewModelTests
         // Arrange
         var serviceProvider = Substitute.For<IServiceProvider>();
         var localization = Substitute.For<ILocalizationService>();
+        var movimientoService = Substitute.For<IMovimientoService>();
+        var dashboardVm = new DashboardViewModel(movimientoService);
         
-        serviceProvider.GetService(typeof(DashboardViewModel)).Returns(new DashboardViewModel());
+        serviceProvider.GetService(typeof(DashboardViewModel)).Returns(dashboardVm);
         _localizationService.GetString("General.AppName").Returns("Proyecto Pablito");
 
         // Act

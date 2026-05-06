@@ -21,36 +21,36 @@
                            Margin="10,20" 
                            Foreground="White"/>
                 
-                <ListBoxItem Command="{Binding NavigateToDashboardCommand}">
+                <Button Command="{Binding NavigateToDashboardCommand}" HorizontalAlignment="Stretch" Background="Transparent">
                     <StackPanel Orientation="Horizontal" Spacing="10">
                         <ic:SymbolIcon Symbol="Home" />
                         <TextBlock Text="Dashboard" />
                     </StackPanel>
-                </ListBoxItem>
-                <ListBoxItem Command="{Binding NavigateToMovimientosCommand}">
+                </Button>
+                <Button Command="{Binding NavigateToMovimientosCommand}" HorizontalAlignment="Stretch" Background="Transparent">
                     <StackPanel Orientation="Horizontal" Spacing="10">
                         <ic:SymbolIcon Symbol="Collections" />
                         <TextBlock Text="Movimientos" />
                     </StackPanel>
-                </ListBoxItem>
-                <ListBoxItem Command="{Binding NavigateToClientesCommand}">
+                </Button>
+                <Button Command="{Binding NavigateToClientesCommand}" HorizontalAlignment="Stretch" Background="Transparent">
                     <StackPanel Orientation="Horizontal" Spacing="10">
                         <ic:SymbolIcon Symbol="People" />
                         <TextBlock Text="Clientes" />
                     </StackPanel>
-                </ListBoxItem>
-                <ListBoxItem Command="{Binding NavigateToEmpleadosCommand}">
+                </Button>
+                <Button Command="{Binding NavigateToEmpleadosCommand}" HorizontalAlignment="Stretch" Background="Transparent">
                     <StackPanel Orientation="Horizontal" Spacing="10">
                         <ic:SymbolIcon Symbol="PersonAccounts" />
                         <TextBlock Text="Empleados" />
                     </StackPanel>
-                </ListBoxItem>
-                <ListBoxItem Command="{Binding NavigateToTrabajosCommand}">
+                </Button>
+                <Button Command="{Binding NavigateToTrabajosCommand}" HorizontalAlignment="Stretch" Background="Transparent">
                     <StackPanel Orientation="Horizontal" Spacing="10">
                         <ic:SymbolIcon Symbol="Briefcase" />
                         <TextBlock Text="Trabajos" />
                     </StackPanel>
-                </ListBoxItem>
+                </Button>
             </StackPanel>
         </SplitView.Pane>
 
