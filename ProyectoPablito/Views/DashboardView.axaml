@@ -3,7 +3,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:ProyectoPablito.ViewModels"
-             xmlns:ic="using:FluentIcons.Avalonia.Fluent"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="ProyectoPablito.Views.DashboardView"
              x:DataType="vm:DashboardViewModel">
@@ -15,7 +14,6 @@
                 <!-- Ingresos -->
                 <Border Background="#1b3a1b" CornerRadius="12" Margin="5" Padding="20">
                     <StackPanel VerticalAlignment="Center">
-                        <ic:SymbolIcon Symbol="ArrowCircleUp" FontSize="32" Foreground="#4caf50" Margin="0,0,0,10"/>
                         <TextBlock Text="Total Ingresos" FontSize="14" Foreground="#aaa"/>
                         <TextBlock Text="{Binding TotalIngresos, StringFormat=\{0:C\}}" FontSize="22" FontWeight="Bold" Foreground="#4caf50"/>
                     </StackPanel>
@@ -24,7 +22,6 @@
                 <!-- Gastos -->
                 <Border Background="#3a1b1b" CornerRadius="12" Margin="5" Padding="20">
                     <StackPanel VerticalAlignment="Center">
-                        <ic:SymbolIcon Symbol="ArrowCircleDown" FontSize="32" Foreground="#f44336" Margin="0,0,0,10"/>
                         <TextBlock Text="Total Gastos" FontSize="14" Foreground="#aaa"/>
                         <TextBlock Text="{Binding TotalGastos, StringFormat=\{0:C\}}" FontSize="22" FontWeight="Bold" Foreground="#f44336"/>
                     </StackPanel>
@@ -33,7 +30,6 @@
                 <!-- Balance -->
                 <Border Background="#1b1b3a" CornerRadius="12" Margin="5" Padding="20">
                     <StackPanel VerticalAlignment="Center">
-                        <ic:SymbolIcon Symbol="Money" FontSize="32" Foreground="#2196f3" Margin="0,0,0,10"/>
                         <TextBlock Text="Balance Neto" FontSize="14" Foreground="#aaa"/>
                         <TextBlock Text="{Binding Balance, StringFormat=\{0:C\}}" FontSize="22" FontWeight="Bold" Foreground="#2196f3"/>
                     </StackPanel>

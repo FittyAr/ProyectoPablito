@@ -3,7 +3,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:ProyectoPablito.ViewModels"
-             xmlns:ic="using:FluentIcons.Avalonia.Fluent"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="ProyectoPablito.Views.MainView"
              x:DataType="vm:MainViewModel">
@@ -23,31 +22,26 @@
                 
                 <Button Command="{Binding NavigateToDashboardCommand}" HorizontalAlignment="Stretch" Background="Transparent">
                     <StackPanel Orientation="Horizontal" Spacing="10">
-                        <ic:SymbolIcon Symbol="Home" />
                         <TextBlock Text="Dashboard" />
                     </StackPanel>
                 </Button>
                 <Button Command="{Binding NavigateToMovimientosCommand}" HorizontalAlignment="Stretch" Background="Transparent">
                     <StackPanel Orientation="Horizontal" Spacing="10">
-                        <ic:SymbolIcon Symbol="Collections" />
                         <TextBlock Text="Movimientos" />
                     </StackPanel>
                 </Button>
                 <Button Command="{Binding NavigateToClientesCommand}" HorizontalAlignment="Stretch" Background="Transparent">
                     <StackPanel Orientation="Horizontal" Spacing="10">
-                        <ic:SymbolIcon Symbol="People" />
                         <TextBlock Text="Clientes" />
                     </StackPanel>
                 </Button>
                 <Button Command="{Binding NavigateToEmpleadosCommand}" HorizontalAlignment="Stretch" Background="Transparent">
                     <StackPanel Orientation="Horizontal" Spacing="10">
-                        <ic:SymbolIcon Symbol="PersonAccounts" />
                         <TextBlock Text="Empleados" />
                     </StackPanel>
                 </Button>
                 <Button Command="{Binding NavigateToTrabajosCommand}" HorizontalAlignment="Stretch" Background="Transparent">
                     <StackPanel Orientation="Horizontal" Spacing="10">
-                        <ic:SymbolIcon Symbol="Briefcase" />
                         <TextBlock Text="Trabajos" />
                     </StackPanel>
                 </Button>
