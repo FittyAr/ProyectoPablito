@@ -6,6 +6,9 @@
              mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="450"
              x:Class="ProyectoPablito.Views.EmpleadoEditView"
              x:DataType="vm:EmpleadoEditViewModel">
+    <UserControl.KeyBindings>
+        <KeyBinding Gesture="Escape" Command="{Binding CancelCommand}"/>
+    </UserControl.KeyBindings>
     <Border Padding="20" Background="#2d2d2d" CornerRadius="8">
         <StackPanel Spacing="15">
             <TextBlock Text="{Binding Title}" FontSize="20" FontWeight="Bold" Margin="0,0,0,10"/>
@@ -29,6 +32,11 @@
             <StackPanel Spacing="5">
                 <TextBlock Text="Sueldo Base" FontSize="12" Foreground="#aaa"/>
                 <NumericUpDown Value="{Binding Empleado.SueldoBase}" FormatString="C2"/>
+            </StackPanel>
+
+            <StackPanel Spacing="5">
+                <TextBlock Text="Fecha Ingreso" FontSize="12" Foreground="#aaa"/>
+                <DatePicker SelectedDate="{Binding FechaIngresoOffset}" HorizontalAlignment="Stretch"/>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10" Margin="0,20,0,0">

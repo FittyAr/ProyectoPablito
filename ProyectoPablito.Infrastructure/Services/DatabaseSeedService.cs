@@ -35,6 +35,9 @@ public class DatabaseSeedService : IDatabaseSeedService
     {
         if (!IsSeedEnabled()) return;
 
+        // Asegurar que la base de datos y las tablas existen
+        await _context.Database.EnsureCreatedAsync();
+
         // Cargar Pool de datos
         var poolPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data", "SeedData", "SeedPool.json");
         if (!File.Exists(poolPath))
@@ -109,34 +112,39 @@ public class DatabaseSeedService : IDatabaseSeedService
 
         await _context.SaveChangesAsync();
 
-        // 5. Sembrar Trabajos (20-30 por Cliente)
+        // 5. Sembrar Trabajos (10-20 por Cliente para no saturar, pero con fechas variadas)
+        var startYear = DateTime.Now.AddYears(-1);
         foreach (var cliente in clientes)
         {
-            int workCount = _random.Next(20, 31);
+            int workCount = _random.Next(10, 21);
             for (int i = 0; i < workCount; i++)
             {
+                var workStartDate = startYear.AddDays(_random.Next(0, 365));
                 var trabajo = new Trabajo
                 {
                     Descripcion = $"{pool.DescripcionesTrabajos[_random.Next(pool.DescripcionesTrabajos.Count)]} #{i + 1}",
                     ClienteId = cliente.Id,
-                    FechaInicio = DateTime.Now.AddDays(-_random.Next(1, 100)),
-                    Presupuesto = _random.Next(5000, 50000),
-                    Finalizado = _random.Next(2) == 0
+                    FechaInicio = workStartDate,
+                    Presupuesto = _random.Next(50000, 500000), // Montos más realistas para un presupuesto
+                    Finalizado = workStartDate.AddDays(30) < DateTime.Now && _random.Next(10) > 2 // 80% finalizados si son viejos
                 };
-                if (trabajo.Finalizado) trabajo.FechaFin = trabajo.FechaInicio.AddDays(_random.Next(1, 30));
+                if (trabajo.Finalizado) trabajo.FechaFin = trabajo.FechaInicio.AddDays(_random.Next(5, 45));
                 
                 _context.Trabajos.Add(trabajo);
 
-                // 6. Sembrar Movimientos (20-30 por Trabajo/Empleado)
-                int movCount = _random.Next(20, 31);
+                // 6. Sembrar Movimientos (15-25 por Trabajo)
+                int movCount = _random.Next(15, 26);
                 for (int j = 0; j < movCount; j++)
                 {
+                    var movDate = trabajo.FechaInicio.AddDays(_random.Next(0, 30));
+                    if (movDate > DateTime.Now) movDate = DateTime.Now;
+
                     var mov = new Movimiento
                     {
                         Concepto = pool.ConceptosMovimientos[_random.Next(pool.ConceptosMovimientos.Count)],
-                        Monto = _random.Next(100, 5000),
-                        Cantidad = _random.Next(1, 5),
-                        Fecha = trabajo.FechaInicio.AddDays(_random.Next(0, 30)),
+                        Monto = _random.Next(1000, 20000), // Montos más variados
+                        Cantidad = _random.Next(1, 10),
+                        Fecha = movDate,
                         TipoMovimientoId = allTipos[_random.Next(allTipos.Count)].Id,
                         CategoriaId = categorias[_random.Next(categorias.Count)].Id,
                         ClienteId = cliente.Id,

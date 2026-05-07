@@ -16,6 +16,11 @@ public partial class TrabajoEditViewModel : ViewModelBase
     [ObservableProperty]
     private TrabajoDto _trabajo = new() { FechaInicio = DateTime.Now };
 
+    partial void OnTrabajoChanged(TrabajoDto value)
+    {
+        OnPropertyChanged(nameof(FechaInicioOffset));
+    }
+
     [ObservableProperty]
     private ObservableCollection<ClienteDto> _clientes = new();
 

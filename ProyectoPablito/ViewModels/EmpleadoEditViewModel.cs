@@ -12,10 +12,28 @@ public partial class EmpleadoEditViewModel : ViewModelBase
     private readonly IEmpleadoService _empleadoService;
 
     [ObservableProperty]
-    private EmpleadoDto _empleado = new();
+    private EmpleadoDto _empleado = new() { FechaIngreso = DateTime.Now };
+
+    partial void OnEmpleadoChanged(EmpleadoDto value)
+    {
+        OnPropertyChanged(nameof(FechaIngresoOffset));
+    }
 
     [ObservableProperty]
     private string _title = "Nuevo Empleado";
+
+    public DateTimeOffset? FechaIngresoOffset
+    {
+        get => new DateTimeOffset(Empleado.FechaIngreso);
+        set
+        {
+            if (value.HasValue)
+            {
+                Empleado.FechaIngreso = value.Value.DateTime;
+                OnPropertyChanged(nameof(FechaIngresoOffset));
+            }
+        }
+    }
 
     public EmpleadoEditViewModel(IEmpleadoService empleadoService)
     {

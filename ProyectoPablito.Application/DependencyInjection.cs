@@ -10,6 +10,7 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
+        Mappings.MappingConfig.Configure();
         services.AddScoped<IMovimientoService, MovimientoService>();
         services.AddScoped<ICategoriaService, CategoriaService>();
         services.AddScoped<ITipoMovimientoService, TipoMovimientoService>();

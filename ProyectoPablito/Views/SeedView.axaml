@@ -20,12 +20,21 @@
             </StackPanel>
         </Border>
 
-        <Button Command="{Binding SeedCommand}" 
+        <Button Command="{Binding PrepareSeedCommand}" 
                 Content="Iniciar Sembrado Completo" 
                 Classes="accent"
                 HorizontalAlignment="Center"
+                IsVisible="{Binding !ShowConfirmation}"
                 IsEnabled="{Binding !IsBusy}"
                 Padding="20,10"/>
+
+        <StackPanel IsVisible="{Binding ShowConfirmation}" Spacing="15">
+            <TextBlock Text="¿Está ABSOLUTAMENTE seguro?" Classes="h2" Foreground="Red" HorizontalAlignment="Center"/>
+            <StackPanel Orientation="Horizontal" Spacing="20" HorizontalAlignment="Center">
+                <Button Content="SÍ, PROCEDER" Command="{Binding SeedCommand}" Background="Red" Foreground="White" Padding="20,10"/>
+                <Button Content="CANCELAR" Command="{Binding CancelConfirmationCommand}" Padding="20,10"/>
+            </StackPanel>
+        </StackPanel>
 
         <ProgressBar IsIndeterminate="True" IsVisible="{Binding IsBusy}" Width="300"/>
         

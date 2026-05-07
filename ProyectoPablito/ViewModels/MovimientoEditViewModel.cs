@@ -18,6 +18,11 @@ public partial class MovimientoEditViewModel : ViewModelBase
     [ObservableProperty]
     private MovimientoDto _movimiento = new() { Fecha = DateTime.Now, Cantidad = 1 };
 
+    partial void OnMovimientoChanged(MovimientoDto value)
+    {
+        OnPropertyChanged(nameof(FechaOffset));
+    }
+
     [ObservableProperty]
     private ObservableCollection<CategoriaDto> _categorias = new();
 
@@ -61,15 +66,21 @@ public partial class MovimientoEditViewModel : ViewModelBase
     public async Task LoadDataAsync()
     {
         var cats = await _categoriaService.GetAllAsync();
-        Categorias = new ObservableCollection<CategoriaDto>(cats);
-
         var tipos = await _tipoMovimientoService.GetAllAsync();
+
+        // Asignamos las colecciones
+        Categorias = new ObservableCollection<CategoriaDto>(cats);
         TiposMovimiento = new ObservableCollection<TipoMovimientoDto>(tipos);
 
-        if (Movimiento.TipoMovimientoId == Guid.Empty && TiposMovimiento.Any())
+        // Solo establecemos el tipo por defecto si es un movimiento nuevo
+        if (Movimiento.Id == Guid.Empty && Movimiento.TipoMovimientoId == Guid.Empty && TiposMovimiento.Any())
         {
             Movimiento.TipoMovimientoId = TiposMovimiento.First().Id;
         }
+        
+        // Disparamos notificaciones manuales para asegurar que los combos reflejen el valor correcto
+        OnPropertyChanged(nameof(Movimiento));
+        OnPropertyChanged(nameof(FechaOffset));
     }
 
     private async Task SaveAsync()
