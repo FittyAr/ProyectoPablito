@@ -1,3 +1,5 @@
+using System;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using ProyectoPablito.Application.DTOs;
@@ -10,6 +12,21 @@ public partial class MovimientosView : UserControl
     public MovimientosView()
     {
         InitializeComponent();
+        
+        DataContextChanged += (s, e) =>
+        {
+            if (DataContext is MovimientosViewModel vm)
+            {
+                vm.PropertyChanged += (sender, args) =>
+                {
+                    if (args.PropertyName == nameof(MovimientosViewModel.IsEditing) && vm.IsEditing)
+                    {
+                        var overlay = this.FindControl<Border>("EditOverlay");
+                        overlay?.Focus();
+                    }
+                };
+            }
+        };
     }
 
     private void OnDataGridDoubleTapped(object? sender, TappedEventArgs e)

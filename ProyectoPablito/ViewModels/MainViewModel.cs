@@ -18,6 +18,9 @@ public partial class MainViewModel : ViewModelBase
     private ViewModelBase? _currentPage;
 
     [ObservableProperty]
+    private string _currentSection = "Dashboard";
+
+    [ObservableProperty]
     private bool _isSeedEnabled;
 
     public MainViewModel(ILocalizationService localizationService, IServiceProvider serviceProvider, IDatabaseSeedService seedService)
@@ -45,10 +48,10 @@ public partial class MainViewModel : ViewModelBase
     public IRelayCommand NavigateToTrabajosCommand { get; }
     public IRelayCommand NavigateToSeedCommand { get; }
 
-    private void NavigateToDashboard() => CurrentPage = _serviceProvider.GetRequiredService<DashboardViewModel>();
-    private void NavigateToMovimientos() => CurrentPage = _serviceProvider.GetRequiredService<MovimientosViewModel>();
-    private void NavigateToClientes() => CurrentPage = _serviceProvider.GetRequiredService<ClientesViewModel>();
-    private void NavigateToEmpleados() => CurrentPage = _serviceProvider.GetRequiredService<EmpleadosViewModel>();
-    private void NavigateToTrabajos() => CurrentPage = _serviceProvider.GetRequiredService<TrabajosViewModel>();
-    private void NavigateToSeed() => CurrentPage = _serviceProvider.GetRequiredService<SeedViewModel>();
+    private void NavigateToDashboard() { CurrentPage = _serviceProvider.GetRequiredService<DashboardViewModel>(); CurrentSection = "Dashboard"; }
+    private void NavigateToMovimientos() { CurrentPage = _serviceProvider.GetRequiredService<MovimientosViewModel>(); CurrentSection = "Movimientos"; }
+    private void NavigateToClientes() { CurrentPage = _serviceProvider.GetRequiredService<ClientesViewModel>(); CurrentSection = "Clientes"; }
+    private void NavigateToEmpleados() { CurrentPage = _serviceProvider.GetRequiredService<EmpleadosViewModel>(); CurrentSection = "Empleados"; }
+    private void NavigateToTrabajos() { CurrentPage = _serviceProvider.GetRequiredService<TrabajosViewModel>(); CurrentSection = "Trabajos"; }
+    private void NavigateToSeed() { CurrentPage = _serviceProvider.GetRequiredService<SeedViewModel>(); CurrentSection = "Seed"; }
 }

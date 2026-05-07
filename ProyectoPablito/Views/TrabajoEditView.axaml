@@ -46,8 +46,8 @@
             <CheckBox IsChecked="{Binding Trabajo.Finalizado}" Content="Trabajo Finalizado"/>
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10" Margin="0,20,0,0">
-                <Button Content="Cancelar" Command="{Binding CancelCommand}" />
-                <Button Content="Guardar" Classes="accent" Command="{Binding SaveCommand}" />
+                <Button Content="Cancelar" Command="{Binding CancelCommand}" IsCancel="True" />
+                <Button Content="Guardar" Classes="accent" Command="{Binding SaveCommand}" IsDefault="True" />
             </StackPanel>
         </StackPanel>
     </Border>

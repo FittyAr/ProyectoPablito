@@ -13,6 +13,7 @@
 
     <Application.Resources>
         <conv:PageSizeConverter x:Key="PageSizeConverter" />
+        <conv:StringEqualsConverter x:Key="StringEqualsConverter" />
     </Application.Resources>
 
     <Application.Styles>

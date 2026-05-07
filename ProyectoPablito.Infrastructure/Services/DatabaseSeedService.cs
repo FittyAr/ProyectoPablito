@@ -91,7 +91,7 @@ public class DatabaseSeedService : IDatabaseSeedService
                 Dni = $"{_random.Next(10, 50)}.{_random.Next(100, 999)}.{_random.Next(100, 999)}",
                 Cargo = "Operario",
                 SueldoBase = _random.Next(200000, 500000),
-                FechaIngreso = DateTime.Now.AddYears(-_random.Next(1, 5)),
+                FechaIngreso = DateTime.Now.AddDays(-_random.Next(30, 365 * 5)),
                 Activo = true
             }).ToList();
         _context.Empleados.AddRange(empleados);

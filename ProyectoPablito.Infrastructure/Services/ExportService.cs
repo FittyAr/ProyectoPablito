@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using ClosedXML.Excel;
+using NPOI.XWPF.UserModel;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
@@ -26,7 +27,7 @@ public class ExportService : IExportService
         {
             var data = movimientos.Cast<MovimientoDto>().ToList();
             
-            var document = Document.Create(container =>
+            var document = QuestPDF.Fluent.Document.Create(container =>
             {
                 container.Page(page =>
                 {
@@ -126,6 +127,73 @@ public class ExportService : IExportService
             using var stream = new MemoryStream();
             workbook.SaveAs(stream);
             return stream.ToArray();
+        });
+    }
+
+    public async Task<byte[]> ExportMovimientosToWordAsync(IEnumerable<object> movimientos)
+    {
+        return await Task.Run(() =>
+        {
+            var data = movimientos.Cast<MovimientoDto>().ToList();
+            var doc = new XWPFDocument();
+
+            var title = doc.CreateParagraph();
+            title.Alignment = ParagraphAlignment.CENTER;
+            var titleRun = title.CreateRun();
+            titleRun.SetText("Listado de Movimientos - Proyecto Pablito");
+            titleRun.FontSize = 20;
+            titleRun.IsBold = true;
+
+            var table = doc.CreateTable(data.Count + 1, 4);
+            table.Width = 5000;
+
+            // Cabeceras
+            var headerRow = table.GetRow(0);
+            headerRow.GetCell(0).SetText("Fecha");
+            headerRow.GetCell(1).SetText("Concepto");
+            headerRow.GetCell(2).SetText("Tipo");
+            headerRow.GetCell(3).SetText("Total");
+
+            // Datos
+            for (int i = 0; i < data.Count; i++)
+            {
+                var item = data[i];
+                var row = table.GetRow(i + 1);
+                row.GetCell(0).SetText(item.Fecha.ToString("dd/MM/yyyy"));
+                row.GetCell(1).SetText(item.Concepto);
+                row.GetCell(2).SetText(item.TipoMovimientoNombre);
+                row.GetCell(3).SetText(item.Total.ToString("C"));
+            }
+
+            using var stream = new MemoryStream();
+            doc.Write(stream);
+            return stream.ToArray();
+        });
+    }
+
+    public async Task<byte[]> ExportMovimientosToCsvAsync(IEnumerable<object> movimientos)
+    {
+        return await Task.Run(() =>
+        {
+            var data = movimientos.Cast<MovimientoDto>().ToList();
+            using var stream = new MemoryStream();
+            using var writer = new StreamWriter(stream);
+            writer.WriteLine("Fecha,Concepto,Tipo,Monto,Cantidad,Total");
+            foreach (var item in data)
+            {
+                writer.WriteLine($"{item.Fecha:dd/MM/yyyy},\"{item.Concepto}\",{item.TipoMovimientoNombre},{item.Monto},{item.Cantidad},{item.Total}");
+            }
+            writer.Flush();
+            return stream.ToArray();
+        });
+    }
+
+    public async Task<byte[]> ExportMovimientosToJsonAsync(IEnumerable<object> movimientos)
+    {
+        return await Task.Run(() =>
+        {
+            var json = System.Text.Json.JsonSerializer.Serialize(movimientos, new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
+            return System.Text.Encoding.UTF8.GetBytes(json);
         });
     }
 }

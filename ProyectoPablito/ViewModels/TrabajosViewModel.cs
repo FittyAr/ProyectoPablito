@@ -36,6 +36,26 @@ public partial class TrabajosViewModel : ViewModelBase
 
     [ObservableProperty]
     private TrabajoEditViewModel? _editViewModel;
+    [ObservableProperty]
+    private string _filtroNombre = string.Empty;
+
+    [ObservableProperty]
+    private Guid? _filtroClienteId;
+
+    [ObservableProperty]
+    private bool? _filtroFinalizado;
+
+    [ObservableProperty]
+    private DateTime? _filtroFechaDesde;
+
+    [ObservableProperty]
+    private DateTime? _filtroFechaHasta;
+
+    [ObservableProperty]
+    private ObservableCollection<ClienteDto> _clientes = new();
+
+    [ObservableProperty]
+    private int _filtroEstadoIndex = 0; // 0: Todos, 1: En Curso, 2: Finalizados
 
     public TrabajosViewModel(
         ITrabajoService trabajoService, 
@@ -50,65 +70,113 @@ public partial class TrabajosViewModel : ViewModelBase
         _pageSize = _settingsService.GetPageSize();
 
         LoadTrabajosCommand = new AsyncRelayCommand(LoadTrabajosAsync);
-        AddCommand = new RelayCommand(Add);
-        EditCommand = new RelayCommand<TrabajoDto>(Edit);
+        AddCommand = new AsyncRelayCommand(AddAsync);
+        EditCommand = new AsyncRelayCommand<TrabajoDto>(EditAsync);
+        LimpiarFiltrosCommand = new RelayCommand(LimpiarFiltros);
 
-        _ = LoadTrabajosAsync();
+        _ = LoadInitialDataAsync();
     }
 
     public IAsyncRelayCommand LoadTrabajosCommand { get; }
-    public IRelayCommand AddCommand { get; }
-    public IRelayCommand<TrabajoDto> EditCommand { get; }
+    public IAsyncRelayCommand AddCommand { get; }
+    public IAsyncRelayCommand<TrabajoDto> EditCommand { get; }
+    public IRelayCommand LimpiarFiltrosCommand { get; }
 
-    partial void OnPageSizeChanged(int value)
+    private async Task LoadInitialDataAsync()
     {
-        _ = _settingsService.SetPageSizeAsync(value);
+        var cls = await _clienteService.GetAllAsync();
+        Clientes = new ObservableCollection<ClienteDto>(cls);
+        await LoadTrabajosAsync();
+    }
+
+    partial void OnFiltroNombreChanged(string value) => _ = LoadTrabajosAsync();
+    partial void OnFiltroClienteIdChanged(Guid? value) => _ = LoadTrabajosAsync();
+    
+    partial void OnFiltroEstadoIndexChanged(int value)
+    {
+        FiltroFinalizado = value switch {
+            1 => false,
+            2 => true,
+            _ => null
+        };
+        _ = LoadTrabajosAsync();
+    }
+    
+    partial void OnFiltroFechaDesdeChanged(DateTime? value) => _ = LoadTrabajosAsync();
+    partial void OnFiltroFechaHastaChanged(DateTime? value) => _ = LoadTrabajosAsync();
+
+    private void LimpiarFiltros()
+    {
+        FiltroNombre = string.Empty;
+        FiltroClienteId = null;
+        FiltroEstadoIndex = 0;
+        FiltroFinalizado = null;
+        FiltroFechaDesde = null;
+        FiltroFechaHasta = null;
         _ = LoadTrabajosAsync();
     }
 
     public async Task LoadTrabajosAsync()
     {
         var result = await _trabajoService.GetAllAsync();
+        var query = result.AsEnumerable();
+
+        if (!string.IsNullOrWhiteSpace(FiltroNombre))
+            query = query.Where(t => t.Descripcion.Contains(FiltroNombre, StringComparison.OrdinalIgnoreCase));
+
+        if (FiltroClienteId.HasValue)
+            query = query.Where(t => t.ClienteId == FiltroClienteId.Value);
+
+        if (FiltroFinalizado.HasValue)
+            query = query.Where(t => t.Finalizado == FiltroFinalizado.Value);
+
+        if (FiltroFechaDesde.HasValue)
+            query = query.Where(t => t.FechaInicio.Date >= FiltroFechaDesde.Value.Date);
+
+        if (FiltroFechaHasta.HasValue)
+            query = query.Where(t => t.FechaInicio.Date <= FiltroFechaHasta.Value.Date);
+
         IEnumerable<TrabajoDto> paginated;
         if (PageSize > 0)
         {
-            paginated = result.Skip((CurrentPage - 1) * PageSize).Take(PageSize);
+            paginated = query.Skip((CurrentPage - 1) * PageSize).Take(PageSize);
         }
         else
         {
-            paginated = result;
+            paginated = query;
         }
 
         Trabajos = new ObservableCollection<TrabajoDto>(paginated);
     }
 
-    private void Add()
+    private async Task AddAsync()
     {
         var vm = _serviceProvider.GetRequiredService<TrabajoEditViewModel>();
-        _ = vm.LoadDataAsync();
         vm.CloseRequest += (s, success) =>
         {
             IsEditing = false;
             EditViewModel = null;
             if (success) _ = LoadTrabajosAsync();
         };
+        await vm.LoadDataAsync();
+        vm.Trabajo = new TrabajoDto { FechaInicio = DateTime.Now };
         EditViewModel = vm;
         IsEditing = true;
     }
 
-    private void Edit(TrabajoDto? dto)
+    private async Task EditAsync(TrabajoDto? dto)
     {
         if (dto == null) return;
         var vm = _serviceProvider.GetRequiredService<TrabajoEditViewModel>();
-        vm.Trabajo = dto.Adapt<TrabajoDto>();
         vm.Title = "Editar Trabajo";
-        _ = vm.LoadDataAsync();
         vm.CloseRequest += (s, success) =>
         {
             IsEditing = false;
             EditViewModel = null;
             if (success) _ = LoadTrabajosAsync();
         };
+        await vm.LoadDataAsync();
+        vm.Trabajo = dto.Adapt<TrabajoDto>();
         EditViewModel = vm;
         IsEditing = true;
     }
