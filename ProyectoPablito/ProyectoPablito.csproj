@@ -25,7 +25,7 @@
     <PackageReference Include="CommunityToolkit.Mvvm" />
     <PackageReference Include="Serilog" />
     <PackageReference Include="SkiaSharp" />
-    <PackageReference Include="Tmds.DBus.Protocol" />
+    <PackageReference Include="System.Security.Cryptography.Xml" />
     <PackageReference Include="Serilog.Sinks.Console" />
     <PackageReference Include="Serilog.Sinks.File" />
     <PackageReference Include="Serilog.Settings.Configuration" />

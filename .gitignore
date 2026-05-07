@@ -455,3 +455,6 @@ $RECYCLE.BIN/
 ProyectoPablito.db
 ProyectoPablito.db-shm
 ProyectoPablito.db-wal
+ProyectoPablito.Desktop/ProyectoPablito.db
+ProyectoPablito.Desktop/ProyectoPablito.db-shm
+ProyectoPablito.Desktop/ProyectoPablito.db-wal

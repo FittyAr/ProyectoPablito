@@ -21,6 +21,7 @@
     <PackageReference Include="QuestPDF" />
     <PackageReference Include="ClosedXML" />
     <PackageReference Include="NPOI" />
+    <PackageReference Include="System.Security.Cryptography.Xml" />
     <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" />
   </ItemGroup>
