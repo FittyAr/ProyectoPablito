@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using ProyectoPablito.Application.DTOs;
 using ProyectoPablito.Application.Interfaces;
 using ProyectoPablito.Core.Entities;
@@ -18,12 +19,14 @@ public class DatabaseSeedService : IDatabaseSeedService
 {
     private readonly ApplicationDbContext _context;
     private readonly IConfiguration _configuration;
+    private readonly ILogger<DatabaseSeedService> _logger;
     private readonly Random _random = new();
 
-    public DatabaseSeedService(ApplicationDbContext context, IConfiguration configuration)
+    public DatabaseSeedService(ApplicationDbContext context, IConfiguration configuration, ILogger<DatabaseSeedService> logger)
     {
         _context = context;
         _configuration = configuration;
+        _logger = logger;
     }
 
     public bool IsSeedEnabled()
@@ -34,9 +37,6 @@ public class DatabaseSeedService : IDatabaseSeedService
     public async Task SeedAsync()
     {
         if (!IsSeedEnabled()) return;
-
-        // Asegurar que la base de datos y las tablas existen
-        await _context.Database.EnsureCreatedAsync();
 
         // Cargar Pool de datos
         var poolPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data", "SeedData", "SeedPool.json");
@@ -51,7 +51,9 @@ public class DatabaseSeedService : IDatabaseSeedService
 
         if (pool == null) return;
 
-        // Limpiar tablas (excepto las de sistema si fuera necesario, pero aquí borramos todo para el sembrado completo)
+        _logger.LogInformation("Iniciando limpieza de tablas para sembrado...");
+        
+        // Limpiar tablas
         _context.Movimientos.RemoveRange(_context.Movimientos);
         _context.Trabajos.RemoveRange(_context.Trabajos);
         _context.Clientes.RemoveRange(_context.Clientes);
@@ -64,12 +66,15 @@ public class DatabaseSeedService : IDatabaseSeedService
         _context.TiposMovimiento.RemoveRange(customTypes);
 
         await _context.SaveChangesAsync();
+        _logger.LogInformation("Limpieza completada.");
 
         // 1. Sembrar Categorías
+        _logger.LogInformation("Sembrando Categorías...");
         var categorias = pool.Categorias.Select(name => new Categoria { Nombre = name }).ToList();
         _context.Categorias.AddRange(categorias);
 
         // 2. Sembrar Tipos de Movimiento (adicionales)
+        _logger.LogInformation("Sembrando Tipos de Movimiento...");
         var existingTypes = await _context.TiposMovimiento.ToListAsync();
         foreach (var typeName in pool.TiposMovimiento)
         {
@@ -82,7 +87,8 @@ public class DatabaseSeedService : IDatabaseSeedService
         
         var allTipos = await _context.TiposMovimiento.ToListAsync();
 
-        // 3. Sembrar Empleados (5-10)
+        // 3. Sembrar Empleados
+        _logger.LogInformation("Sembrando Empleados...");
         int empCount = _random.Next(5, 11);
         var empleados = pool.NombresEmpleados.OrderBy(x => _random.Next()).Take(empCount)
             .Select(name => new Empleado 
@@ -96,7 +102,8 @@ public class DatabaseSeedService : IDatabaseSeedService
             }).ToList();
         _context.Empleados.AddRange(empleados);
 
-        // 4. Sembrar Clientes (5-10)
+        // 4. Sembrar Clientes
+        _logger.LogInformation("Sembrando Clientes...");
         int cliCount = _random.Next(5, 11);
         var clientes = pool.NombresClientes.OrderBy(x => _random.Next()).Take(cliCount)
             .Select(name => new Cliente 
@@ -112,7 +119,9 @@ public class DatabaseSeedService : IDatabaseSeedService
 
         await _context.SaveChangesAsync();
 
-        // 5. Sembrar Trabajos (10-20 por Cliente para no saturar, pero con fechas variadas)
+        // 5. Sembrar Trabajos y Movimientos
+        _logger.LogInformation("Sembrando Trabajos y Movimientos (esto puede tardar unos segundos)...");
+        var allMovimientos = new List<Movimiento>();
         var startYear = DateTime.Now.AddYears(-1);
         foreach (var cliente in clientes)
         {
@@ -125,14 +134,14 @@ public class DatabaseSeedService : IDatabaseSeedService
                     Descripcion = $"{pool.DescripcionesTrabajos[_random.Next(pool.DescripcionesTrabajos.Count)]} #{i + 1}",
                     ClienteId = cliente.Id,
                     FechaInicio = workStartDate,
-                    Presupuesto = _random.Next(50000, 500000), // Montos más realistas para un presupuesto
-                    Finalizado = workStartDate.AddDays(30) < DateTime.Now && _random.Next(10) > 2 // 80% finalizados si son viejos
+                    Presupuesto = _random.Next(50000, 500000),
+                    Finalizado = workStartDate.AddDays(30) < DateTime.Now && _random.Next(10) > 2
                 };
                 if (trabajo.Finalizado) trabajo.FechaFin = trabajo.FechaInicio.AddDays(_random.Next(5, 45));
                 
                 _context.Trabajos.Add(trabajo);
 
-                // 6. Sembrar Movimientos (15-25 por Trabajo)
+                // 6. Sembrar Movimientos
                 int movCount = _random.Next(15, 26);
                 for (int j = 0; j < movCount; j++)
                 {
@@ -142,7 +151,7 @@ public class DatabaseSeedService : IDatabaseSeedService
                     var mov = new Movimiento
                     {
                         Concepto = pool.ConceptosMovimientos[_random.Next(pool.ConceptosMovimientos.Count)],
-                        Monto = _random.Next(1000, 20000), // Montos más variados
+                        Monto = _random.Next(1000, 20000),
                         Cantidad = _random.Next(1, 10),
                         Fecha = movDate,
                         TipoMovimientoId = allTipos[_random.Next(allTipos.Count)].Id,
@@ -152,11 +161,14 @@ public class DatabaseSeedService : IDatabaseSeedService
                         Trabajo = trabajo,
                         Moneda = Moneda.ARS
                     };
-                    _context.Movimientos.Add(mov);
+                    allMovimientos.Add(mov);
                 }
             }
         }
 
+        _logger.LogInformation($"Insertando {allMovimientos.Count} movimientos...");
+        _context.Movimientos.AddRange(allMovimientos);
         await _context.SaveChangesAsync();
+        _logger.LogInformation("Sembrado de datos completado exitosamente.");
     }
 }

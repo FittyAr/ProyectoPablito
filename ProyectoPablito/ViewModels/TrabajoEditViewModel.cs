@@ -32,7 +32,7 @@ public partial class TrabajoEditViewModel : ViewModelBase
         get => new DateTimeOffset(Trabajo.FechaInicio);
         set
         {
-            if (value.HasValue && new DateTimeOffset(Trabajo.FechaInicio) != value.Value)
+            if (value.HasValue && Trabajo.FechaInicio != value.Value.DateTime)
             {
                 Trabajo.FechaInicio = value.Value.DateTime;
                 OnPropertyChanged(nameof(FechaInicioOffset));

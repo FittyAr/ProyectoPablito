@@ -37,7 +37,7 @@ public partial class MovimientoEditViewModel : ViewModelBase
         get => new DateTimeOffset(Movimiento.Fecha);
         set
         {
-            if (value.HasValue && new DateTimeOffset(Movimiento.Fecha) != value.Value)
+            if (value.HasValue && Movimiento.Fecha != value.Value.DateTime)
             {
                 Movimiento.Fecha = value.Value.DateTime;
                 OnPropertyChanged(nameof(FechaOffset));

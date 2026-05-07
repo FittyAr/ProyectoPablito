@@ -1,11 +1,17 @@
 using System;
+using System.Linq;
+using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using ProyectoPablito.Application;
+using ProyectoPablito.Application.Interfaces;
 using ProyectoPablito.Infrastructure;
+using ProyectoPablito.Infrastructure.Data;
 using ProyectoPablito.ViewModels;
 using ProyectoPablito.Views;
 using Serilog;
@@ -40,7 +46,10 @@ public partial class App : Avalonia.Application
         ConfigureServices(serviceCollection);
         Services = serviceCollection.BuildServiceProvider();
 
-        // 3. Inicialización de UI
+        // 4. Inicialización de Base de Datos
+        InitializeDatabase();
+
+        // 5. Inicialización de UI
         var mainViewModel = Services.GetRequiredService<MainViewModel>();
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
@@ -80,5 +89,34 @@ public partial class App : Avalonia.Application
         services.AddTransient<TrabajosViewModel>();
         services.AddTransient<TrabajoEditViewModel>();
         services.AddTransient<SeedViewModel>();
+    }
+
+    private void InitializeDatabase()
+    {
+        using var scope = Services!.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        var logger = scope.ServiceProvider.GetRequiredService<ILogger<App>>();
+
+        try
+        {
+            logger.LogInformation("Verificando y aplicando migraciones de base de datos...");
+            context.Database.Migrate();
+
+            var seedService = scope.ServiceProvider.GetRequiredService<IDatabaseSeedService>();
+            if (seedService.IsSeedEnabled())
+            {
+                // Solo sembrar si la base de datos está vacía (ej: sin movimientos)
+                if (!context.Movimientos.Any())
+                {
+                    logger.LogInformation("Base de datos vacía detectada. Sembrando datos iniciales...");
+                    Task.Run(async () => await seedService.SeedAsync()).GetAwaiter().GetResult();
+                }
+            }
+            logger.LogInformation("Base de datos inicializada correctamente.");
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error al inicializar la base de datos.");
+        }
     }
 }

@@ -27,7 +27,7 @@ public partial class EmpleadoEditViewModel : ViewModelBase
         get => new DateTimeOffset(Empleado.FechaIngreso);
         set
         {
-            if (value.HasValue && new DateTimeOffset(Empleado.FechaIngreso) != value.Value)
+            if (value.HasValue && Empleado.FechaIngreso != value.Value.DateTime)
             {
                 Empleado.FechaIngreso = value.Value.DateTime;
                 OnPropertyChanged(nameof(FechaIngresoOffset));
