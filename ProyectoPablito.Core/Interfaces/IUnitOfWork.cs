@@ -9,5 +9,6 @@ public interface IUnitOfWork : IDisposable
     IMovimientoRepository Movimientos { get; }
     IClienteRepository Clientes { get; }
     ILiquidacionRepository Liquidaciones { get; }
+    ITrabajoRepository Trabajos { get; }
     Task<int> SaveChangesAsync();
 }

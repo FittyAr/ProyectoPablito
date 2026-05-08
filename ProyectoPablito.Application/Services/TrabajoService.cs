@@ -23,8 +23,16 @@ public class TrabajoService : ITrabajoService
 
     public async Task<IEnumerable<TrabajoDto>> GetAllAsync()
     {
-        var entities = await _uow.Repository<Trabajo>().GetAllAsync();
+        // Incluye Cliente para mostrar ClienteNombre en la lista
+        var entities = await _uow.Trabajos.GetAllWithClienteAsync();
         return entities.Adapt<IEnumerable<TrabajoDto>>();
+    }
+
+    public async Task<TrabajoDto?> GetByIdAsync(Guid id)
+    {
+        // CRÍTICO: Incluye OrdenesTrabajo → Items para el formulario de edición
+        var entity = await _uow.Trabajos.GetByIdWithOrdenesAsync(id);
+        return entity?.Adapt<TrabajoDto>();
     }
 
     public async Task<bool> CreateAsync(TrabajoDto dto)

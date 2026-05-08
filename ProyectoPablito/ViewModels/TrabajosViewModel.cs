@@ -176,7 +176,12 @@ public partial class TrabajosViewModel : ViewModelBase
             if (success) _ = LoadTrabajosAsync();
         };
         await vm.LoadDataAsync();
-        vm.Trabajo = dto.Adapt<TrabajoDto>();
+
+        // CRÍTICO: Cargar desde DB con Include(OrdenesTrabajo → Items)
+        // El DTO del listado solo tiene datos superficiales, sin certificaciones
+        var trabajoCompleto = await _trabajoService.GetByIdAsync(dto.Id);
+        vm.Trabajo = trabajoCompleto ?? dto;
+
         EditViewModel = vm;
         IsEditing = true;
     }
