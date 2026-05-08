@@ -90,11 +90,12 @@
             </DataGrid>
         </DockPanel>
 
-        <!-- Overlay de Edición -->
-        <Border Background="#AA000000" IsVisible="{Binding IsEditing}">
-            <ContentControl Content="{Binding EditViewModel}" 
-                            HorizontalAlignment="Center" 
-                            VerticalAlignment="Center" />
-        </Border>
+        <!-- Overlay de Edición — ocupa toda el área disponible -->
+        <ContentControl Content="{Binding EditViewModel}"
+                        IsVisible="{Binding IsEditing}"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        HorizontalContentAlignment="Stretch"
+                        VerticalContentAlignment="Stretch" />
     </Grid>
 </UserControl>
