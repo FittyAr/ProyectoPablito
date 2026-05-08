@@ -15,6 +15,16 @@ public class MappingConfig
             .Map(dest => dest.CategoriaNombre, src => src.Categoria != null ? src.Categoria.Nombre : null);
 
         TypeAdapterConfig<Trabajo, TrabajoDto>.NewConfig()
-            .Map(dest => dest.ClienteNombre, src => src.Cliente.Nombre);
+            .Map(dest => dest.ClienteNombre, src => src.Cliente.Nombre)
+            .Map(dest => dest.OrdenesTrabajo, src => src.OrdenesTrabajo);
+
+        TypeAdapterConfig<Liquidacion, LiquidacionDto>.NewConfig()
+            .Map(dest => dest.EmpleadoNombre, src => src.Empleado.Nombre);
+
+        TypeAdapterConfig<Cliente, ClienteDto>.NewConfig()
+            .Map(dest => dest.Contactos, src => src.Contactos);
+
+        TypeAdapterConfig<OrdenTrabajo, OrdenTrabajoDto>.NewConfig()
+            .Map(dest => dest.Items, src => src.Items);
     }
 }

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProyectoPablito.Infrastructure.Data;
 
@@ -10,9 +11,11 @@ using ProyectoPablito.Infrastructure.Data;
 namespace ProyectoPablito.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260508182412_AddAudioRequirements")]
+    partial class AddAudioRequirements
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.7");
@@ -259,9 +262,6 @@ namespace ProyectoPablito.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<double>("AjusteUocraPorcentaje")
-                        .HasColumnType("REAL");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
 
@@ -273,9 +273,6 @@ namespace ProyectoPablito.Infrastructure.Migrations
 
                     b.Property<string>("Observaciones")
                         .HasColumnType("TEXT");
-
-                    b.Property<double>("OtrosDescuentos")
-                        .HasColumnType("REAL");
 
                     b.Property<string>("Titulo")
                         .IsRequired()
@@ -313,10 +310,7 @@ namespace ProyectoPablito.Infrastructure.Migrations
                     b.Property<Guid>("OrdenTrabajoId")
                         .HasColumnType("TEXT");
 
-                    b.Property<double>("PorcentajeActual")
-                        .HasColumnType("REAL");
-
-                    b.Property<double>("PorcentajeAnterior")
+                    b.Property<double>("PorcentajeAvance")
                         .HasColumnType("REAL");
 
                     b.Property<double>("PrecioUnitario")

@@ -72,6 +72,13 @@
                         <TextBlock Text="Trabajos" />
                     </StackPanel>
                 </Button>
+                <Button Command="{Binding NavigateToLiquidacionesCommand}" 
+                        Classes="menuItem"
+                        Classes.active="{Binding CurrentSection, Converter={StaticResource StringEqualsConverter}, ConverterParameter=Liquidaciones}">
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <TextBlock Text="Liquidaciones" />
+                    </StackPanel>
+                </Button>
                 <Button Command="{Binding NavigateToSeedCommand}" 
                         Classes="menuItem"
                         Classes.active="{Binding CurrentSection, Converter={StaticResource StringEqualsConverter}, ConverterParameter=Seed}"

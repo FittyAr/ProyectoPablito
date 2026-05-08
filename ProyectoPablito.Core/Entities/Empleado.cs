@@ -9,8 +9,10 @@ public class Empleado : BaseEntity
     public string? Dni { get; set; }
     public string? Cargo { get; set; }
     public decimal SueldoBase { get; set; }
+    public decimal TarifaDiaria { get; set; }
     public DateTime FechaIngreso { get; set; }
     public bool Activo { get; set; } = true;
 
     public ICollection<Movimiento> AdelantosYPagos { get; set; } = new List<Movimiento>();
+    public ICollection<Liquidacion> Liquidaciones { get; set; } = new List<Liquidacion>();
 }

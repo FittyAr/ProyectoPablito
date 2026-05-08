@@ -1,0 +1,18 @@
+using System;
+
+namespace ProyectoPablito.Application.DTOs;
+
+public class LiquidacionDto
+{
+    public Guid Id { get; set; }
+    public Guid EmpleadoId { get; set; }
+    public string EmpleadoNombre { get; set; } = string.Empty;
+    public DateTime FechaInicio { get; set; }
+    public DateTime FechaFin { get; set; }
+    public decimal DiasTrabajados { get; set; }
+    public decimal TarifaAplicada { get; set; }
+    public decimal TotalBruto { get; set; }
+    public decimal TotalAdelantos { get; set; }
+    public decimal TotalNeto { get; set; }
+    public string? Observaciones { get; set; }
+}

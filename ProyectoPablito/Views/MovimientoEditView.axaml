@@ -58,6 +58,20 @@
             </StackPanel>
 
             <StackPanel Spacing="5">
+                <TextBlock Text="Empleado (Opcional)" FontSize="12" Foreground="#aaa"/>
+                <ComboBox ItemsSource="{Binding Empleados}" 
+                          SelectedValue="{Binding Movimiento.EmpleadoId}"
+                          SelectedValueBinding="{Binding Id}"
+                          HorizontalAlignment="Stretch">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Nombre}"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </StackPanel>
+
+            <StackPanel Spacing="5">
                 <TextBlock Text="Fecha" FontSize="12" Foreground="#aaa"/>
                 <DatePicker SelectedDate="{Binding FechaOffset}" HorizontalAlignment="Stretch"/>
             </StackPanel>

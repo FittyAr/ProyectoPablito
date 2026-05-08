@@ -1,0 +1,63 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:ProyectoPablito.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="ProyectoPablito.Views.LiquidacionesView"
+             x:DataType="vm:LiquidacionesViewModel">
+    <Grid RowDefinitions="Auto, *">
+        <!-- Header -->
+        <Border Grid.Row="0" Padding="20" Background="#1e1e1e">
+            <DockPanel>
+                <StackPanel Spacing="5">
+                    <TextBlock Text="Liquidaciones de Empleados" FontSize="24" FontWeight="Bold" Foreground="White"/>
+                    <TextBlock Text="Gestión de haberes, adelantos y saldos" Foreground="#888"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <Button Content="Actualizar" Command="{Binding LoadCommand}" Classes="outline"/>
+                    <Button Content="+ Nueva Liquidación" Classes="accent" Command="{Binding $parent[UserControl].((vm:MainViewModel)DataContext).NavigateToCommand}" CommandParameter="LiquidacionEdit"/>
+                </StackPanel>
+            </DockPanel>
+        </Border>
+
+        <!-- Main Content -->
+        <Border Grid.Row="1" Padding="20">
+            <Grid>
+                <DataGrid ItemsSource="{Binding Liquidaciones}"
+                          AutoGenerateColumns="False"
+                          IsReadOnly="True"
+                          GridLinesVisibility="All"
+                          BorderThickness="1" BorderBrush="#333"
+                          Background="Transparent"
+                          IsVisible="{Binding HasLiquidaciones}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Empleado" Binding="{Binding EmpleadoNombre}" Width="*"/>
+                        <DataGridTextColumn Header="Inicio" Binding="{Binding FechaInicio, StringFormat=dd/MM/yyyy}"/>
+                        <DataGridTextColumn Header="Fin" Binding="{Binding FechaFin, StringFormat=dd/MM/yyyy}"/>
+                        <DataGridTextColumn Header="Días" Binding="{Binding DiasTrabajados}" Width="80"/>
+                        <DataGridTextColumn Header="Total Bruto" Binding="{Binding TotalBruto, StringFormat=C2}" Width="120"/>
+                        <DataGridTextColumn Header="Adelantos" Binding="{Binding TotalAdelantos, StringFormat=C2}" Width="120"/>
+                        <DataGridTextColumn Header="Neto" Binding="{Binding TotalNeto, StringFormat=C2}" Width="120" FontWeight="Bold"/>
+                        <DataGridTemplateColumn Header="Acciones" Width="Auto">
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" Spacing="5" Margin="5">
+                                    <Button Content="PDF" 
+                                            Command="{Binding $parent[UserControl].((vm:LiquidacionesViewModel)DataContext).ExportPdfCommand}" 
+                                            CommandParameter="{Binding}"
+                                            Classes="outline"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+                
+                <ProgressBar IsIndeterminate="True" IsVisible="{Binding IsLoading}" VerticalAlignment="Center" HorizontalAlignment="Center" Width="200"/>
+                
+                <TextBlock Text="No hay liquidaciones registradas." 
+                           IsVisible="{Binding ShowEmptyMessage}"
+                           HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#666"/>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

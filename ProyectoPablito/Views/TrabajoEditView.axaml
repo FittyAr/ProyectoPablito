@@ -3,52 +3,124 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:ProyectoPablito.ViewModels"
-             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="500"
+             mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="800"
              x:Class="ProyectoPablito.Views.TrabajoEditView"
              x:DataType="vm:TrabajoEditViewModel">
     <UserControl.KeyBindings>
         <KeyBinding Gesture="Escape" Command="{Binding CancelCommand}"/>
     </UserControl.KeyBindings>
     <Border Padding="20" Background="#2d2d2d" CornerRadius="8">
-        <StackPanel Spacing="15">
-            <TextBlock Text="{Binding Title}" FontSize="20" FontWeight="Bold" Margin="0,0,0,10"/>
-            
-            <StackPanel Spacing="5">
-                <TextBlock Text="Cliente" FontSize="12" Foreground="#aaa"/>
-                <ComboBox ItemsSource="{Binding Clientes}" 
-                          SelectedValue="{Binding Trabajo.ClienteId}"
-                          SelectedValueBinding="{Binding Id}"
-                          HorizontalAlignment="Stretch">
-                    <ComboBox.ItemTemplate>
+        <ScrollViewer>
+            <StackPanel Spacing="15">
+                <TextBlock Text="{Binding Title}" FontSize="20" FontWeight="Bold" Margin="0,0,0,10"/>
+                
+                <!-- Cliente y Descripción (Igual que antes) -->
+                <Grid ColumnDefinitions="*,*">
+                    <StackPanel Grid.Column="0" Spacing="5" Margin="0,0,5,0">
+                        <TextBlock Text="Cliente" FontSize="12" Foreground="#aaa"/>
+                        <ComboBox ItemsSource="{Binding Clientes}" 
+                                SelectedValue="{Binding Trabajo.ClienteId}"
+                                SelectedValueBinding="{Binding Id}"
+                                HorizontalAlignment="Stretch">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Nombre}"/>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Spacing="5" Margin="5,0,0,0">
+                        <CheckBox IsChecked="{Binding Trabajo.Finalizado}" Content="Finalizado" VerticalAlignment="Bottom"/>
+                    </StackPanel>
+                </Grid>
+
+                <StackPanel Spacing="5">
+                    <TextBlock Text="Descripción" FontSize="12" Foreground="#aaa"/>
+                    <TextBox Text="{Binding Trabajo.Descripcion}" PlaceholderText="Breve descripción del trabajo" TextWrapping="Wrap" AcceptsReturn="True" Height="60"/>
+                </StackPanel>
+
+                <Grid ColumnDefinitions="*,*">
+                    <StackPanel Grid.Column="0" Spacing="5" Margin="0,0,5,0">
+                        <TextBlock Text="Presupuesto" FontSize="12" Foreground="#aaa"/>
+                        <NumericUpDown Value="{Binding Trabajo.Presupuesto}" FormatString="C2"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Spacing="5" Margin="5,0,0,0">
+                        <TextBlock Text="Fecha Inicio" FontSize="12" Foreground="#aaa"/>
+                        <DatePicker SelectedDate="{Binding FechaInicioOffset}"/>
+                    </StackPanel>
+                </Grid>
+
+                <Separator Background="#444"/>
+                
+                <!-- Sección de Certificaciones (Audio Requirement) -->
+                <DockPanel>
+                    <TextBlock Text="Certificaciones / Órdenes de Trabajo" FontSize="16" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                    <Button Content="+ Agregar Certificado" Command="{Binding AddOrdenCommand}" HorizontalAlignment="Right" Classes="accent"/>
+                </DockPanel>
+
+                <ItemsControl ItemsSource="{Binding Trabajo.OrdenesTrabajo}">
+                    <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding Nombre}"/>
+                            <Border BorderBrush="#444" BorderThickness="1" CornerRadius="4" Margin="0,0,0,15" Padding="10">
+                                <StackPanel Spacing="10">
+                                    <Grid ColumnDefinitions="*,Auto,Auto">
+                                        <TextBox Text="{Binding Titulo}" PlaceholderText="Título del Certificado/OC" FontSize="14" FontWeight="SemiBold"/>
+                                        <TextBox Grid.Column="1" Text="{Binding NumeroCertificado}" PlaceholderText="N°" Width="80" Margin="5,0"/>
+                                        <Button Grid.Column="2" Content="Eliminar" Command="{Binding $parent[UserControl].((vm:TrabajoEditViewModel)DataContext).RemoveOrdenCommand}" CommandParameter="{Binding}" Foreground="Red"/>
+                                    </Grid>
+
+                                    <!-- Table Header outside ItemsControl -->
+                                    <Grid ColumnDefinitions="*,60,60,80,60,60,60,Auto" Margin="0,5">
+                                        <TextBlock Text="Descripción Item" FontSize="10" Foreground="#888"/>
+                                        <TextBlock Grid.Column="1" Text="Cant." FontSize="10" Foreground="#888" HorizontalAlignment="Center"/>
+                                        <TextBlock Grid.Column="2" Text="Und" FontSize="10" Foreground="#888" HorizontalAlignment="Center"/>
+                                        <TextBlock Grid.Column="3" Text="P.U." FontSize="10" Foreground="#888" HorizontalAlignment="Center"/>
+                                        <TextBlock Grid.Column="4" Text="Ant%" FontSize="10" Foreground="#888" HorizontalAlignment="Center"/>
+                                        <TextBlock Grid.Column="5" Text="Act%" FontSize="10" Foreground="#888" HorizontalAlignment="Center" FontWeight="Bold"/>
+                                        <TextBlock Grid.Column="6" Text="Acu%" FontSize="10" Foreground="#888" HorizontalAlignment="Center"/>
+                                    </Grid>
+                                    
+                                    <ItemsControl ItemsSource="{Binding Items}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Grid ColumnDefinitions="*,60,60,80,60,60,60,Auto" Margin="0,2">
+                                                    <TextBox Text="{Binding Descripcion}" FontSize="11"/>
+                                                    <NumericUpDown Grid.Column="1" Value="{Binding Cantidad}" ShowButtonSpinner="False" FontSize="11"/>
+                                                    <TextBox Grid.Column="2" Text="{Binding Unidad}" FontSize="11"/>
+                                                    <NumericUpDown Grid.Column="3" Value="{Binding PrecioUnitario}" FormatString="C2" ShowButtonSpinner="False" FontSize="11"/>
+                                                    <NumericUpDown Grid.Column="4" Value="{Binding PorcentajeAnterior}" Minimum="0" Maximum="100" ShowButtonSpinner="False" FontSize="11" Foreground="#888"/>
+                                                    <NumericUpDown Grid.Column="5" Value="{Binding PorcentajeActual}" Minimum="0" Maximum="100" ShowButtonSpinner="False" FontSize="11" FontWeight="Bold"/>
+                                                    <TextBlock Grid.Column="6" Text="{Binding PorcentajeAcumulado, StringFormat={}{0:N2}%}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="11" Foreground="#aaa"/>
+                                                    <Button Grid.Column="7" Content="X" Command="{Binding $parent[UserControl].((vm:TrabajoEditViewModel)DataContext).RemoveItemCommand}" CommandParameter="{Binding}" Foreground="Red" Margin="5,0,0,0" Padding="5,2"/>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                    
+                                    <Grid ColumnDefinitions="Auto, *, Auto, 100">
+                                        <Button Content="+ Agregar Item" Command="{Binding $parent[UserControl].((vm:TrabajoEditViewModel)DataContext).AddItemCommand}" CommandParameter="{Binding}" HorizontalAlignment="Left" FontSize="11"/>
+                                        
+                                        <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,10,0">
+                                            <TextBlock Text="Ajuste UOCRA (%):" VerticalAlignment="Center" Margin="0,0,5,0" FontSize="12"/>
+                                            <NumericUpDown Value="{Binding AjusteUocraPorcentaje}" Width="80" ShowButtonSpinner="False"/>
+                                        </StackPanel>
+                                        
+                                        <StackPanel Grid.Column="3" Orientation="Horizontal" VerticalAlignment="Center">
+                                            <TextBlock Text="Otros Desc:" VerticalAlignment="Center" Margin="0,0,5,0" FontSize="12"/>
+                                            <NumericUpDown Value="{Binding OtrosDescuentos}" Width="100" ShowButtonSpinner="False" FormatString="C2"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
                         </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
-            </StackPanel>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
 
-            <StackPanel Spacing="5">
-                <TextBlock Text="Descripción" FontSize="12" Foreground="#aaa"/>
-                <TextBox Text="{Binding Trabajo.Descripcion}" PlaceholderText="Breve descripción del trabajo" TextWrapping="Wrap" AcceptsReturn="True" Height="80"/>
-            </StackPanel>
-
-            <Grid ColumnDefinitions="*,*">
-                <StackPanel Grid.Column="0" Spacing="5" Margin="0,0,5,0">
-                    <TextBlock Text="Presupuesto" FontSize="12" Foreground="#aaa"/>
-                    <NumericUpDown Value="{Binding Trabajo.Presupuesto}" FormatString="C2"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10" Margin="0,20,0,0">
+                    <Button Content="Cancelar" Command="{Binding CancelCommand}" IsCancel="True" />
+                    <Button Content="Guardar" Classes="accent" Command="{Binding SaveCommand}" IsDefault="True" />
                 </StackPanel>
-                <StackPanel Grid.Column="1" Spacing="5" Margin="5,0,0,0">
-                    <TextBlock Text="Fecha Inicio" FontSize="12" Foreground="#aaa"/>
-                    <DatePicker SelectedDate="{Binding FechaInicioOffset}"/>
-                </StackPanel>
-            </Grid>
-
-            <CheckBox IsChecked="{Binding Trabajo.Finalizado}" Content="Trabajo Finalizado"/>
-
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10" Margin="0,20,0,0">
-                <Button Content="Cancelar" Command="{Binding CancelCommand}" IsCancel="True" />
-                <Button Content="Guardar" Classes="accent" Command="{Binding SaveCommand}" IsDefault="True" />
             </StackPanel>
-        </StackPanel>
+        </ScrollViewer>
     </Border>
 </UserControl>

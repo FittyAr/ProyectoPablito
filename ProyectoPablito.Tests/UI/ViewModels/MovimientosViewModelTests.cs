@@ -14,16 +14,23 @@ namespace ProyectoPablito.Tests.UI.ViewModels;
 public class MovimientosViewModelTests
 {
     private readonly IMovimientoService _movimientoService;
+    private readonly ITipoMovimientoService _tipoMovimientoService;
     private readonly IExportService _exportService;
+    private readonly IUserSettingsService _settingsService;
     private readonly IServiceProvider _serviceProvider;
     private readonly MovimientosViewModel _vm;
 
     public MovimientosViewModelTests()
     {
         _movimientoService = Substitute.For<IMovimientoService>();
+        _tipoMovimientoService = Substitute.For<ITipoMovimientoService>();
         _exportService = Substitute.For<IExportService>();
+        _settingsService = Substitute.For<IUserSettingsService>();
         _serviceProvider = Substitute.For<IServiceProvider>();
-        _vm = new MovimientosViewModel(_movimientoService, _exportService, _serviceProvider);
+        
+        _settingsService.GetPageSize().Returns(10);
+        
+        _vm = new MovimientosViewModel(_movimientoService, _tipoMovimientoService, _exportService, _settingsService, _serviceProvider);
     }
 
     [Fact]

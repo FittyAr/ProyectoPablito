@@ -14,6 +14,7 @@ public partial class MovimientoEditViewModel : ViewModelBase
     private readonly IMovimientoService _movimientoService;
     private readonly ICategoriaService _categoriaService;
     private readonly ITipoMovimientoService _tipoMovimientoService;
+    private readonly IEmpleadoService _empleadoService;
 
     [ObservableProperty]
     private MovimientoDto _movimiento = new() { Fecha = DateTime.Now, Cantidad = 1 };
@@ -28,6 +29,9 @@ public partial class MovimientoEditViewModel : ViewModelBase
 
     [ObservableProperty]
     private ObservableCollection<TipoMovimientoDto> _tiposMovimiento = new();
+
+    [ObservableProperty]
+    private ObservableCollection<EmpleadoDto> _empleados = new();
 
     [ObservableProperty]
     private string _title = "Nuevo Movimiento";
@@ -48,11 +52,13 @@ public partial class MovimientoEditViewModel : ViewModelBase
     public MovimientoEditViewModel(
         IMovimientoService movimientoService,
         ICategoriaService categoriaService,
-        ITipoMovimientoService tipoMovimientoService)
+        ITipoMovimientoService tipoMovimientoService,
+        IEmpleadoService empleadoService)
     {
         _movimientoService = movimientoService;
         _categoriaService = categoriaService;
         _tipoMovimientoService = tipoMovimientoService;
+        _empleadoService = empleadoService;
         
         SaveCommand = new AsyncRelayCommand(SaveAsync);
         CancelCommand = new RelayCommand(Cancel);
@@ -71,6 +77,9 @@ public partial class MovimientoEditViewModel : ViewModelBase
         // Asignamos las colecciones
         Categorias = new ObservableCollection<CategoriaDto>(cats);
         TiposMovimiento = new ObservableCollection<TipoMovimientoDto>(tipos);
+        
+        var emps = await _empleadoService.GetAllAsync();
+        Empleados = new ObservableCollection<EmpleadoDto>(emps);
 
         // Solo establecemos el tipo por defecto si es un movimiento nuevo
         if (Movimiento.Id == Guid.Empty && Movimiento.TipoMovimientoId == Guid.Empty && TiposMovimiento.Any())

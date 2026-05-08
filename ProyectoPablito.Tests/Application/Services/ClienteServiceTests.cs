@@ -42,4 +42,31 @@ public class ClienteServiceTests
         result.Should().HaveCount(1);
         result.First().Nombre.Should().Be("Juan");
     }
+
+    [Fact]
+    public async Task GetByIdAsync_WithContacts_ShouldMapCorrectly()
+    {
+        // Arrange
+        var id = Guid.NewGuid();
+        var cliente = new Cliente 
+        { 
+            Id = id, 
+            Nombre = "Empresa X",
+            Contactos = new List<ClienteContacto> 
+            { 
+                new() { Etiqueta = "Admin", Email = "admin@x.com" },
+                new() { Etiqueta = "Ventas", Email = "ventas@x.com" }
+            }
+        };
+        _repo.GetByIdAsync(id).Returns(cliente);
+
+        // Act
+        var result = await _service.GetByIdAsync(id);
+
+        // Assert
+        result.Should().NotBeNull();
+        result!.Contactos.Should().HaveCount(2);
+        result.Contactos[0].Etiqueta.Should().Be("Admin");
+        result.Contactos[1].Email.Should().Be("ventas@x.com");
+    }
 }

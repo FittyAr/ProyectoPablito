@@ -16,6 +16,7 @@ public class MovimientoEditViewModelTests
     private readonly IMovimientoService _movimientoService;
     private readonly ICategoriaService _categoriaService;
     private readonly ITipoMovimientoService _tipoMovimientoService;
+    private readonly IEmpleadoService _empleadoService;
     private readonly MovimientoEditViewModel _vm;
 
     public MovimientoEditViewModelTests()
@@ -23,8 +24,9 @@ public class MovimientoEditViewModelTests
         _movimientoService = Substitute.For<IMovimientoService>();
         _categoriaService = Substitute.For<ICategoriaService>();
         _tipoMovimientoService = Substitute.For<ITipoMovimientoService>();
+        _empleadoService = Substitute.For<IEmpleadoService>();
         
-        _vm = new MovimientoEditViewModel(_movimientoService, _categoriaService, _tipoMovimientoService);
+        _vm = new MovimientoEditViewModel(_movimientoService, _categoriaService, _tipoMovimientoService, _empleadoService);
     }
 
     [Fact]

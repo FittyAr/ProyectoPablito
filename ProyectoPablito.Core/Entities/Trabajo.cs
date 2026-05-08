@@ -15,4 +15,5 @@ public class Trabajo : BaseEntity
     public Cliente Cliente { get; set; } = null!;
 
     public ICollection<Movimiento> GastosEIngresos { get; set; } = new List<Movimiento>();
+    public ICollection<OrdenTrabajo> OrdenesTrabajo { get; set; } = new List<OrdenTrabajo>();
 }

@@ -15,6 +15,10 @@ public class ApplicationDbContext : DbContext
     public DbSet<Cliente> Clientes { get; set; }
     public DbSet<Empleado> Empleados { get; set; }
     public DbSet<Trabajo> Trabajos { get; set; }
+    public DbSet<OrdenTrabajo> OrdenesTrabajo { get; set; }
+    public DbSet<OrdenTrabajoItem> OrdenTrabajoItems { get; set; }
+    public DbSet<Liquidacion> Liquidaciones { get; set; }
+    public DbSet<ClienteContacto> ClienteContactos { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -44,6 +48,38 @@ public class ApplicationDbContext : DbContext
                 .WithMany(x => x.Movimientos)
                 .HasForeignKey(x => x.TipoMovimientoId)
                 .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        modelBuilder.Entity<OrdenTrabajo>(entity =>
+        {
+            entity.HasOne(x => x.Trabajo)
+                .WithMany(x => x.OrdenesTrabajo)
+                .HasForeignKey(x => x.TrabajoId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<OrdenTrabajoItem>(entity =>
+        {
+            entity.HasOne(x => x.OrdenTrabajo)
+                .WithMany(x => x.Items)
+                .HasForeignKey(x => x.OrdenTrabajoId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<Liquidacion>(entity =>
+        {
+            entity.HasOne(x => x.Empleado)
+                .WithMany(x => x.Liquidaciones)
+                .HasForeignKey(x => x.EmpleadoId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<ClienteContacto>(entity =>
+        {
+            entity.HasOne(x => x.Cliente)
+                .WithMany(x => x.Contactos)
+                .HasForeignKey(x => x.ClienteId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
         // Seed Data para Tipos de Movimiento

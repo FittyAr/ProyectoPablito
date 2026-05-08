@@ -35,7 +35,9 @@ public partial class MainViewModel : ViewModelBase
         NavigateToClientesCommand = new RelayCommand(NavigateToClientes);
         NavigateToEmpleadosCommand = new RelayCommand(NavigateToEmpleados);
         NavigateToTrabajosCommand = new RelayCommand(NavigateToTrabajos);
+        NavigateToLiquidacionesCommand = new RelayCommand(NavigateToLiquidaciones);
         NavigateToSeedCommand = new RelayCommand(NavigateToSeed);
+        NavigateToCommand = new RelayCommand<string>(NavigateTo);
         
         // Pagina inicial
         NavigateToDashboard();
@@ -46,12 +48,26 @@ public partial class MainViewModel : ViewModelBase
     public IRelayCommand NavigateToClientesCommand { get; }
     public IRelayCommand NavigateToEmpleadosCommand { get; }
     public IRelayCommand NavigateToTrabajosCommand { get; }
+    public IRelayCommand NavigateToLiquidacionesCommand { get; }
     public IRelayCommand NavigateToSeedCommand { get; }
+    public IRelayCommand<string> NavigateToCommand { get; }
 
     private void NavigateToDashboard() { CurrentPage = _serviceProvider.GetRequiredService<DashboardViewModel>(); CurrentSection = "Dashboard"; }
     private void NavigateToMovimientos() { CurrentPage = _serviceProvider.GetRequiredService<MovimientosViewModel>(); CurrentSection = "Movimientos"; }
     private void NavigateToClientes() { CurrentPage = _serviceProvider.GetRequiredService<ClientesViewModel>(); CurrentSection = "Clientes"; }
     private void NavigateToEmpleados() { CurrentPage = _serviceProvider.GetRequiredService<EmpleadosViewModel>(); CurrentSection = "Empleados"; }
     private void NavigateToTrabajos() { CurrentPage = _serviceProvider.GetRequiredService<TrabajosViewModel>(); CurrentSection = "Trabajos"; }
+    private void NavigateToLiquidaciones() { CurrentPage = _serviceProvider.GetRequiredService<LiquidacionesViewModel>(); CurrentSection = "Liquidaciones"; }
     private void NavigateToSeed() { CurrentPage = _serviceProvider.GetRequiredService<SeedViewModel>(); CurrentSection = "Seed"; }
+
+    private void NavigateTo(string? destination)
+    {
+        if (destination == "LiquidacionEdit")
+        {
+            var vm = _serviceProvider.GetRequiredService<LiquidacionEditViewModel>();
+            vm.CloseRequest += (s, success) => NavigateToLiquidaciones();
+            CurrentPage = vm;
+            CurrentSection = "Liquidaciones";
+        }
+    }
 }

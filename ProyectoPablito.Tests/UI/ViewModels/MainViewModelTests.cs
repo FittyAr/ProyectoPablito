@@ -28,8 +28,10 @@ public class MainViewModelTests
         serviceProvider.GetService(typeof(DashboardViewModel)).Returns(dashboardVm);
         _localizationService.GetString("General.AppName").Returns("Proyecto Pablito");
 
+        var seedService = Substitute.For<IDatabaseSeedService>();
+
         // Act
-        var vm = new MainViewModel(_localizationService, serviceProvider);
+        var vm = new MainViewModel(_localizationService, serviceProvider, seedService);
 
         // Assert
         vm.Greeting.Should().Be("Proyecto Pablito");

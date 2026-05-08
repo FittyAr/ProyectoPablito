@@ -47,11 +47,56 @@ public partial class TrabajoEditViewModel : ViewModelBase
         SaveCommand = new AsyncRelayCommand(SaveAsync);
         CancelCommand = new RelayCommand(Cancel);
         LoadDataCommand = new AsyncRelayCommand(LoadDataAsync);
+        AddOrdenCommand = new RelayCommand(AddOrden);
+        RemoveOrdenCommand = new RelayCommand<OrdenTrabajoDto>(RemoveOrden);
+        AddItemCommand = new RelayCommand<OrdenTrabajoDto>(AddItem);
+        RemoveItemCommand = new RelayCommand<OrdenTrabajoItemDto>(RemoveItem);
     }
 
     public IAsyncRelayCommand SaveCommand { get; }
     public IRelayCommand CancelCommand { get; }
     public IAsyncRelayCommand LoadDataCommand { get; }
+    public IRelayCommand AddOrdenCommand { get; }
+    public IRelayCommand<OrdenTrabajoDto> RemoveOrdenCommand { get; }
+    public IRelayCommand<OrdenTrabajoDto> AddItemCommand { get; }
+    public IRelayCommand<OrdenTrabajoItemDto> RemoveItemCommand { get; }
+
+    private void AddOrden()
+    {
+        Trabajo.OrdenesTrabajo.Add(new OrdenTrabajoDto { Titulo = "Nuevo Certificado", Fecha = DateTime.Now });
+        OnPropertyChanged(nameof(Trabajo));
+    }
+
+    private void RemoveOrden(OrdenTrabajoDto? orden)
+    {
+        if (orden != null)
+        {
+            Trabajo.OrdenesTrabajo.Remove(orden);
+            OnPropertyChanged(nameof(Trabajo));
+        }
+    }
+
+    private void AddItem(OrdenTrabajoDto? orden)
+    {
+        if (orden != null)
+        {
+            orden.Items.Add(new OrdenTrabajoItemDto { Descripcion = "Nuevo Item", Cantidad = 1 });
+            OnPropertyChanged(nameof(Trabajo));
+        }
+    }
+
+    private void RemoveItem(OrdenTrabajoItemDto? item)
+    {
+        if (item != null)
+        {
+            // Buscar la orden que contiene el item
+            foreach (var orden in Trabajo.OrdenesTrabajo)
+            {
+                if (orden.Items.Remove(item)) break;
+            }
+            OnPropertyChanged(nameof(Trabajo));
+        }
+    }
 
     public async Task LoadDataAsync()
     {

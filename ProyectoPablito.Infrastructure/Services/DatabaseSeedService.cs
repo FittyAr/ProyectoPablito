@@ -97,6 +97,7 @@ public class DatabaseSeedService : IDatabaseSeedService
                 Dni = $"{_random.Next(10, 50)}.{_random.Next(100, 999)}.{_random.Next(100, 999)}",
                 Cargo = "Operario",
                 SueldoBase = _random.Next(200000, 500000),
+                TarifaDiaria = _random.Next(35000, 55000), // Nueva tarifa diaria
                 FechaIngreso = DateTime.Now.AddDays(-_random.Next(30, 365 * 5)),
                 Activo = true
             }).ToList();
@@ -113,7 +114,12 @@ public class DatabaseSeedService : IDatabaseSeedService
                 Direccion = $"Calle Falsa {_random.Next(100, 5000)}",
                 Email = $"{name.Replace(" ", ".").ToLower()}@gmail.com",
                 Telefono = $"54911{_random.Next(10000000, 99999999)}",
-                CondicionIva = "Consumidor Final"
+                CondicionIva = "Consumidor Final",
+                Contactos = new List<ClienteContacto>
+                {
+                    new() { Etiqueta = "Administración", Email = $"admin.{name.Replace(" ", "").ToLower()}@empresa.com" },
+                    new() { Etiqueta = "Pagos", Email = $"pagos.{name.Replace(" ", "").ToLower()}@empresa.com" }
+                }
             }).ToList();
         _context.Clientes.AddRange(clientes);
 
@@ -139,6 +145,25 @@ public class DatabaseSeedService : IDatabaseSeedService
                 };
                 if (trabajo.Finalizado) trabajo.FechaFin = trabajo.FechaInicio.AddDays(_random.Next(5, 45));
                 
+                // 5.1 Sembrar Ordenes de Trabajo (Certificados)
+                int certCount = _random.Next(1, 4);
+                for (int c = 0; c < certCount; c++)
+                {
+                    var orden = new OrdenTrabajo
+                    {
+                        Titulo = $"Certificado de Avance {c + 1}",
+                        NumeroCertificado = (c + 1).ToString(),
+                        Fecha = trabajo.FechaInicio.AddDays(30 * (c + 1)),
+                        AjusteUocraPorcentaje = 8,
+                        Items = new List<OrdenTrabajoItem>
+                        {
+                            new() { Descripcion = "Cableado baja tensión", Cantidad = 1000, Unidad = "MTS", PrecioUnitario = 2500, PorcentajeAnterior = c * 30, PorcentajeActual = 30 },
+                            new() { Descripcion = "Instalación de luminarias", Cantidad = 50, Unidad = "U", PrecioUnitario = 15000, PorcentajeAnterior = c * 20, PorcentajeActual = 20 }
+                        }
+                    };
+                    trabajo.OrdenesTrabajo.Add(orden);
+                }
+
                 _context.Trabajos.Add(trabajo);
 
                 // 6. Sembrar Movimientos
@@ -161,6 +186,16 @@ public class DatabaseSeedService : IDatabaseSeedService
                         Trabajo = trabajo,
                         Moneda = Moneda.ARS
                     };
+
+                    // Asegurar algunos adelantos para pruebas de liquidación (Tipo ID 3)
+                    if (j % 5 == 0) 
+                    {
+                        mov.TipoMovimientoId = Guid.Parse("00000000-0000-0000-0000-000000000003");
+                        mov.Concepto = "Adelanto quincenal";
+                        mov.Monto = _random.Next(30000, 60000);
+                        mov.Cantidad = 1;
+                    }
+
                     allMovimientos.Add(mov);
                 }
             }

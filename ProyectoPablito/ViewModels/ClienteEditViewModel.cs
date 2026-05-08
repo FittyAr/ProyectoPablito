@@ -22,10 +22,30 @@ public partial class ClienteEditViewModel : ViewModelBase
         _clienteService = clienteService;
         SaveCommand = new AsyncRelayCommand(SaveAsync);
         CancelCommand = new RelayCommand(Cancel);
+        AddContactCommand = new RelayCommand(AddContact);
+        RemoveContactCommand = new RelayCommand<ClienteContactoDto>(RemoveContact);
     }
 
     public IAsyncRelayCommand SaveCommand { get; }
     public IRelayCommand CancelCommand { get; }
+    public IRelayCommand AddContactCommand { get; }
+    public IRelayCommand<ClienteContactoDto> RemoveContactCommand { get; }
+
+    private void AddContact()
+    {
+        Cliente.Contactos.Add(new ClienteContactoDto { Etiqueta = "General" });
+        // Notificar cambio en la colección para la UI
+        OnPropertyChanged(nameof(Cliente));
+    }
+
+    private void RemoveContact(ClienteContactoDto? contacto)
+    {
+        if (contacto != null)
+        {
+            Cliente.Contactos.Remove(contacto);
+            OnPropertyChanged(nameof(Cliente));
+        }
+    }
 
     private async Task SaveAsync()
     {

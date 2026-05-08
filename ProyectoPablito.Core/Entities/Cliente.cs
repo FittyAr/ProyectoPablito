@@ -13,4 +13,5 @@ public class Cliente : BaseEntity
     public string? CondicionIva { get; set; } // Responsable Inscripto, Monotributo, etc.
     
     public ICollection<Movimiento> Movimientos { get; set; } = new List<Movimiento>();
+    public ICollection<ClienteContacto> Contactos { get; set; } = new List<ClienteContacto>();
 }

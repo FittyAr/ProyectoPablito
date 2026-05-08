@@ -21,4 +21,8 @@ public class MovimientoDto
     
     public Guid CategoriaId { get; set; }
     public string? CategoriaNombre { get; set; }
+
+    public Guid? EmpleadoId { get; set; }
+    public Guid? ClienteId { get; set; }
+    public Guid? TrabajoId { get; set; }
 }
