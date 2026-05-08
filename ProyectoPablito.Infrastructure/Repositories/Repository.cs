@@ -22,17 +22,18 @@ public class Repository<T> : IRepository<T> where T : class
 
     public async Task<T?> GetByIdAsync(Guid id)
     {
-        return await _dbSet.FindAsync(id);
+        // Usamos AsNoTracking por defecto para evitar conflictos en la UI
+        return await _dbSet.AsNoTracking().FirstOrDefaultAsync(e => EF.Property<Guid>(e, "Id") == id);
     }
 
     public async Task<IEnumerable<T>> GetAllAsync()
     {
-        return await _dbSet.ToListAsync();
+        return await _dbSet.AsNoTracking().ToListAsync();
     }
 
     public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate)
     {
-        return await _dbSet.Where(predicate).ToListAsync();
+        return await _dbSet.AsNoTracking().Where(predicate).ToListAsync();
     }
 
     public async Task AddAsync(T entity)
@@ -42,6 +43,9 @@ public class Repository<T> : IRepository<T> where T : class
 
     public void Update(T entity)
     {
+        // Limpiamos el tracker para evitar InvalidOperationException
+        // cuando la misma entidad fue cargada previamente (AsNoTracking no aplica a Update)
+        _context.ChangeTracker.Clear();
         _dbSet.Update(entity);
     }
 

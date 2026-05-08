@@ -13,6 +13,5 @@ public class TrabajoDto
     
     public Guid ClienteId { get; set; }
     public string? ClienteNombre { get; set; }
-
-    public List<OrdenTrabajoDto> OrdenesTrabajo { get; set; } = new();
+    public System.Collections.ObjectModel.ObservableCollection<OrdenTrabajoDto> OrdenesTrabajo { get; set; } = new();
 }

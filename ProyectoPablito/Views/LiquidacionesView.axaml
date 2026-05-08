@@ -16,7 +16,7 @@
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Right" VerticalAlignment="Center">
                     <Button Content="Actualizar" Command="{Binding LoadCommand}" Classes="outline"/>
-                    <Button Content="+ Nueva Liquidación" Classes="accent" Command="{Binding $parent[UserControl].((vm:MainViewModel)DataContext).NavigateToCommand}" CommandParameter="LiquidacionEdit"/>
+                    <Button Content="+ Nueva Liquidación" Classes="accent" Command="{Binding NuevaLiquidacionCommand}"/>
                 </StackPanel>
             </DockPanel>
         </Border>

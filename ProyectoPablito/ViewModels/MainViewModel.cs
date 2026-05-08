@@ -57,7 +57,14 @@ public partial class MainViewModel : ViewModelBase
     private void NavigateToClientes() { CurrentPage = _serviceProvider.GetRequiredService<ClientesViewModel>(); CurrentSection = "Clientes"; }
     private void NavigateToEmpleados() { CurrentPage = _serviceProvider.GetRequiredService<EmpleadosViewModel>(); CurrentSection = "Empleados"; }
     private void NavigateToTrabajos() { CurrentPage = _serviceProvider.GetRequiredService<TrabajosViewModel>(); CurrentSection = "Trabajos"; }
-    private void NavigateToLiquidaciones() { CurrentPage = _serviceProvider.GetRequiredService<LiquidacionesViewModel>(); CurrentSection = "Liquidaciones"; }
+    private void NavigateToLiquidaciones()
+    { 
+        var vm = _serviceProvider.GetRequiredService<LiquidacionesViewModel>();
+        vm.OnNuevaLiquidacion = () => NavigateTo("LiquidacionEdit");
+        _ = vm.LoadAsync();
+        CurrentPage = vm;
+        CurrentSection = "Liquidaciones";
+    }
     private void NavigateToSeed() { CurrentPage = _serviceProvider.GetRequiredService<SeedViewModel>(); CurrentSection = "Seed"; }
 
     private void NavigateTo(string? destination)
@@ -66,6 +73,7 @@ public partial class MainViewModel : ViewModelBase
         {
             var vm = _serviceProvider.GetRequiredService<LiquidacionEditViewModel>();
             vm.CloseRequest += (s, success) => NavigateToLiquidaciones();
+            _ = vm.LoadDataAsync(); // Carga de datos asíncrona
             CurrentPage = vm;
             CurrentSection = "Liquidaciones";
         }

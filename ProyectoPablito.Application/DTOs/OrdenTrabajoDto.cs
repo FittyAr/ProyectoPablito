@@ -13,5 +13,5 @@ public class OrdenTrabajoDto
     public string? Observaciones { get; set; }
     public decimal AjusteUocraPorcentaje { get; set; }
     public decimal OtrosDescuentos { get; set; }
-    public List<OrdenTrabajoItemDto> Items { get; set; } = new();
+    public System.Collections.ObjectModel.ObservableCollection<OrdenTrabajoItemDto> Items { get; set; } = new();
 }

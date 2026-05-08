@@ -27,11 +27,11 @@
             <Grid ColumnDefinitions="*,*">
                 <StackPanel Grid.Column="0" Spacing="5" Margin="0,0,5,0">
                     <TextBlock Text="Fecha Inicio" FontSize="12" Foreground="#aaa"/>
-                    <DatePicker SelectedDate="{Binding Liquidacion.FechaInicio}"/>
+                    <DatePicker SelectedDate="{Binding FechaInicioOffset}"/>
                 </StackPanel>
                 <StackPanel Grid.Column="1" Spacing="5" Margin="5,0,0,0">
                     <TextBlock Text="Fecha Fin" FontSize="12" Foreground="#aaa"/>
-                    <DatePicker SelectedDate="{Binding Liquidacion.FechaFin}"/>
+                    <DatePicker SelectedDate="{Binding FechaFinOffset}"/>
                 </StackPanel>
             </Grid>
 

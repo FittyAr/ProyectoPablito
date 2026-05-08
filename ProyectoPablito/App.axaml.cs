@@ -49,6 +49,18 @@ public partial class App : Avalonia.Application
         // 4. Inicialización de Base de Datos
         InitializeDatabase();
 
+        // Global Exception Handling
+        AppDomain.CurrentDomain.UnhandledException += (sender, e) => 
+        {
+            Log.Fatal(e.ExceptionObject as Exception, "Error no controlado (AppDomain)");
+        };
+
+        TaskScheduler.UnobservedTaskException += (sender, e) =>
+        {
+            Log.Error(e.Exception, "Error en tarea asíncrona no observada");
+            e.SetObserved();
+        };
+
         // 5. Inicialización de UI
         var mainViewModel = Services.GetRequiredService<MainViewModel>();
 

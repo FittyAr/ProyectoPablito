@@ -35,10 +35,17 @@ public partial class LiquidacionesViewModel : ViewModelBase
 
         LoadCommand = new AsyncRelayCommand(LoadAsync);
         ExportPdfCommand = new AsyncRelayCommand<LiquidacionDto>(ExportPdfAsync);
+        NuevaLiquidacionCommand = new RelayCommand(NuevaLiquidacion);
     }
+
+    // Acción de navegación inyectada desde MainViewModel
+    public Action? OnNuevaLiquidacion { get; set; }
 
     public IAsyncRelayCommand LoadCommand { get; }
     public IAsyncRelayCommand<LiquidacionDto> ExportPdfCommand { get; }
+    public IRelayCommand NuevaLiquidacionCommand { get; }
+
+    private void NuevaLiquidacion() => OnNuevaLiquidacion?.Invoke();
 
     public async Task LoadAsync()
     {

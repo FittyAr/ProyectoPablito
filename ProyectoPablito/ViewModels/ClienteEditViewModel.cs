@@ -34,8 +34,6 @@ public partial class ClienteEditViewModel : ViewModelBase
     private void AddContact()
     {
         Cliente.Contactos.Add(new ClienteContactoDto { Etiqueta = "General" });
-        // Notificar cambio en la colección para la UI
-        OnPropertyChanged(nameof(Cliente));
     }
 
     private void RemoveContact(ClienteContactoDto? contacto)
@@ -43,7 +41,6 @@ public partial class ClienteEditViewModel : ViewModelBase
         if (contacto != null)
         {
             Cliente.Contactos.Remove(contacto);
-            OnPropertyChanged(nameof(Cliente));
         }
     }
 

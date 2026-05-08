@@ -20,6 +20,38 @@ public partial class LiquidacionEditViewModel : ViewModelBase
         FechaFin = DateTime.Now,
         DiasTrabajados = 13 // Default típico quincenal
     };
+    
+    partial void OnLiquidacionChanged(LiquidacionDto value)
+    {
+        OnPropertyChanged(nameof(FechaInicioOffset));
+        OnPropertyChanged(nameof(FechaFinOffset));
+    }
+
+    public DateTimeOffset? FechaInicioOffset
+    {
+        get => new DateTimeOffset(Liquidacion.FechaInicio);
+        set
+        {
+            if (value.HasValue && Liquidacion.FechaInicio != value.Value.DateTime)
+            {
+                Liquidacion.FechaInicio = value.Value.DateTime;
+                OnPropertyChanged(nameof(FechaInicioOffset));
+            }
+        }
+    }
+
+    public DateTimeOffset? FechaFinOffset
+    {
+        get => new DateTimeOffset(Liquidacion.FechaFin);
+        set
+        {
+            if (value.HasValue && Liquidacion.FechaFin != value.Value.DateTime)
+            {
+                Liquidacion.FechaFin = value.Value.DateTime;
+                OnPropertyChanged(nameof(FechaFinOffset));
+            }
+        }
+    }
 
     [ObservableProperty]
     private ObservableCollection<EmpleadoDto> _empleados = new();
@@ -57,6 +89,8 @@ public partial class LiquidacionEditViewModel : ViewModelBase
             Liquidacion.DiasTrabajados);
 
         Liquidacion = sugerencia;
+        OnPropertyChanged(nameof(FechaInicioOffset));
+        OnPropertyChanged(nameof(FechaFinOffset));
     }
 
     private async Task SaveAsync()

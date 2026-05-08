@@ -11,5 +11,5 @@ public class ClienteDto
     public string? Telefono { get; set; }
     public string? Email { get; set; }
     public string? CondicionIva { get; set; }
-    public List<ClienteContactoDto> Contactos { get; set; } = new();
+    public System.Collections.ObjectModel.ObservableCollection<ClienteContactoDto> Contactos { get; set; } = new();
 }
