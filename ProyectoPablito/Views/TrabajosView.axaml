@@ -77,14 +77,15 @@
             <DataGrid ItemsSource="{Binding Trabajos}" 
                       AutoGenerateColumns="False" 
                       IsReadOnly="True" 
+                      x:CompileBindings="False"
                       GridLinesVisibility="All"
                       DoubleTapped="OnDataGridDoubleTapped">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Descripción" Binding="{Binding Descripcion}" Width="*" />
-                    <DataGridTextColumn Header="Cliente" Binding="{Binding ClienteNombre}" />
-                    <DataGridTextColumn Header="Inicio" Binding="{Binding FechaInicio, StringFormat=\{0:dd/MM/yyyy\}}" />
-                    <DataGridTextColumn Header="Presupuesto" Binding="{Binding Presupuesto, StringFormat=\{0:C\}}" />
-                    <DataGridCheckBoxColumn Header="Finalizado" Binding="{Binding Finalizado}" />
+                    <DataGridTextColumn Header="Descripción" Binding="{Binding Descripcion, Mode=OneWay}" Width="*" />
+                    <DataGridTextColumn Header="Cliente" Binding="{Binding ClienteNombre, Mode=OneWay}" />
+                    <DataGridTextColumn Header="Inicio" Binding="{Binding FechaInicio, StringFormat=\{0:dd/MM/yyyy\}, Mode=OneWay}" />
+                    <DataGridTextColumn Header="Presupuesto" Binding="{Binding Presupuesto, StringFormat=\{0:C\}, Mode=OneWay}" />
+                    <DataGridCheckBoxColumn Header="Finalizado" Binding="{Binding Finalizado, Mode=OneWay}" />
                 </DataGrid.Columns>
             </DataGrid>
         </DockPanel>

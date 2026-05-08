@@ -58,15 +58,16 @@
             <DataGrid ItemsSource="{Binding Empleados}" 
                       AutoGenerateColumns="False" 
                       IsReadOnly="True" 
+                      x:CompileBindings="False"
                       GridLinesVisibility="All"
                       DoubleTapped="OnDataGridDoubleTapped">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Nombre" Binding="{Binding Nombre}" Width="*" />
-                    <DataGridTextColumn Header="DNI" Binding="{Binding Dni}" />
-                    <DataGridTextColumn Header="Cargo" Binding="{Binding Cargo}" />
-                    <DataGridTextColumn Header="Sueldo Base" Binding="{Binding SueldoBase, StringFormat=\{0:C\}}" />
-                    <DataGridTextColumn Header="Ingreso" Binding="{Binding FechaIngreso, StringFormat=\{0:dd/MM/yyyy\}}" />
-                    <DataGridCheckBoxColumn Header="Activo" Binding="{Binding Activo}" />
+                    <DataGridTextColumn Header="Nombre" Binding="{Binding Nombre, Mode=OneWay}" Width="*" />
+                    <DataGridTextColumn Header="DNI" Binding="{Binding Dni, Mode=OneWay}" />
+                    <DataGridTextColumn Header="Cargo" Binding="{Binding Cargo, Mode=OneWay}" />
+                    <DataGridTextColumn Header="Sueldo Base" Binding="{Binding SueldoBase, StringFormat=\{0:C\}, Mode=OneWay}" />
+                    <DataGridTextColumn Header="Ingreso" Binding="{Binding FechaIngreso, StringFormat=\{0:dd/MM/yyyy\}, Mode=OneWay}" />
+                    <DataGridCheckBoxColumn Header="Activo" Binding="{Binding Activo, Mode=OneWay}" />
                 </DataGrid.Columns>
             </DataGrid>
         </DockPanel>

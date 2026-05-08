@@ -89,15 +89,16 @@
             <DataGrid ItemsSource="{Binding Movimientos}" 
                       AutoGenerateColumns="False" 
                       IsReadOnly="True" 
+                      x:CompileBindings="False"
                       GridLinesVisibility="All"
                       DoubleTapped="OnDataGridDoubleTapped">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Concepto" Binding="{Binding Concepto}" Width="*" />
-                    <DataGridTextColumn Header="Tipo" Binding="{Binding TipoMovimientoNombre}" />
-                    <DataGridTextColumn Header="Fecha" Binding="{Binding Fecha, StringFormat=\{0:dd/MM/yyyy\}}" />
-                    <DataGridTextColumn Header="Monto" Binding="{Binding Monto, StringFormat=\{0:C\}}" />
-                    <DataGridTextColumn Header="Cant" Binding="{Binding Cantidad}" />
-                    <DataGridTextColumn Header="Total" Binding="{Binding Total, StringFormat=\{0:C\}}" />
+                    <DataGridTextColumn Header="Concepto" Binding="{Binding Concepto, Mode=OneWay}" Width="*" />
+                    <DataGridTextColumn Header="Tipo" Binding="{Binding TipoMovimientoNombre, Mode=OneWay}" />
+                    <DataGridTextColumn Header="Fecha" Binding="{Binding Fecha, StringFormat=\{0:dd/MM/yyyy\}, Mode=OneWay}" />
+                    <DataGridTextColumn Header="Monto" Binding="{Binding Monto, StringFormat=\{0:C\}, Mode=OneWay}" />
+                    <DataGridTextColumn Header="Cant" Binding="{Binding Cantidad, Mode=OneWay}" />
+                    <DataGridTextColumn Header="Total" Binding="{Binding Total, StringFormat=\{0:C\}, Mode=OneWay}" />
                 </DataGrid.Columns>
             </DataGrid>
         </DockPanel>

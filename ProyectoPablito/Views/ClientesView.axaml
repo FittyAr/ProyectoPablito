@@ -49,14 +49,15 @@
             <DataGrid ItemsSource="{Binding Clientes}" 
                       AutoGenerateColumns="False" 
                       IsReadOnly="True" 
+                      x:CompileBindings="False"
                       GridLinesVisibility="All"
                       DoubleTapped="OnDataGridDoubleTapped">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Nombre" Binding="{Binding Nombre}" Width="*" />
-                    <DataGridTextColumn Header="CUIT" Binding="{Binding Cuit}" />
-                    <DataGridTextColumn Header="Teléfono" Binding="{Binding Telefono}" />
-                    <DataGridTextColumn Header="Email" Binding="{Binding Email}" />
-                    <DataGridTextColumn Header="Cond. IVA" Binding="{Binding CondicionIva}" />
+                    <DataGridTextColumn Header="Nombre" Binding="{Binding Nombre, Mode=OneWay}" Width="*" />
+                    <DataGridTextColumn Header="CUIT" Binding="{Binding Cuit, Mode=OneWay}" />
+                    <DataGridTextColumn Header="Teléfono" Binding="{Binding Telefono, Mode=OneWay}" />
+                    <DataGridTextColumn Header="Email" Binding="{Binding Email, Mode=OneWay}" />
+                    <DataGridTextColumn Header="Cond. IVA" Binding="{Binding CondicionIva, Mode=OneWay}" />
                 </DataGrid.Columns>
             </DataGrid>
         </DockPanel>
