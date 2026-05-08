@@ -23,13 +23,13 @@ public class ClienteService : IClienteService
 
     public async Task<IEnumerable<ClienteDto>> GetAllAsync()
     {
-        var entities = await _uow.Repository<Cliente>().GetAllAsync();
+        var entities = await _uow.Clientes.GetAllWithContactosAsync();
         return entities.Adapt<IEnumerable<ClienteDto>>();
     }
 
     public async Task<ClienteDto?> GetByIdAsync(Guid id)
     {
-        var entity = await _uow.Repository<Cliente>().GetByIdAsync(id);
+        var entity = await _uow.Clientes.GetByIdWithContactosAsync(id);
         return entity?.Adapt<ClienteDto>();
     }
 
@@ -45,17 +45,16 @@ public class ClienteService : IClienteService
     {
         _logger.LogInformation("Actualizando cliente: {Id}", dto.Id);
         var entity = dto.Adapt<Cliente>();
-        _uow.Repository<Cliente>().Update(entity);
+        await _uow.Clientes.UpdateWithContactosAsync(entity);
         return await _uow.SaveChangesAsync() > 0;
     }
 
     public async Task<bool> DeleteAsync(Guid id)
     {
         _logger.LogInformation("Eliminando cliente: {Id}", id);
-        var repo = _uow.Repository<Cliente>();
-        var entity = await repo.GetByIdAsync(id);
+        var entity = await _uow.Repository<Cliente>().GetByIdAsync(id);
         if (entity == null) return false;
-        repo.Remove(entity);
+        _uow.Repository<Cliente>().Remove(entity);
         return await _uow.SaveChangesAsync() > 0;
     }
 }

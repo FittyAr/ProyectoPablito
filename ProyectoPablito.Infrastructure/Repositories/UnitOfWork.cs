@@ -11,6 +11,8 @@ public class UnitOfWork : IUnitOfWork
     private readonly ApplicationDbContext _context;
     private readonly ConcurrentDictionary<Type, object> _repositories;
     private IMovimientoRepository? _movimientoRepository;
+    private IClienteRepository? _clienteRepository;
+    private ILiquidacionRepository? _liquidacionRepository;
     private bool _disposed;
 
     public UnitOfWork(ApplicationDbContext context)
@@ -25,6 +27,8 @@ public class UnitOfWork : IUnitOfWork
     }
 
     public IMovimientoRepository Movimientos => _movimientoRepository ??= new MovimientoRepository(_context);
+    public IClienteRepository Clientes => _clienteRepository ??= new ClienteRepository(_context);
+    public ILiquidacionRepository Liquidaciones => _liquidacionRepository ??= new LiquidacionRepository(_context);
 
     public async Task<int> SaveChangesAsync()
     {

@@ -3,25 +3,93 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:ProyectoPablito.ViewModels"
-             mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="800"
+             mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="600"
              x:Class="ProyectoPablito.Views.TrabajoEditView"
              x:DataType="vm:TrabajoEditViewModel">
+
     <UserControl.KeyBindings>
         <KeyBinding Gesture="Escape" Command="{Binding CancelCommand}"/>
     </UserControl.KeyBindings>
-    <Border Padding="20" Background="#2d2d2d" CornerRadius="8">
-        <ScrollViewer>
-            <StackPanel Spacing="15">
-                <TextBlock Text="{Binding Title}" FontSize="20" FontWeight="Bold" Margin="0,0,0,10"/>
-                
-                <!-- Cliente y Descripción (Igual que antes) -->
-                <Grid ColumnDefinitions="*,*">
-                    <StackPanel Grid.Column="0" Spacing="5" Margin="0,0,5,0">
-                        <TextBlock Text="Cliente" FontSize="12" Foreground="#aaa"/>
-                        <ComboBox ItemsSource="{Binding Clientes}" 
-                                SelectedValue="{Binding Trabajo.ClienteId}"
-                                SelectedValueBinding="{Binding Id}"
-                                HorizontalAlignment="Stretch">
+
+    <UserControl.Styles>
+        <Style Selector="TextBlock.label">
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="Foreground" Value="#888"/>
+            <Setter Property="Margin" Value="0,0,0,4"/>
+        </Style>
+        <Style Selector="TextBlock.sectionTitle">
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="#ccc"/>
+            <Setter Property="Margin" Value="0,0,0,10"/>
+        </Style>
+        <Style Selector="NumericUpDown">
+            <Setter Property="ShowButtonSpinner" Value="False"/>
+        </Style>
+        <Style Selector="Border.panel">
+            <Setter Property="Background" Value="#1e1e1e"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="Padding" Value="16"/>
+        </Style>
+        <Style Selector="Border.certCard">
+            <Setter Property="Background" Value="#252525"/>
+            <Setter Property="CornerRadius" Value="5"/>
+            <Setter Property="BorderBrush" Value="#383838"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="12"/>
+            <Setter Property="Margin" Value="0,0,0,10"/>
+        </Style>
+        <Style Selector="TextBlock.colHead">
+            <Setter Property="FontSize" Value="10"/>
+            <Setter Property="Foreground" Value="#555"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+        </Style>
+    </UserControl.Styles>
+
+    <!-- Layout de 3 filas: header / contenido / footer -->
+    <Grid RowDefinitions="Auto,*,Auto" Background="#181818">
+
+        <!-- ── HEADER ───────────────────────────────────── -->
+        <Border Grid.Row="0" Background="#1e1e1e"
+                BorderBrush="#2a2a2a" BorderThickness="0,0,0,1"
+                Padding="24,14">
+            <DockPanel>
+                <StackPanel DockPanel.Dock="Left">
+                    <TextBlock Text="{Binding Title}"
+                               FontSize="22" FontWeight="Bold" Foreground="White"/>
+                    <TextBlock Text="Gestioná los datos generales y las certificaciones del trabajo"
+                               FontSize="12" Foreground="#555" Margin="0,2,0,0"/>
+                </StackPanel>
+                <!-- Acciones en el header -->
+                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal"
+                            Spacing="10" VerticalAlignment="Center">
+                    <Button Content="Cancelar" Command="{Binding CancelCommand}"/>
+                    <Button Content="💾  Guardar Trabajo"
+                            Classes="accent" Command="{Binding SaveCommand}"
+                            IsDefault="True" Padding="16,8"/>
+                </StackPanel>
+            </DockPanel>
+        </Border>
+
+        <!-- ── CONTENIDO: dos columnas ──────────────────── -->
+        <Grid Grid.Row="1" ColumnDefinitions="340,*" ColumnSpacing="0">
+
+            <!-- COLUMNA IZQUIERDA: Datos generales -->
+            <Border Grid.Column="0"
+                    Background="#1a1a1a"
+                    BorderBrush="#2a2a2a" BorderThickness="0,0,1,0"
+                    Padding="24,20">
+                <StackPanel Spacing="14">
+                    <TextBlock Classes="sectionTitle" Text="Datos Generales"/>
+
+                    <!-- Cliente -->
+                    <StackPanel Spacing="4">
+                        <TextBlock Classes="label" Text="CLIENTE *"/>
+                        <ComboBox ItemsSource="{Binding Clientes}"
+                                  SelectedValue="{Binding Trabajo.ClienteId}"
+                                  SelectedValueBinding="{Binding Id}"
+                                  HorizontalAlignment="Stretch"
+                                  ToolTip.Tip="Cliente al que pertenece este trabajo">
                             <ComboBox.ItemTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding Nombre}"/>
@@ -29,98 +97,250 @@
                             </ComboBox.ItemTemplate>
                         </ComboBox>
                     </StackPanel>
-                    <StackPanel Grid.Column="1" Spacing="5" Margin="5,0,0,0">
-                        <CheckBox IsChecked="{Binding Trabajo.Finalizado}" Content="Finalizado" VerticalAlignment="Bottom"/>
-                    </StackPanel>
-                </Grid>
 
-                <StackPanel Spacing="5">
-                    <TextBlock Text="Descripción" FontSize="12" Foreground="#aaa"/>
-                    <TextBox Text="{Binding Trabajo.Descripcion}" PlaceholderText="Breve descripción del trabajo" TextWrapping="Wrap" AcceptsReturn="True" Height="60"/>
+                    <!-- Descripción -->
+                    <StackPanel Spacing="4">
+                        <TextBlock Classes="label" Text="DESCRIPCIÓN *"/>
+                        <TextBox Text="{Binding Trabajo.Descripcion}"
+                                 PlaceholderText="Ej: Instalación eléctrica, renovación baño..."
+                                 TextWrapping="Wrap" AcceptsReturn="True"
+                                 Height="80"
+                                 ToolTip.Tip="Descripción detallada del trabajo"/>
+                    </StackPanel>
+
+                    <!-- Presupuesto + Fecha -->
+                    <StackPanel Spacing="4">
+                        <TextBlock Classes="label" Text="PRESUPUESTO TOTAL"/>
+                        <NumericUpDown Value="{Binding Trabajo.Presupuesto}"
+                                       FormatString="C2"
+                                       HorizontalAlignment="Stretch"
+                                       ToolTip.Tip="Monto total presupuestado para el trabajo"/>
+                    </StackPanel>
+
+                    <StackPanel Spacing="4">
+                        <TextBlock Classes="label" Text="FECHA INICIO"/>
+                        <DatePicker SelectedDate="{Binding FechaInicioOffset}"
+                                    HorizontalAlignment="Stretch"
+                                    ToolTip.Tip="Fecha de inicio del trabajo"/>
+                    </StackPanel>
+
+                    <!-- Estado -->
+                    <Border Background="#252525" CornerRadius="5" Padding="12,10">
+                        <CheckBox IsChecked="{Binding Trabajo.Finalizado}"
+                                  Content="Trabajo Finalizado"
+                                  ToolTip.Tip="Marcar cuando el trabajo esté completamente terminado y cobrado"/>
+                    </Border>
+
+                    <!-- Info ayuda -->
+                    <Border Background="#161f16" CornerRadius="5" Padding="12,10" Margin="0,10,0,0">
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="💡 Certificaciones" FontSize="12" FontWeight="SemiBold" Foreground="#98c379"/>
+                            <TextBlock TextWrapping="Wrap" FontSize="11" Foreground="#666"
+                                       Text="En la columna derecha podés agregar órdenes de trabajo o certificados de avance. Cada ítem tiene un % Anterior (ya certificado) y un % Actual (a certificar ahora)."/>
+                        </StackPanel>
+                    </Border>
                 </StackPanel>
+            </Border>
 
-                <Grid ColumnDefinitions="*,*">
-                    <StackPanel Grid.Column="0" Spacing="5" Margin="0,0,5,0">
-                        <TextBlock Text="Presupuesto" FontSize="12" Foreground="#aaa"/>
-                        <NumericUpDown Value="{Binding Trabajo.Presupuesto}" FormatString="C2"/>
-                    </StackPanel>
-                    <StackPanel Grid.Column="1" Spacing="5" Margin="5,0,0,0">
-                        <TextBlock Text="Fecha Inicio" FontSize="12" Foreground="#aaa"/>
-                        <DatePicker SelectedDate="{Binding FechaInicioOffset}"/>
-                    </StackPanel>
-                </Grid>
+            <!-- COLUMNA DERECHA: Certificaciones — scroll propio -->
+            <Grid Grid.Column="1" RowDefinitions="Auto,*">
 
-                <Separator Background="#444"/>
-                
-                <!-- Sección de Certificaciones (Audio Requirement) -->
-                <DockPanel>
-                    <TextBlock Text="Certificaciones / Órdenes de Trabajo" FontSize="16" FontWeight="SemiBold" VerticalAlignment="Center"/>
-                    <Button Content="+ Agregar Certificado" Command="{Binding AddOrdenCommand}" HorizontalAlignment="Right" Classes="accent"/>
-                </DockPanel>
+                <!-- Sub-header certificaciones -->
+                <Border Grid.Row="0" Background="#1a1a1a"
+                        BorderBrush="#2a2a2a" BorderThickness="0,0,0,1"
+                        Padding="20,12">
+                    <DockPanel>
+                        <StackPanel>
+                            <TextBlock Text="Certificaciones / Órdenes de Trabajo"
+                                       FontSize="14" FontWeight="SemiBold" Foreground="#ccc"/>
+                            <TextBlock FontSize="11" Foreground="#555"
+                                       Text="Cada certificado representa un avance parcial. Usá Act% para indicar el avance de este período."/>
+                        </StackPanel>
+                        <Button Content="＋  Agregar Certificado"
+                                Command="{Binding AddOrdenCommand}"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                Classes="accent"
+                                ToolTip.Tip="Agrega un nuevo certificado o avance de obra"/>
+                    </DockPanel>
+                </Border>
 
-                <ItemsControl ItemsSource="{Binding Trabajo.OrdenesTrabajo}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Border BorderBrush="#444" BorderThickness="1" CornerRadius="4" Margin="0,0,0,15" Padding="10">
-                                <StackPanel Spacing="10">
-                                    <Grid ColumnDefinitions="*,Auto,Auto">
-                                        <TextBox Text="{Binding Titulo}" PlaceholderText="Título del Certificado/OC" FontSize="14" FontWeight="SemiBold"/>
-                                        <TextBox Grid.Column="1" Text="{Binding NumeroCertificado}" PlaceholderText="N°" Width="80" Margin="5,0"/>
-                                        <Button Grid.Column="2" Content="Eliminar" Command="{Binding $parent[UserControl].((vm:TrabajoEditViewModel)DataContext).RemoveOrdenCommand}" CommandParameter="{Binding}" Foreground="Red"/>
-                                    </Grid>
+                <!-- Listado de certificaciones con scroll -->
+                <ScrollViewer Grid.Row="1" Padding="20,16">
+                    <StackPanel Spacing="0">
 
-                                    <!-- Table Header outside ItemsControl -->
-                                    <Grid ColumnDefinitions="*,60,60,80,60,60,60,Auto" Margin="0,5">
-                                        <TextBlock Text="Descripción Item" FontSize="10" Foreground="#888"/>
-                                        <TextBlock Grid.Column="1" Text="Cant." FontSize="10" Foreground="#888" HorizontalAlignment="Center"/>
-                                        <TextBlock Grid.Column="2" Text="Und" FontSize="10" Foreground="#888" HorizontalAlignment="Center"/>
-                                        <TextBlock Grid.Column="3" Text="P.U." FontSize="10" Foreground="#888" HorizontalAlignment="Center"/>
-                                        <TextBlock Grid.Column="4" Text="Ant%" FontSize="10" Foreground="#888" HorizontalAlignment="Center"/>
-                                        <TextBlock Grid.Column="5" Text="Act%" FontSize="10" Foreground="#888" HorizontalAlignment="Center" FontWeight="Bold"/>
-                                        <TextBlock Grid.Column="6" Text="Acu%" FontSize="10" Foreground="#888" HorizontalAlignment="Center"/>
-                                    </Grid>
-                                    
-                                    <ItemsControl ItemsSource="{Binding Items}">
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <Grid ColumnDefinitions="*,60,60,80,60,60,60,Auto" Margin="0,2">
-                                                    <TextBox Text="{Binding Descripcion}" FontSize="11"/>
-                                                    <NumericUpDown Grid.Column="1" Value="{Binding Cantidad}" ShowButtonSpinner="False" FontSize="11"/>
-                                                    <TextBox Grid.Column="2" Text="{Binding Unidad}" FontSize="11"/>
-                                                    <NumericUpDown Grid.Column="3" Value="{Binding PrecioUnitario}" FormatString="C2" ShowButtonSpinner="False" FontSize="11"/>
-                                                    <NumericUpDown Grid.Column="4" Value="{Binding PorcentajeAnterior}" Minimum="0" Maximum="100" ShowButtonSpinner="False" FontSize="11" Foreground="#888"/>
-                                                    <NumericUpDown Grid.Column="5" Value="{Binding PorcentajeActual}" Minimum="0" Maximum="100" ShowButtonSpinner="False" FontSize="11" FontWeight="Bold"/>
-                                                    <TextBlock Grid.Column="6" Text="{Binding PorcentajeAcumulado, StringFormat={}{0:N2}%}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="11" Foreground="#aaa"/>
-                                                    <Button Grid.Column="7" Content="X" Command="{Binding $parent[UserControl].((vm:TrabajoEditViewModel)DataContext).RemoveItemCommand}" CommandParameter="{Binding}" Foreground="Red" Margin="5,0,0,0" Padding="5,2"/>
-                                                </Grid>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-                                    
-                                    <Grid ColumnDefinitions="Auto, *, Auto, 100">
-                                        <Button Content="+ Agregar Item" Command="{Binding $parent[UserControl].((vm:TrabajoEditViewModel)DataContext).AddItemCommand}" CommandParameter="{Binding}" HorizontalAlignment="Left" FontSize="11"/>
-                                        
-                                        <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,10,0">
-                                            <TextBlock Text="Ajuste UOCRA (%):" VerticalAlignment="Center" Margin="0,0,5,0" FontSize="12"/>
-                                            <NumericUpDown Value="{Binding AjusteUocraPorcentaje}" Width="80" ShowButtonSpinner="False"/>
+                        <ItemsControl ItemsSource="{Binding Trabajo.OrdenesTrabajo}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Classes="certCard">
+                                        <StackPanel Spacing="10">
+
+                                            <!-- Título del certificado -->
+                                            <Grid ColumnDefinitions="*,160,Auto" ColumnSpacing="8">
+                                                <TextBox Grid.Column="0"
+                                                         Text="{Binding Titulo}"
+                                                         PlaceholderText="Nombre del certificado (ej: Cert. Nº1 — Agosto 2025)"
+                                                         FontWeight="SemiBold"
+                                                         ToolTip.Tip="Nombre descriptivo de este certificado o avance"/>
+                                                <TextBox Grid.Column="1"
+                                                         Text="{Binding NumeroCertificado}"
+                                                         PlaceholderText="Número de certificado"
+                                                         ToolTip.Tip="Número oficial del certificado"/>
+                                                <Button Grid.Column="2"
+                                                        Content="✕ Eliminar"
+                                                        Command="{Binding $parent[UserControl].((vm:TrabajoEditViewModel)DataContext).RemoveOrdenCommand}"
+                                                        CommandParameter="{Binding}"
+                                                        Foreground="#e06c75"
+                                                        Background="Transparent"
+                                                        BorderBrush="#e06c75" BorderThickness="1"
+                                                        ToolTip.Tip="Elimina esta certificación completa"/>
+                                            </Grid>
+
+                                            <!-- Tabla de ítems -->
+                                            <Border Background="#1a1a1a" CornerRadius="4" Padding="10,8">
+                                                <StackPanel Spacing="3">
+                                                    <!-- Cabecera -->
+                                                    <Grid ColumnDefinitions="*,70,60,100,60,60,70,34"
+                                                          ColumnSpacing="4" Margin="0,0,0,4">
+                                                        <TextBlock Classes="colHead" HorizontalAlignment="Left"
+                                                                   Text="Descripción del Ítem"/>
+                                                        <TextBlock Grid.Column="1" Classes="colHead" Text="Cantidad"/>
+                                                        <TextBlock Grid.Column="2" Classes="colHead" Text="Unidad"/>
+                                                        <TextBlock Grid.Column="3" Classes="colHead" Text="Precio Unit."/>
+                                                        <TextBlock Grid.Column="4" Classes="colHead" Text="Ant %"
+                                                                   ToolTip.Tip="Porcentaje ya certificado en períodos anteriores"/>
+                                                        <TextBlock Grid.Column="5" Classes="colHead"
+                                                                   Text="Act %" Foreground="#abb2bf"
+                                                                   ToolTip.Tip="Porcentaje a certificar en este período"/>
+                                                        <TextBlock Grid.Column="6" Classes="colHead" Text="Acum %"
+                                                                   ToolTip.Tip="Total acumulado (Anterior + Actual)"/>
+                                                    </Grid>
+
+                                                    <Separator Background="#2a2a2a" Margin="0,0,0,3"/>
+
+                                                    <!-- Filas de ítems -->
+                                                    <ItemsControl ItemsSource="{Binding Items}">
+                                                        <ItemsControl.ItemTemplate>
+                                                            <DataTemplate>
+                                                                <Grid ColumnDefinitions="*,70,60,100,60,60,70,34"
+                                                                      ColumnSpacing="4" Margin="0,2">
+                                                                    <TextBox Text="{Binding Descripcion}"
+                                                                             PlaceholderText="Descripción"
+                                                                             FontSize="12"
+                                                                             ToolTip.Tip="Descripción del ítem"/>
+                                                                    <NumericUpDown Grid.Column="1"
+                                                                                   Value="{Binding Cantidad}"
+                                                                                   FontSize="12"
+                                                                                   ToolTip.Tip="Cantidad de unidades"/>
+                                                                    <TextBox Grid.Column="2"
+                                                                             Text="{Binding Unidad}"
+                                                                             FontSize="12"
+                                                                             ToolTip.Tip="Unidad (m², ml, gl, u...)"/>
+                                                                    <NumericUpDown Grid.Column="3"
+                                                                                   Value="{Binding PrecioUnitario}"
+                                                                                   FormatString="C2"
+                                                                                   FontSize="12"
+                                                                                   ToolTip.Tip="Precio por unidad"/>
+                                                                    <NumericUpDown Grid.Column="4"
+                                                                                   Value="{Binding PorcentajeAnterior}"
+                                                                                   Minimum="0" Maximum="100"
+                                                                                   FontSize="12"
+                                                                                   Foreground="#555"
+                                                                                   IsReadOnly="True"
+                                                                                   ToolTip.Tip="% ya certificado en períodos anteriores (automático)"/>
+                                                                    <NumericUpDown Grid.Column="5"
+                                                                                   Value="{Binding PorcentajeActual}"
+                                                                                   Minimum="0" Maximum="100"
+                                                                                   FontSize="12"
+                                                                                   FontWeight="SemiBold"
+                                                                                   ToolTip.Tip="% a certificar en este período"/>
+                                                                    <Border Grid.Column="6"
+                                                                            Background="#1a2a1a"
+                                                                            CornerRadius="3"
+                                                                            VerticalAlignment="Center"
+                                                                            Padding="6,4"
+                                                                            ToolTip.Tip="Acumulado total de este ítem">
+                                                                        <TextBlock
+                                                                            Text="{Binding PorcentajeAcumulado, StringFormat={}{0:N1}%}"
+                                                                            HorizontalAlignment="Center"
+                                                                            FontSize="12"
+                                                                            Foreground="#98c379"
+                                                                            FontWeight="SemiBold"/>
+                                                                    </Border>
+                                                                    <Button Grid.Column="7"
+                                                                            Content="✕"
+                                                                            Command="{Binding $parent[UserControl].((vm:TrabajoEditViewModel)DataContext).RemoveItemCommand}"
+                                                                            CommandParameter="{Binding}"
+                                                                            Foreground="#e06c75"
+                                                                            Background="Transparent"
+                                                                            Padding="4,2"
+                                                                            FontSize="12"
+                                                                            ToolTip.Tip="Eliminar ítem"/>
+                                                                </Grid>
+                                                            </DataTemplate>
+                                                        </ItemsControl.ItemTemplate>
+                                                    </ItemsControl>
+
+                                                    <Button Content="＋ Agregar Ítem"
+                                                            Command="{Binding $parent[UserControl].((vm:TrabajoEditViewModel)DataContext).AddItemCommand}"
+                                                            CommandParameter="{Binding}"
+                                                            FontSize="11"
+                                                            HorizontalAlignment="Left"
+                                                            Margin="0,6,0,0"
+                                                            ToolTip.Tip="Agrega un nuevo ítem a este certificado"/>
+                                                </StackPanel>
+                                            </Border>
+
+                                            <!-- Descuentos / ajustes del certificado -->
+                                            <Grid ColumnDefinitions="Auto,90,16,Auto,130"
+                                                  ColumnSpacing="6" Margin="2,0,0,0">
+                                                <TextBlock Text="Ajuste UOCRA (%):"
+                                                           VerticalAlignment="Center"
+                                                           FontSize="12" Foreground="#888"
+                                                           ToolTip.Tip="% de ajuste por incremento UOCRA"/>
+                                                <NumericUpDown Grid.Column="1"
+                                                               Value="{Binding AjusteUocraPorcentaje}"
+                                                               ToolTip.Tip="Ingresá el % de ajuste UOCRA vigente"/>
+                                                <TextBlock Grid.Column="2"/>
+                                                <TextBlock Grid.Column="3"
+                                                           Text="Otros descuentos ($):"
+                                                           VerticalAlignment="Center"
+                                                           FontSize="12" Foreground="#888"
+                                                           ToolTip.Tip="Otros descuentos fijos a aplicar"/>
+                                                <NumericUpDown Grid.Column="4"
+                                                               Value="{Binding OtrosDescuentos}"
+                                                               FormatString="C2"
+                                                               ToolTip.Tip="Monto fijo de otros descuentos"/>
+                                            </Grid>
+
                                         </StackPanel>
-                                        
-                                        <StackPanel Grid.Column="3" Orientation="Horizontal" VerticalAlignment="Center">
-                                            <TextBlock Text="Otros Desc:" VerticalAlignment="Center" Margin="0,0,5,0" FontSize="12"/>
-                                            <NumericUpDown Value="{Binding OtrosDescuentos}" Width="100" ShowButtonSpinner="False" FormatString="C2"/>
-                                        </StackPanel>
-                                    </Grid>
-                                </StackPanel>
-                            </Border>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
 
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10" Margin="0,20,0,0">
-                    <Button Content="Cancelar" Command="{Binding CancelCommand}" IsCancel="True" />
-                    <Button Content="Guardar" Classes="accent" Command="{Binding SaveCommand}" IsDefault="True" />
-                </StackPanel>
-            </StackPanel>
-        </ScrollViewer>
-    </Border>
+                        <!-- Estado vacío -->
+                        <Border IsVisible="{Binding !Trabajo.OrdenesTrabajo.Count}"
+                                Background="#1e1e1e" CornerRadius="6"
+                                Padding="40" Margin="0,10">
+                            <StackPanel HorizontalAlignment="Center" Spacing="8">
+                                <TextBlock Text="📋" FontSize="32" HorizontalAlignment="Center"/>
+                                <TextBlock Text="Sin certificaciones aún"
+                                           FontSize="14" FontWeight="SemiBold"
+                                           Foreground="#555" HorizontalAlignment="Center"/>
+                                <TextBlock Text="Hacé clic en '+ Agregar Certificado' para registrar el primer avance de obra."
+                                           FontSize="12" Foreground="#444"
+                                           TextWrapping="Wrap" HorizontalAlignment="Center"
+                                           TextAlignment="Center" MaxWidth="300"/>
+                            </StackPanel>
+                        </Border>
+
+                    </StackPanel>
+                </ScrollViewer>
+            </Grid>
+        </Grid>
+
+        <!-- ── FOOTER (acción secundaria mobile-style) ── -->
+        <!-- Se oculta en resoluciones grandes ya que el header ya tiene los botones -->
+    </Grid>
 </UserControl>

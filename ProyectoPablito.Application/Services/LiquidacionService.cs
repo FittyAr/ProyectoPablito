@@ -24,8 +24,8 @@ public class LiquidacionService : ILiquidacionService
 
     public async Task<IEnumerable<LiquidacionDto>> GetAllAsync()
     {
-        var entities = await _uow.Repository<Liquidacion>().GetAllAsync();
-        // Nota: Para nombres de empleados, se podría necesitar un Include en el repo genérico o un repo específico
+        // CRÍTICO: Usar repo especializado que hace Include(Empleado)
+        var entities = await _uow.Liquidaciones.GetAllWithEmpleadoAsync();
         return entities.Adapt<IEnumerable<LiquidacionDto>>();
     }
 
