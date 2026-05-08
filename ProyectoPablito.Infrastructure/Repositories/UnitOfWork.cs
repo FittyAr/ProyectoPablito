@@ -10,6 +10,7 @@ public class UnitOfWork : IUnitOfWork
 {
     private readonly ApplicationDbContext _context;
     private readonly ConcurrentDictionary<Type, object> _repositories;
+    private IMovimientoRepository? _movimientoRepository;
     private bool _disposed;
 
     public UnitOfWork(ApplicationDbContext context)
@@ -22,6 +23,8 @@ public class UnitOfWork : IUnitOfWork
     {
         return (IRepository<T>)_repositories.GetOrAdd(typeof(T), _ => new Repository<T>(_context));
     }
+
+    public IMovimientoRepository Movimientos => _movimientoRepository ??= new MovimientoRepository(_context);
 
     public async Task<int> SaveChangesAsync()
     {

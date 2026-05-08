@@ -24,13 +24,17 @@ public class MovimientoService : IMovimientoService
 
     public async Task<IEnumerable<MovimientoDto>> GetAllAsync()
     {
-        var entities = await _uow.Repository<Movimiento>().GetAllAsync();
+        // CRÍTICO: Se debe incluir TipoMovimiento para que EsIngreso y TipoMovimientoSuma
+        // se mapeen correctamente. Sin Include, EF Core devuelve null en las nav properties
+        // y Mapster mapea bool como false (defecto), haciendo que todos los movimientos
+        // sean tratados como gastos con Total=0.
+        var entities = await _uow.Movimientos.GetAllWithIncludesAsync();
         return entities.Adapt<IEnumerable<MovimientoDto>>();
     }
 
     public async Task<MovimientoDto?> GetByIdAsync(Guid id)
     {
-        var entity = await _uow.Repository<Movimiento>().GetByIdAsync(id);
+        var entity = await _uow.Movimientos.GetByIdWithIncludesAsync(id);
         return entity?.Adapt<MovimientoDto>();
     }
 
