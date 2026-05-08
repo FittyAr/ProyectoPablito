@@ -35,6 +35,9 @@ public partial class ClientesViewModel : ViewModelBase
 
     [ObservableProperty]
     private ClienteEditViewModel? _editViewModel;
+    
+    [ObservableProperty]
+    private string _filtroNombre = string.Empty;
 
     public ClientesViewModel(IClienteService clienteService, IUserSettingsService settingsService, IServiceProvider serviceProvider)
     {
@@ -46,6 +49,7 @@ public partial class ClientesViewModel : ViewModelBase
         LoadClientesCommand = new AsyncRelayCommand(LoadClientesAsync);
         AddCommand = new RelayCommand(Add);
         EditCommand = new RelayCommand<ClienteDto>(Edit);
+        LimpiarFiltrosCommand = new RelayCommand(LimpiarFiltros);
 
         _ = LoadClientesAsync();
     }
@@ -53,6 +57,7 @@ public partial class ClientesViewModel : ViewModelBase
     public IAsyncRelayCommand LoadClientesCommand { get; }
     public IRelayCommand AddCommand { get; }
     public IRelayCommand<ClienteDto> EditCommand { get; }
+    public IRelayCommand LimpiarFiltrosCommand { get; }
 
     partial void OnPageSizeChanged(int value)
     {
@@ -60,17 +65,33 @@ public partial class ClientesViewModel : ViewModelBase
         _ = LoadClientesAsync();
     }
 
+    partial void OnFiltroNombreChanged(string value) => _ = LoadClientesAsync();
+
+    private void LimpiarFiltros()
+    {
+        FiltroNombre = string.Empty;
+        _ = LoadClientesAsync();
+    }
+
     public async Task LoadClientesAsync()
     {
         var result = await _clienteService.GetAllAsync();
+        var query = result.AsEnumerable();
+
+        if (!string.IsNullOrWhiteSpace(FiltroNombre))
+        {
+            query = query.Where(c => c.Nombre.Contains(FiltroNombre, StringComparison.OrdinalIgnoreCase) || 
+                                    (c.Cuit != null && c.Cuit.Contains(FiltroNombre)));
+        }
+
         IEnumerable<ClienteDto> paginated;
         if (PageSize > 0)
         {
-            paginated = result.Skip((CurrentPage - 1) * PageSize).Take(PageSize);
+            paginated = query.Skip((CurrentPage - 1) * PageSize).Take(PageSize);
         }
         else
         {
-            paginated = result;
+            paginated = query;
         }
 
         Clientes = new ObservableCollection<ClienteDto>(paginated);

@@ -36,6 +36,12 @@ public partial class EmpleadosViewModel : ViewModelBase
     [ObservableProperty]
     private EmpleadoEditViewModel? _editViewModel;
 
+    [ObservableProperty]
+    private string _filtroNombre = string.Empty;
+
+    [ObservableProperty]
+    private int _filtroEstadoIndex = 0; // 0: Todos, 1: Activos, 2: Inactivos
+
     public EmpleadosViewModel(IEmpleadoService empleadoService, IUserSettingsService settingsService, IServiceProvider serviceProvider)
     {
         _empleadoService = empleadoService;
@@ -46,6 +52,7 @@ public partial class EmpleadosViewModel : ViewModelBase
         LoadEmpleadosCommand = new AsyncRelayCommand(LoadEmpleadosAsync);
         AddCommand = new RelayCommand(Add);
         EditCommand = new RelayCommand<EmpleadoDto>(Edit);
+        LimpiarFiltrosCommand = new RelayCommand(LimpiarFiltros);
 
         _ = LoadEmpleadosAsync();
     }
@@ -53,6 +60,7 @@ public partial class EmpleadosViewModel : ViewModelBase
     public IAsyncRelayCommand LoadEmpleadosCommand { get; }
     public IRelayCommand AddCommand { get; }
     public IRelayCommand<EmpleadoDto> EditCommand { get; }
+    public IRelayCommand LimpiarFiltrosCommand { get; }
 
     partial void OnPageSizeChanged(int value)
     {
@@ -60,17 +68,44 @@ public partial class EmpleadosViewModel : ViewModelBase
         _ = LoadEmpleadosAsync();
     }
 
+    partial void OnFiltroNombreChanged(string value) => _ = LoadEmpleadosAsync();
+    partial void OnFiltroEstadoIndexChanged(int value) => _ = LoadEmpleadosAsync();
+
+    private void LimpiarFiltros()
+    {
+        FiltroNombre = string.Empty;
+        FiltroEstadoIndex = 0;
+        _ = LoadEmpleadosAsync();
+    }
+
     public async Task LoadEmpleadosAsync()
     {
         var result = await _empleadoService.GetAllAsync();
+        var query = result.AsEnumerable();
+
+        if (!string.IsNullOrWhiteSpace(FiltroNombre))
+        {
+            query = query.Where(e => e.Nombre.Contains(FiltroNombre, StringComparison.OrdinalIgnoreCase) || 
+                                    (e.Cargo != null && e.Cargo.Contains(FiltroNombre, StringComparison.OrdinalIgnoreCase)));
+        }
+
+        if (FiltroEstadoIndex == 1) // Activos
+        {
+            query = query.Where(e => e.Activo);
+        }
+        else if (FiltroEstadoIndex == 2) // Inactivos
+        {
+            query = query.Where(e => !e.Activo);
+        }
+
         IEnumerable<EmpleadoDto> paginated;
         if (PageSize > 0)
         {
-            paginated = result.Skip((CurrentPage - 1) * PageSize).Take(PageSize);
+            paginated = query.Skip((CurrentPage - 1) * PageSize).Take(PageSize);
         }
         else
         {
-            paginated = result;
+            paginated = query;
         }
 
         Empleados = new ObservableCollection<EmpleadoDto>(paginated);
