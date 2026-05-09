@@ -16,6 +16,7 @@ public class ClienteServiceTests
 {
     private readonly IUnitOfWork _uow;
     private readonly IRepository<Cliente> _repo;
+    private readonly IClienteRepository _clienteRepo;
     private readonly ILogger<ClienteService> _logger;
     private readonly ClienteService _service;
 
@@ -23,8 +24,10 @@ public class ClienteServiceTests
     {
         _uow = Substitute.For<IUnitOfWork>();
         _repo = Substitute.For<IRepository<Cliente>>();
-        _logger = Substitute.For<ILogger<ClienteService>>();
+        _clienteRepo = Substitute.For<IClienteRepository>();
         _uow.Repository<Cliente>().Returns(_repo);
+        _uow.Clientes.Returns(_clienteRepo);
+        _logger = Substitute.For<ILogger<ClienteService>>();
         _service = new ClienteService(_uow, _logger);
     }
 
@@ -33,7 +36,7 @@ public class ClienteServiceTests
     {
         // Arrange
         var list = new List<Cliente> { new() { Nombre = "Juan" } };
-        _repo.GetAllAsync().Returns(list);
+        _clienteRepo.GetAllWithContactosAsync().Returns(list);
 
         // Act
         var result = await _service.GetAllAsync();
@@ -58,7 +61,7 @@ public class ClienteServiceTests
                 new() { Etiqueta = "Ventas", Email = "ventas@x.com" }
             }
         };
-        _repo.GetByIdAsync(id).Returns(cliente);
+        _clienteRepo.GetByIdWithContactosAsync(id).Returns(cliente);
 
         // Act
         var result = await _service.GetByIdAsync(id);

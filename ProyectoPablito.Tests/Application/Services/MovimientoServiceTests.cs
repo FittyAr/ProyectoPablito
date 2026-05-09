@@ -16,6 +16,7 @@ public class MovimientoServiceTests
 {
     private readonly IUnitOfWork _uow;
     private readonly IRepository<Movimiento> _repo;
+    private readonly IMovimientoRepository _movimientoRepo;
     private readonly ILogger<MovimientoService> _logger;
     private readonly MovimientoService _service;
 
@@ -23,9 +24,26 @@ public class MovimientoServiceTests
     {
         _uow = Substitute.For<IUnitOfWork>();
         _repo = Substitute.For<IRepository<Movimiento>>();
-        _logger = Substitute.For<ILogger<MovimientoService>>();
+        _movimientoRepo = Substitute.For<IMovimientoRepository>();
         _uow.Repository<Movimiento>().Returns(_repo);
+        _uow.Movimientos.Returns(_movimientoRepo);
+        _logger = Substitute.For<ILogger<MovimientoService>>();
         _service = new MovimientoService(_uow, _logger);
+    }
+
+    [Fact]
+    public async Task GetAllAsync_ShouldReturnList()
+    {
+        // Arrange
+        var list = new List<Movimiento> { new() { Concepto = "Sueldo" } };
+        _movimientoRepo.GetAllWithIncludesAsync().Returns(list);
+
+        // Act
+        var result = await _service.GetAllAsync();
+
+        // Assert
+        result.Should().HaveCount(1);
+        result.First().Concepto.Should().Be("Sueldo");
     }
 
     [Fact]
