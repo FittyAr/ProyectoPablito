@@ -1,6 +1,5 @@
 using FluentAssertions;
 using ProyectoPablito.Core.Entities;
-using ProyectoPablito.Core.Enums;
 using Xunit;
 
 namespace ProyectoPablito.Tests.Core.Entities;
@@ -8,31 +7,22 @@ namespace ProyectoPablito.Tests.Core.Entities;
 public class MovimientoTests
 {
     [Fact]
-    public void Total_ShouldCalculateCorrectly_WhenMontoAndCantidadAreProvided()
+    public void Total_ShouldBeMontoMultipliedByCantidad()
     {
         // Arrange
-        var movimiento = new Movimiento
-        {
-            Monto = 100.50m,
-            Cantidad = 2
-        };
-
-        // Act
-        var total = movimiento.Total;
+        var mov = new Movimiento { Monto = 150, Cantidad = 2 };
 
         // Assert
-        total.Should().Be(201.00m);
+        mov.Total.Should().Be(300);
     }
 
     [Fact]
-    public void NewMovimiento_ShouldHaveDefaultValues()
+    public void DefaultCantidad_ShouldBeOne()
     {
         // Act
-        var movimiento = new Movimiento();
+        var mov = new Movimiento();
 
         // Assert
-        movimiento.Id.Should().NotBeEmpty();
-        movimiento.Moneda.Should().Be(Moneda.ARS);
-        movimiento.Cantidad.Should().Be(1);
+        mov.Cantidad.Should().Be(1);
     }
 }

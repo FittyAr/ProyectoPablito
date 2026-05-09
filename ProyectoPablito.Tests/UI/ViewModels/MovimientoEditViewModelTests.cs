@@ -60,4 +60,18 @@ public class MovimientoEditViewModelTests
         // Assert
         await _movimientoService.Received(1).CreateAsync(Arg.Any<MovimientoDto>());
     }
+
+    [Fact]
+    public async Task SaveCommand_ShouldCallUpdate_WhenExisting()
+    {
+        // Arrange
+        _vm.Movimiento = new MovimientoDto { Id = Guid.NewGuid(), Concepto = "Update", Monto = 200 };
+        _movimientoService.UpdateAsync(Arg.Any<MovimientoDto>()).Returns(true);
+
+        // Act
+        await _vm.SaveCommand.ExecuteAsync(null);
+
+        // Assert
+        await _movimientoService.Received(1).UpdateAsync(Arg.Any<MovimientoDto>());
+    }
 }

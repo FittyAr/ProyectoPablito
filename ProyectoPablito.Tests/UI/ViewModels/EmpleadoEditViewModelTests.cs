@@ -49,4 +49,35 @@ public class EmpleadoEditViewModelTests
         // Assert
         _viewModel.Empleado.FechaIngreso.Should().Be(newDate.DateTime);
     }
+
+    [Fact]
+    public async Task SaveCommand_ShouldUpdateEmpleado_WhenIdIsNotEmpty()
+    {
+        // Arrange
+        _viewModel.Empleado = new EmpleadoDto { Id = Guid.NewGuid(), Nombre = "Update" };
+        _empleadoService.UpdateAsync(_viewModel.Empleado).Returns(true);
+        bool closed = false;
+        _viewModel.CloseRequest += (s, success) => closed = success;
+
+        // Act
+        await _viewModel.SaveCommand.ExecuteAsync(null);
+
+        // Assert
+        await _empleadoService.Received(1).UpdateAsync(Arg.Any<EmpleadoDto>());
+        closed.Should().BeTrue();
+    }
+
+    [Fact]
+    public void CancelCommand_ShouldInvokeCloseRequestWithFalse()
+    {
+        // Arrange
+        bool closedWithSuccess = true;
+        _viewModel.CloseRequest += (s, success) => closedWithSuccess = success;
+
+        // Act
+        _viewModel.CancelCommand.Execute(null);
+
+        // Assert
+        closedWithSuccess.Should().BeFalse();
+    }
 }

@@ -36,7 +36,7 @@ public class TrabajoServiceTests
     {
         // Arrange
         var list = new List<Trabajo> { new() { Descripcion = "Trabajo 1" } };
-        _trabajoRepo.GetAllWithClienteAsync().Returns(list);
+        _trabajoRepo.GetAllWithDeepLoadAsync().Returns(list);
 
         // Act
         var result = await _service.GetAllAsync();
@@ -52,7 +52,7 @@ public class TrabajoServiceTests
         // Arrange
         var id = Guid.NewGuid();
         var entity = new Trabajo { Id = id, Descripcion = "Test" };
-        _trabajoRepo.GetByIdWithOrdenesAsync(id).Returns(entity);
+        _trabajoRepo.GetByIdWithDeepLoadAsync(id).Returns(entity);
 
         // Act
         var result = await _service.GetByIdAsync(id);

@@ -47,4 +47,25 @@ public class MovimientosViewModelTests
         _vm.Movimientos.Should().HaveCount(1);
         _vm.Movimientos.First().Concepto.Should().Be("Test");
     }
+
+    [Fact]
+    public async Task FiltroConcepto_ShouldFilterList()
+    {
+        // Arrange
+        var list = new List<MovimientoDto> 
+        { 
+            new() { Concepto = "Agua" },
+            new() { Concepto = "Luz" }
+        };
+        _movimientoService.GetAllAsync().Returns(list);
+        await _vm.LoadMovimientosCommand.ExecuteAsync(null);
+
+        // Act
+        _vm.FiltroConcepto = "Agua";
+        // OnFiltroConceptoChanged calls LoadMovimientosAsync automatically
+
+        // Assert
+        _vm.Movimientos.Should().HaveCount(1);
+        _vm.Movimientos.First().Concepto.Should().Be("Agua");
+    }
 }

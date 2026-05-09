@@ -38,12 +38,53 @@ public class MappingTests
         };
 
         // Act
-        var action = () => dto.Adapt<Trabajo>();
+        var entity = dto.Adapt<Trabajo>();
 
         // Assert
-        action.Should().NotThrow<StackOverflowException>();
-        var entity = action();
         entity.Descripcion.Should().Be("Test");
         entity.OrdenesTrabajo.Should().HaveCount(1);
+    }
+
+    [Fact]
+    public void Movimiento_To_Dto_ShouldMapNavProperties()
+    {
+        // Arrange
+        var entity = new Movimiento
+        {
+            Concepto = "Sueldo",
+            TipoMovimiento = new TipoMovimiento { Nombre = "Ingreso", EsIngreso = true },
+            Categoria = new Categoria { Nombre = "Varios" }
+        };
+
+        // Act
+        var dto = entity.Adapt<MovimientoDto>();
+
+        // Assert
+        dto.Concepto.Should().Be("Sueldo");
+        dto.TipoMovimientoNombre.Should().Be("Ingreso");
+        dto.CategoriaNombre.Should().Be("Varios");
+        dto.EsIngreso.Should().BeTrue();
+    }
+
+    [Fact]
+    public void ClienteDto_To_Entity_ShouldMapContactos()
+    {
+        // Arrange
+        var dto = new ClienteDto
+        {
+            Nombre = "Cliente 1",
+            Contactos = new System.Collections.ObjectModel.ObservableCollection<ClienteContactoDto>
+            {
+                new() { Etiqueta = "Email", Email = "test@test.com" }
+            }
+        };
+
+        // Act
+        var entity = dto.Adapt<Cliente>();
+
+        // Assert
+        entity.Nombre.Should().Be("Cliente 1");
+        entity.Contactos.Should().HaveCount(1);
+        entity.Contactos.First().Email.Should().Be("test@test.com");
     }
 }

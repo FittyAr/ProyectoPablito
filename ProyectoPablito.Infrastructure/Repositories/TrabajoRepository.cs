@@ -12,15 +12,17 @@ public class TrabajoRepository : Repository<Trabajo>, ITrabajoRepository
 {
     public TrabajoRepository(ApplicationDbContext context) : base(context) { }
 
-    public async Task<IEnumerable<Trabajo>> GetAllWithClienteAsync()
+    public async Task<IEnumerable<Trabajo>> GetAllWithDeepLoadAsync()
     {
         return await _context.Trabajos
             .AsNoTracking()
             .Include(t => t.Cliente)
+            .Include(t => t.OrdenesTrabajo)
+                .ThenInclude(o => o.Items)
             .ToListAsync();
     }
 
-    public async Task<Trabajo?> GetByIdWithOrdenesAsync(Guid id)
+    public async Task<Trabajo?> GetByIdWithDeepLoadAsync(Guid id)
     {
         return await _context.Trabajos
             .AsNoTracking()

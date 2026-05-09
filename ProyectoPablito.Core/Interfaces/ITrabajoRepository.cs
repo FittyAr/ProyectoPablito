@@ -14,11 +14,6 @@ public interface ITrabajoRepository : IRepository<Trabajo>
     /// <summary>
     /// Obtiene todos los trabajos incluyendo Cliente (para mostrar nombre).
     /// </summary>
-    Task<IEnumerable<Trabajo>> GetAllWithClienteAsync();
-
-    /// <summary>
-    /// Obtiene un trabajo por ID incluyendo OrdenesTrabajo → Items y Cliente.
-    /// CRÍTICO: Sin este Include, las certificaciones no aparecen en el formulario.
-    /// </summary>
-    Task<Trabajo?> GetByIdWithOrdenesAsync(Guid id);
+    Task<IEnumerable<Trabajo>> GetAllWithDeepLoadAsync();
+    Task<Trabajo?> GetByIdWithDeepLoadAsync(Guid id);
 }

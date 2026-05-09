@@ -34,4 +34,25 @@ public class CategoriaService : ICategoriaService
         await _uow.Repository<Categoria>().AddAsync(entity);
         return await _uow.SaveChangesAsync() > 0;
     }
+
+    public async Task<bool> UpdateAsync(CategoriaDto dto)
+    {
+        _logger.LogInformation("Actualizando categoría: {Id}", dto.Id);
+        var entity = await _uow.Repository<Categoria>().GetByIdAsync(dto.Id);
+        if (entity == null) return false;
+
+        dto.Adapt(entity);
+        _uow.Repository<Categoria>().Update(entity);
+        return await _uow.SaveChangesAsync() > 0;
+    }
+
+    public async Task<bool> DeleteAsync(Guid id)
+    {
+        _logger.LogInformation("Eliminando categoría: {Id}", id);
+        var entity = await _uow.Repository<Categoria>().GetByIdAsync(id);
+        if (entity == null) return false;
+
+        _uow.Repository<Categoria>().Remove(entity);
+        return await _uow.SaveChangesAsync() > 0;
+    }
 }

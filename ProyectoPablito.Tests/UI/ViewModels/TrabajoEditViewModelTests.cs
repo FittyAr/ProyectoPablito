@@ -64,4 +64,34 @@ public class TrabajoEditViewModelTests
         orden.Items.Should().HaveCount(1);
         orden.Items[0].Descripcion.Should().Be("Nuevo Item");
     }
+
+    [Fact]
+    public void RemoveOrden_ShouldRemoveFromList()
+    {
+        // Arrange
+        var orden = new OrdenTrabajoDto { Titulo = "Borrar" };
+        _viewModel.Trabajo.OrdenesTrabajo.Add(orden);
+
+        // Act
+        _viewModel.RemoveOrdenCommand.Execute(orden);
+
+        // Assert
+        _viewModel.Trabajo.OrdenesTrabajo.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void RemoveItem_ShouldRemoveFromOrden()
+    {
+        // Arrange
+        var item = new OrdenTrabajoItemDto { Descripcion = "Item1" };
+        var orden = new OrdenTrabajoDto { Titulo = "O1" };
+        orden.Items.Add(item);
+        _viewModel.Trabajo.OrdenesTrabajo.Add(orden);
+
+        // Act
+        _viewModel.RemoveItemCommand.Execute(item);
+
+        // Assert
+        orden.Items.Should().BeEmpty();
+    }
 }

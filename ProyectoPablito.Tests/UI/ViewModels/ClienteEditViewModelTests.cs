@@ -47,4 +47,49 @@ public class ClienteEditViewModelTests
         _viewModel.Cliente.Contactos.Should().HaveCount(1);
         _viewModel.Cliente.Contactos[0].Etiqueta.Should().Be("General");
     }
+
+    [Fact]
+    public void RemoveContact_ShouldRemoveFromList()
+    {
+        // Arrange
+        var contacto = new ClienteContactoDto { Etiqueta = "Test" };
+        _viewModel.Cliente.Contactos.Add(contacto);
+
+        // Act
+        _viewModel.RemoveContactCommand.Execute(contacto);
+
+        // Assert
+        _viewModel.Cliente.Contactos.Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task SaveCommand_ShouldUpdateClient_WhenIdIsNotEmpty()
+    {
+        // Arrange
+        _viewModel.Cliente = new ClienteDto { Id = Guid.NewGuid(), Nombre = "Update" };
+        _clienteService.UpdateAsync(_viewModel.Cliente).Returns(true);
+        bool closed = false;
+        _viewModel.CloseRequest += (s, success) => closed = success;
+
+        // Act
+        await _viewModel.SaveCommand.ExecuteAsync(null);
+
+        // Assert
+        await _clienteService.Received(1).UpdateAsync(Arg.Any<ClienteDto>());
+        closed.Should().BeTrue();
+    }
+
+    [Fact]
+    public void CancelCommand_ShouldInvokeCloseRequestWithFalse()
+    {
+        // Arrange
+        bool closedWithSuccess = true;
+        _viewModel.CloseRequest += (s, success) => closedWithSuccess = success;
+
+        // Act
+        _viewModel.CancelCommand.Execute(null);
+
+        // Assert
+        closedWithSuccess.Should().BeFalse();
+    }
 }

@@ -8,4 +8,6 @@ public interface ICategoriaService
 {
     Task<IEnumerable<CategoriaDto>> GetAllAsync();
     Task<bool> CreateAsync(CategoriaDto dto);
+    Task<bool> UpdateAsync(CategoriaDto dto);
+    Task<bool> DeleteAsync(Guid id);
 }

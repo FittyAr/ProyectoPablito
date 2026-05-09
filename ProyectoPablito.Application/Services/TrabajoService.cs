@@ -24,14 +24,14 @@ public class TrabajoService : ITrabajoService
     public async Task<IEnumerable<TrabajoDto>> GetAllAsync()
     {
         // Incluye Cliente para mostrar ClienteNombre en la lista
-        var entities = await _uow.Trabajos.GetAllWithClienteAsync();
+        var entities = await _uow.Trabajos.GetAllWithDeepLoadAsync();
         return entities.Adapt<IEnumerable<TrabajoDto>>();
     }
 
     public async Task<TrabajoDto?> GetByIdAsync(Guid id)
     {
         // CRÍTICO: Incluye OrdenesTrabajo → Items para el formulario de edición
-        var entity = await _uow.Trabajos.GetByIdWithOrdenesAsync(id);
+        var entity = await _uow.Trabajos.GetByIdWithDeepLoadAsync(id);
         return entity?.Adapt<TrabajoDto>();
     }
 

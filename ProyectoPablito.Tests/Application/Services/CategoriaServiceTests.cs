@@ -57,4 +57,37 @@ public class CategoriaServiceTests
         result.Should().BeTrue();
         await _repo.Received(1).AddAsync(Arg.Any<Categoria>());
     }
+
+    [Fact]
+    public async Task UpdateAsync_ShouldReturnTrue_WhenSuccess()
+    {
+        // Arrange
+        var dto = new CategoriaDto { Id = Guid.NewGuid(), Nombre = "Update" };
+        _repo.GetByIdAsync(dto.Id).Returns(new Categoria { Id = dto.Id });
+        _uow.SaveChangesAsync().Returns(1);
+
+        // Act
+        var result = await _service.UpdateAsync(dto);
+
+        // Assert
+        result.Should().BeTrue();
+        _repo.Received(1).Update(Arg.Any<Categoria>());
+    }
+
+    [Fact]
+    public async Task DeleteAsync_ShouldReturnTrue_WhenSuccess()
+    {
+        // Arrange
+        var id = Guid.NewGuid();
+        var entity = new Categoria { Id = id };
+        _repo.GetByIdAsync(id).Returns(entity);
+        _uow.SaveChangesAsync().Returns(1);
+
+        // Act
+        var result = await _service.DeleteAsync(id);
+
+        // Assert
+        result.Should().BeTrue();
+        _repo.Received(1).Remove(entity);
+    }
 }
