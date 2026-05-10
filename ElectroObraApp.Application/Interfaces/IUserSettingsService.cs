@@ -18,5 +18,8 @@ public interface IUserSettingsService
     
     string GetAppName();
     Task SetAppNameAsync(string name);
+
+    string GetDashboardPeriod();
+    Task SetDashboardPeriodAsync(string period);
 }
 

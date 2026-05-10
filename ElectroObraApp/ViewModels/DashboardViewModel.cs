@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ElectroObraApp.Application.Interfaces;
+using ElectroObraApp.Application.DTOs;
 using LiveChartsCore;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
@@ -15,11 +16,18 @@ using LiveChartsCore.Measure;
 
 namespace ElectroObraApp.ViewModels;
 
+public class TopClienteDto
+{
+    public string Nombre { get; set; } = string.Empty;
+    public decimal Total { get; set; }
+}
+
 public partial class DashboardViewModel : ViewModelBase
 {
     private readonly IMovimientoService _movimientoService;
     private readonly IClienteService _clienteService;
     private readonly ITrabajoService _trabajoService;
+    private readonly IUserSettingsService _settingsService;
 
     [ObservableProperty]
     private string _title = "Dashboard Operativo";
@@ -42,6 +50,17 @@ public partial class DashboardViewModel : ViewModelBase
     [ObservableProperty]
     private bool _isPrivacyModeActive;
 
+    [ObservableProperty]
+    private string _currentTimeRange = "Mensual"; // Mensual, Anual, Total
+
+    partial void OnCurrentTimeRangeChanged(string value)
+    {
+        _ = LoadStatsAsync();
+    }
+
+    public ObservableCollection<TopClienteDto> TopClientes { get; } = new();
+    public ObservableCollection<MovimientoDto> RecentMovimientos { get; } = new();
+
     public string DisplayTotalIngresos => IsPrivacyModeActive ? "$ *********" : TotalIngresos.ToString("C");
     public string DisplayTotalGastos => IsPrivacyModeActive ? "$ *********" : TotalGastos.ToString("C");
     public string DisplayBalance => IsPrivacyModeActive ? "$ *********" : Balance.ToString("C");
@@ -53,6 +72,9 @@ public partial class DashboardViewModel : ViewModelBase
     public LiveChartsCore.Measure.TooltipPosition PieTooltipPosition => IsPrivacyModeActive 
         ? LiveChartsCore.Measure.TooltipPosition.Hidden 
         : LiveChartsCore.Measure.TooltipPosition.Right;
+
+    public Func<LiveChartsCore.Kernel.ChartPoint, string> PieFormatter => 
+        point => $"{point.Context.Series.Name}: {point.Coordinate.PrimaryValue:C}";
 
     // Charts
     public ObservableCollection<ISeries> Series { get; set; } = new();
@@ -66,12 +88,16 @@ public partial class DashboardViewModel : ViewModelBase
     public DashboardViewModel(
         IMovimientoService movimientoService, 
         IClienteService clienteService,
-        ITrabajoService trabajoService)
+        ITrabajoService trabajoService,
+        IUserSettingsService settingsService)
     {
         _movimientoService = movimientoService;
         _clienteService = clienteService;
         _trabajoService = trabajoService;
+        _settingsService = settingsService;
         
+        CurrentTimeRange = settingsService.GetDashboardPeriod();
+
         LoadStatsCommand = new AsyncRelayCommand(LoadStatsAsync);
         NavigateToAlertCommand = new RelayCommand<string>(NavigateToAlert);
         TogglePrivacyModeCommand = new RelayCommand(() => {
@@ -97,23 +123,41 @@ public partial class DashboardViewModel : ViewModelBase
 
     public async Task LoadStatsAsync()
     {
-        var movimientos = (await _movimientoService.GetAllAsync()).ToList();
-        var clientes = await _clienteService.GetAllAsync();
-        var trabajos = await _trabajoService.GetAllAsync();
+        var movimientos = await _movimientoService.GetAllAsync();
+        var filterDate = CurrentTimeRange switch
+        {
+            "Mensual" => DateTime.Now.AddMonths(-1),
+            "Anual" => DateTime.Now.AddYears(-1),
+            _ => DateTime.MinValue
+        };
 
-        TotalIngresos = movimientos.Where(m => m.TipoMovimientoSuma).Sum(m => m.Total);
-        TotalGastos = movimientos.Where(m => !m.TipoMovimientoSuma).Sum(m => m.Total);
+        var filteredMovimientos = movimientos.Where(m => m.Fecha >= filterDate).ToList();
+
+        TotalIngresos = filteredMovimientos.Where(m => m.TipoMovimientoSuma).Sum(m => m.Total);
+        TotalGastos = filteredMovimientos.Where(m => !m.TipoMovimientoSuma).Sum(m => m.Total);
         Balance = TotalIngresos - TotalGastos;
 
-        ClientesActivos = clientes.Count();
-        TrabajosPendientes = trabajos.Count(t => t.FechaFin == null);
+        // Top Clientes (Income)
+        TopClientes.Clear();
+        var top = filteredMovimientos
+            .Where(m => m.TipoMovimientoSuma && m.ClienteId != null)
+            .GroupBy(m => m.ClienteNombre)
+            .Select(g => new TopClienteDto { Nombre = g.Key ?? "Sin Nombre", Total = g.Sum(m => m.Total) })
+            .OrderByDescending(x => x.Total)
+            .Take(3);
+        
+        foreach(var t in top) TopClientes.Add(t);
 
-        // Prepare Chart Data (Current Year)
-        var currentYear = DateTime.Now.Year;
+        // Recent Activity
+        RecentMovimientos.Clear();
+        var recent = movimientos.OrderByDescending(m => m.Fecha).Take(5);
+        foreach(var r in recent) RecentMovimientos.Add(r);
+
+        // Bar Chart Data (Keep monthly for comparison even if filtered for cards)
         var monthlyIncome = new double[12];
         var monthlyExpenses = new double[12];
 
-        foreach (var m in movimientos.Where(m => m.Fecha.Year == currentYear))
+        foreach (var m in movimientos.Where(m => m.Fecha.Year == DateTime.Now.Year))
         {
             int month = m.Fecha.Month - 1;
             if (m.TipoMovimientoSuma) monthlyIncome[month] += (double)m.Total;

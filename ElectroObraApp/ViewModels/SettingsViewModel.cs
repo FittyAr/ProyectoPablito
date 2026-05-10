@@ -22,7 +22,11 @@ public partial class SettingsViewModel : ViewModelBase
     [ObservableProperty]
     private string _selectedTheme;
 
+    [ObservableProperty]
+    private string _selectedDashboardPeriod;
+
     public ObservableCollection<string> Themes { get; } = new() { "Oscuro", "Media Noche", "Industrial", "Solar", "Cibernético", "Océano", "Claro" };
+    public ObservableCollection<string> DashboardPeriods { get; } = new() { "Mensual", "Anual", "Total" };
 
     public SettingsViewModel(IUserSettingsService settingsService)
     {
@@ -32,6 +36,7 @@ public partial class SettingsViewModel : ViewModelBase
         _logoPath = _settingsService.GetLogoPath();
         _backgroundPath = _settingsService.GetBackgroundPath();
         _selectedTheme = _settingsService.GetTheme();
+        _selectedDashboardPeriod = _settingsService.GetDashboardPeriod();
     }
 
     [RelayCommand]
@@ -41,6 +46,7 @@ public partial class SettingsViewModel : ViewModelBase
         await _settingsService.SetLogoPathAsync(LogoPath);
         await _settingsService.SetBackgroundPathAsync(BackgroundPath);
         await _settingsService.SetThemeAsync(SelectedTheme);
+        await _settingsService.SetDashboardPeriodAsync(SelectedDashboardPeriod);
         
         if (Avalonia.Application.Current is App app)
         {

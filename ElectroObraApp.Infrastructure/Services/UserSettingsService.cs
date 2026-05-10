@@ -31,8 +31,59 @@ public class UserSettingsService : IUserSettingsService
     public string GetBackgroundPath() => _configuration.GetValue<string>("Application:Branding:BackgroundPath", "avares://ElectroObraApp/Assets/Images/electro-obra3.png") ?? "";
     public Task SetBackgroundPathAsync(string path) => SaveValueAsync("Branding:BackgroundPath", path);
 
-    public string GetAppName() => _configuration.GetValue<string>("Application:Name", "ElectroObraApp") ?? "ElectroObraApp";
-    public Task SetAppNameAsync(string name) => SaveValueAsync("Name", name);
+    public string GetAppName() => GetValue("Application:Name", "ElectroObraApp");
+    public async Task SetAppNameAsync(string name) => await SetValueAsync("Application:Name", name);
+
+    public string GetDashboardPeriod() => GetValue("Application:Dashboard:Period", "Mensual");
+    public async Task SetDashboardPeriodAsync(string period) => await SetValueAsync("Application:Dashboard:Period", period);
+
+    private string GetValue(string key, string defaultValue)
+    {
+        try
+        {
+            if (!File.Exists(_settingsPath)) return defaultValue;
+            var jsonString = File.ReadAllText(_settingsPath);
+            var root = JsonNode.Parse(jsonString);
+            var node = root;
+            foreach (var part in key.Split(':'))
+            {
+                node = node?[part];
+            }
+            return node?.GetValue<string>() ?? defaultValue;
+        }
+        catch
+        {
+            return defaultValue;
+        }
+    }
+
+    private async Task SetValueAsync(string keyPath, object value)
+    {
+        try
+        {
+            var jsonString = await File.ReadAllTextAsync(_settingsPath);
+            var root = JsonNode.Parse(jsonString) ?? new JsonObject();
+            
+            var parts = keyPath.Split(':');
+            JsonNode currentNode = root;
+            
+            for (int i = 0; i < parts.Length - 1; i++)
+            {
+                var part = parts[i];
+                currentNode[part] ??= new JsonObject();
+                currentNode = currentNode[part]!;
+            }
+
+            currentNode[parts[^1]] = JsonValue.Create(value);
+
+            var options = new JsonSerializerOptions { WriteIndented = true };
+            await File.WriteAllTextAsync(_settingsPath, root.ToJsonString(options));
+        }
+        catch (Exception)
+        {
+            // Silently fail or log
+        }
+    }
 
     private async Task SaveValueAsync<T>(string keyPath, T value)
     {

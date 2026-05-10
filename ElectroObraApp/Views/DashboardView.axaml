@@ -3,131 +3,169 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:ElectroObraApp.ViewModels"
+             xmlns:dto="clr-namespace:ElectroObraApp.Application.DTOs;assembly=ElectroObraApp.Application"
              xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.Avalonia;assembly=LiveChartsCore.SkiaSharpView.Avalonia"
              xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
              xmlns:conv="using:ElectroObraApp.Views.Converters"
-             mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="800"
+             mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="1200"
              x:Class="ElectroObraApp.Views.DashboardView"
              x:DataType="vm:DashboardViewModel">
     
     <UserControl.Resources>
-        <conv:StringEqualsConverter x:Key="StringEqualsConverter" />
+        <conv:BoolToObjectConverter x:Key="BoolToTextConverter" TrueValue="Modo Privado" FalseValue="Modo Público" />
+        <conv:BoolToObjectConverter x:Key="BoolToIconConverter" TrueValue="EyeOff" FalseValue="Eye" />
+        <conv:BoolToObjectConverter x:Key="BoolToColorConverter" TrueValue="#ff5252" FalseValue="#4caf50" />
     </UserControl.Resources>
 
     <ScrollViewer>
-        <Grid RowDefinitions="Auto, Auto, *, *" Margin="25">
-            <!-- Header -->
-            <Grid Grid.Row="0" ColumnDefinitions="*, Auto">
+        <Grid RowDefinitions="Auto, Auto, *, *, *" Margin="25">
+            <!-- Header & Controls -->
+            <Grid Grid.Row="0" ColumnDefinitions="*, Auto, Auto" Margin="0,0,0,20">
                 <StackPanel Grid.Column="0" Spacing="5">
-                    <TextBlock Text="{Binding Title}" FontSize="32" FontWeight="ExtraBold" Foreground="{DynamicResource AccentBrush}" />
-                    <TextBlock Text="Vista general del estado operativo de la empresa" Foreground="Gray" FontSize="14"/>
+                    <TextBlock Text="{Binding Title}" FontSize="36" FontWeight="Black" Foreground="{DynamicResource AccentBrush}" />
+                    <TextBlock Text="Vista general del estado operativo" Foreground="Gray" FontSize="14"/>
                 </StackPanel>
 
-                <Button Grid.Column="1" 
-                        Command="{Binding TogglePrivacyModeCommand}"
-                        Classes="privacyToggle"
-                        ToolTip.Tip="Alternar modo privacidad">
+                <!-- Period Selector -->
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center" Margin="0,0,20,0">
+                    <TextBlock Text="Periodo:" VerticalAlignment="Center" Foreground="Gray"/>
+                    <ComboBox SelectedItem="{Binding CurrentTimeRange}" Width="120">
+                        <ComboBoxItem Content="Mensual"/>
+                        <ComboBoxItem Content="Anual"/>
+                        <ComboBoxItem Content="Total"/>
+                    </ComboBox>
+                </StackPanel>
+
+                <!-- Modern Privacy Toggle -->
+                <ToggleButton Grid.Column="2" 
+                              IsChecked="{Binding IsPrivacyModeActive}"
+                              Classes="privacyButton">
                     <StackPanel Orientation="Horizontal" Spacing="10">
-                        <materialIcons:MaterialIcon Kind="{Binding IsPrivacyModeActive, Converter={StaticResource StringEqualsConverter}, ConverterParameter='True?EyeOff?Eye'}" />
-                        <TextBlock Text="{Binding IsPrivacyModeActive, Converter={StaticResource StringEqualsConverter}, ConverterParameter='True?Privacidad: ON?Privacidad: OFF'}" VerticalAlignment="Center"/>
+                        <materialIcons:MaterialIcon Kind="{Binding IsPrivacyModeActive, Converter={StaticResource BoolToIconConverter}}" 
+                                                    Foreground="{Binding IsPrivacyModeActive, Converter={StaticResource BoolToColorConverter}}" />
+                        <TextBlock Text="{Binding IsPrivacyModeActive, Converter={StaticResource BoolToTextConverter}}" FontWeight="Bold" />
                     </StackPanel>
-                </Button>
+                </ToggleButton>
             </Grid>
 
-            <!-- Metrics Cards -->
-            <UniformGrid Grid.Row="1" Columns="4">
-                <Border Classes="card" Background="#1b3a1b" BorderBrush="#4caf50">
+            <!-- Top Metrics Row -->
+            <UniformGrid Grid.Row="1" Columns="4" Margin="0,0,0,20">
+                <Border Classes="card metricCard" Background="#1b3a1b" BorderBrush="#4caf50">
                     <StackPanel>
-                        <TextBlock Text="Total Ingresos" Classes="cardLabel"/>
+                        <TextBlock Text="Ingresos" Classes="cardLabel"/>
                         <TextBlock Text="{Binding DisplayTotalIngresos}" Classes="cardValue" Foreground="#4caf50"/>
                     </StackPanel>
                 </Border>
 
-                <Border Classes="card" Background="#3a1b1b" BorderBrush="#f44336">
+                <Border Classes="card metricCard" Background="#3a1b1b" BorderBrush="#f44336">
                     <StackPanel>
-                        <TextBlock Text="Total Gastos" Classes="cardLabel"/>
+                        <TextBlock Text="Gastos" Classes="cardLabel"/>
                         <TextBlock Text="{Binding DisplayTotalGastos}" Classes="cardValue" Foreground="#f44336"/>
                     </StackPanel>
                 </Border>
 
-                <Border Classes="card" Background="#1b1b3a" BorderBrush="#2196f3">
+                <Border Classes="card metricCard" Background="#1b1b3a" BorderBrush="#2196f3">
                     <StackPanel>
-                        <TextBlock Text="Balance Neto" Classes="cardLabel"/>
+                        <TextBlock Text="Balance" Classes="cardLabel"/>
                         <TextBlock Text="{Binding DisplayBalance}" Classes="cardValue" Foreground="#2196f3"/>
                     </StackPanel>
                 </Border>
 
-                <Border Classes="card" Background="#2a2a2a" BorderBrush="#ff9800">
+                <Border Classes="card metricCard" Background="#2a2a2a" BorderBrush="#ff9800">
                     <StackPanel>
-                        <TextBlock Text="Trabajos Activos" Classes="cardLabel"/>
+                        <TextBlock Text="Pendientes" Classes="cardLabel"/>
                         <TextBlock Text="{Binding TrabajosPendientes}" Classes="cardValue" Foreground="#ff9800"/>
                     </StackPanel>
                 </Border>
             </UniformGrid>
 
             <!-- Main Charts Row -->
-            <Grid Grid.Row="2" ColumnDefinitions="2*, *">
-                <!-- Bar Chart: Income vs Expenses -->
-                <Border Classes="chartCard" Grid.Column="0" Margin="0,0,12,0">
+            <Grid Grid.Row="2" ColumnDefinitions="2*, *" Margin="0,0,0,20">
+                <Border Classes="chartCard" Grid.Column="0" Margin="0,0,10,0">
                     <StackPanel Spacing="10">
-                        <TextBlock Text="Comparativa Mensual (Ingresos vs Gastos)" FontSize="18" FontWeight="Bold" Margin="0,0,0,10"/>
+                        <TextBlock Text="Evolución Financiera" FontSize="20" FontWeight="Bold" Margin="0,0,0,10"/>
                         <lvc:CartesianChart Series="{Binding Series}" 
                                             XAxes="{Binding XAxes}" 
-                                            Height="300"
+                                            Height="350"
                                             Background="Transparent"
-                                            TooltipPosition="{Binding ChartTooltipPosition}"
-                                            LegendPosition="Bottom"/>
+                                            TooltipPosition="{Binding ChartTooltipPosition}"/>
                     </StackPanel>
                 </Border>
 
-                <!-- Pie Chart: Categories -->
-                <Border Classes="chartCard" Grid.Column="1" Margin="12,0,0,0">
+                <Border Classes="chartCard" Grid.Column="1" Margin="10,0,0,0">
                     <StackPanel Spacing="10">
-                        <TextBlock Text="Gastos por Categoría" FontSize="18" FontWeight="Bold" Margin="0,0,0,10"/>
+                        <TextBlock Text="Distribución" FontSize="20" FontWeight="Bold" Margin="0,0,0,10"/>
                         <lvc:PieChart Series="{Binding CategorySeries}" 
-                                      Height="300" 
+                                      Height="350" 
                                       Background="Transparent"
                                       TooltipPosition="{Binding PieTooltipPosition}"
-                                      LegendPosition="Right"/>
+                                      LegendPosition="Bottom"/>
                     </StackPanel>
                 </Border>
             </Grid>
 
-            <!-- Bottom Section -->
-            <Grid Grid.Row="3" ColumnDefinitions="*, *">
-                 <Border Classes="chartCard" Grid.Column="0" Margin="0,25,12,0">
+            <!-- Bottom Intelligence Row -->
+            <Grid Grid.Row="3" ColumnDefinitions="*, *, *" Margin="0,0,0,20">
+                <!-- Top Clients -->
+                <Border Classes="chartCard" Grid.Column="0" Margin="0,0,10,0">
                     <StackPanel Spacing="15">
-                        <TextBlock Text="Alertas y Notificaciones" FontSize="18" FontWeight="Bold"/>
-                        
-                        <!-- Interactive Alerts -->
-                        <Button Classes="alertButton" Command="{Binding NavigateToAlertCommand}" CommandParameter="Liquidaciones">
-                            <Border Background="#33ff9800" Padding="15" CornerRadius="8" BorderBrush="#ff9800" BorderThickness="1">
-                                <StackPanel Orientation="Horizontal" Spacing="15">
-                                    <TextBlock Text="⚠️" FontSize="20" VerticalAlignment="Center"/>
-                                    <TextBlock Text="Hay 3 liquidaciones pendientes para este mes." VerticalAlignment="Center"/>
-                                    <materialIcons:MaterialIcon Kind="ChevronRight" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="50,0,0,0"/>
-                                </StackPanel>
-                            </Border>
-                        </Button>
-
-                        <Button Classes="alertButton" Command="{Binding NavigateToAlertCommand}" CommandParameter="Clientes">
-                            <Border Background="#332196f3" Padding="15" CornerRadius="8" BorderBrush="#2196f3" BorderThickness="1">
-                                <StackPanel Orientation="Horizontal" Spacing="15">
-                                    <TextBlock Text="ℹ️" FontSize="20" VerticalAlignment="Center"/>
-                                    <TextBlock Text="El cliente 'García Construcciones' ha sido actualizado." VerticalAlignment="Center"/>
-                                    <materialIcons:MaterialIcon Kind="ChevronRight" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="30,0,0,0"/>
-                                </StackPanel>
-                            </Border>
-                        </Button>
+                        <TextBlock Text="💎 Top Clientes" FontSize="18" FontWeight="Bold"/>
+                        <ItemsControl ItemsSource="{Binding TopClientes}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="vm:TopClienteDto">
+                                    <Border Background="#10ffffff" Margin="0,0,0,8" Padding="12" CornerRadius="10">
+                                        <Grid ColumnDefinitions="*, Auto">
+                                            <TextBlock Text="{Binding Nombre}" FontWeight="Medium"/>
+                                            <TextBlock Grid.Column="1" Text="{Binding Total, StringFormat=\{0:C\}}" Foreground="#4caf50" FontWeight="Bold"/>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
                     </StackPanel>
                 </Border>
-                
-                <!-- Network Status (Hidden as requested for SQLite usage) -->
-                <Border Classes="chartCard" Grid.Column="1" Margin="12,25,0,0" IsVisible="False">
-                    <StackPanel Spacing="10" VerticalAlignment="Center" HorizontalAlignment="Center">
-                         <TextBlock Text="Estatus de Red" Foreground="Gray" FontSize="12" HorizontalAlignment="Center"/>
-                         <TextBlock Text="Sincronizado" Foreground="#4caf50" FontWeight="Bold" HorizontalAlignment="Center"/>
-                         <ProgressBar Value="100" Margin="0,10" Foreground="#4caf50" Height="4" Width="200"/>
+
+                <!-- Recent Activity -->
+                <Border Classes="chartCard" Grid.Column="1" Margin="10,0,10,0">
+                    <StackPanel Spacing="15">
+                        <TextBlock Text="🕒 Actividad Reciente" FontSize="18" FontWeight="Bold"/>
+                        <ItemsControl ItemsSource="{Binding RecentMovimientos}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="dto:MovimientoDto">
+                                    <Border BorderBrush="#20ffffff" BorderThickness="0,0,0,1" Padding="0,5,0,5">
+                                        <Grid ColumnDefinitions="Auto, *, Auto">
+                                            <TextBlock Text="{Binding Fecha, StringFormat=\{0:dd/MM\}}" Foreground="Gray" Width="40"/>
+                                            <TextBlock Grid.Column="1" Text="{Binding Concepto}" TextTrimming="CharacterEllipsis" Margin="5,0"/>
+                                            <TextBlock Grid.Column="2" 
+                                                       Text="{Binding Total, StringFormat=\{0:C\}}" 
+                                                       Foreground="{Binding TipoMovimientoSuma, Converter={StaticResource BoolToColorConverter}}"
+                                                       FontWeight="Bold"/>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+
+                <!-- Notifications & Health -->
+                <Border Classes="chartCard" Grid.Column="2" Margin="10,0,0,0">
+                    <StackPanel Spacing="15">
+                        <TextBlock Text="📢 Alertas" FontSize="18" FontWeight="Bold"/>
+                        <Button Classes="alertButton" Command="{Binding NavigateToAlertCommand}" CommandParameter="Liquidaciones">
+                            <Border Background="#20ff9800" Padding="12" CornerRadius="10" BorderBrush="#ff9800" BorderThickness="1">
+                                <StackPanel Orientation="Horizontal" Spacing="10">
+                                    <TextBlock Text="⚠️" VerticalAlignment="Center"/>
+                                    <TextBlock Text="3 Liquidaciones Pendientes" FontSize="12" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Border>
+                        </Button>
+                        <Border Background="#202196f3" Padding="12" CornerRadius="10" BorderBrush="#2196f3" BorderThickness="1">
+                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                <TextBlock Text="ℹ️" VerticalAlignment="Center"/>
+                                <TextBlock Text="Base de datos SQLite: Saludable" FontSize="12" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Border>
                     </StackPanel>
                 </Border>
             </Grid>
@@ -135,51 +173,66 @@
     </ScrollViewer>
 
     <UserControl.Styles>
-        <Style Selector="Border.card">
-            <Setter Property="CornerRadius" Value="15" />
-            <Setter Property="Margin" Value="5" />
-            <Setter Property="Padding" Value="20" />
-            <Setter Property="BorderThickness" Value="0,4,0,0" />
-            <Setter Property="BoxShadow" Value="0 4 10 0 #40000000" />
+        <Style Selector="Border.metricCard">
+            <Setter Property="CornerRadius" Value="18" />
+            <Setter Property="Margin" Value="8" />
+            <Setter Property="Padding" Value="24" />
+            <Setter Property="BorderThickness" Value="0,6,0,0" />
+            <Setter Property="BoxShadow" Value="0 8 20 0 #50000000" />
         </Style>
+        
         <Style Selector="TextBlock.cardLabel">
-            <Setter Property="FontSize" Value="13" />
-            <Setter Property="Foreground" Value="#bbb" />
-            <Setter Property="Margin" Value="0,0,0,5" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="#aaa" />
+            <Setter Property="Margin" Value="0,0,0,8" />
         </Style>
+        
         <Style Selector="TextBlock.cardValue">
-            <Setter Property="FontSize" Value="26" />
-            <Setter Property="FontWeight" Value="Heavy" />
-        </Style>
-        <Style Selector="Border.chartCard">
-            <Setter Property="Background" Value="{DynamicResource PaneBackgroundBrush}" />
-            <Setter Property="CornerRadius" Value="15" />
-            <Setter Property="Padding" Value="20" />
-            <Setter Property="BoxShadow" Value="0 4 15 0 #60000000" />
+            <Setter Property="FontSize" Value="28" />
+            <Setter Property="FontWeight" Value="Black" />
         </Style>
 
-        <Style Selector="Button.privacyToggle">
+        <Style Selector="Border.chartCard">
             <Setter Property="Background" Value="{DynamicResource PaneBackgroundBrush}" />
-            <Setter Property="Padding" Value="15,8" />
-            <Setter Property="CornerRadius" Value="10" />
+            <Setter Property="CornerRadius" Value="20" />
+            <Setter Property="Padding" Value="25" />
+            <Setter Property="BoxShadow" Value="0 6 25 0 #40000000" />
+        </Style>
+
+        <Style Selector="ToggleButton.privacyButton">
+            <Setter Property="Background" Value="{DynamicResource PaneBackgroundBrush}" />
+            <Setter Property="Padding" Value="16,10" />
+            <Setter Property="CornerRadius" Value="12" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="BorderBrush" Value="{DynamicResource SidebarSeparatorBrush}" />
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{TemplateBinding CornerRadius}"
+                            Padding="{TemplateBinding Padding}">
+                        <ContentPresenter Content="{TemplateBinding Content}" />
+                    </Border>
+                </ControlTemplate>
+            </Setter>
         </Style>
-        <Style Selector="Button.privacyToggle:pointerover /template/ ContentPresenter">
-            <Setter Property="Background" Value="{DynamicResource AccentBrush}" />
-            <Setter Property="Foreground" Value="White" />
+        
+        <Style Selector="ToggleButton.privacyButton:pointerover">
+            <Setter Property="Background" Value="{DynamicResource SidebarSeparatorBrush}" />
+        </Style>
+        
+        <Style Selector="ToggleButton.privacyButton:checked">
+            <Setter Property="Background" Value="#30ff5252" />
+            <Setter Property="BorderBrush" Value="#ff5252" />
         </Style>
 
         <Style Selector="Button.alertButton">
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="Padding" Value="0" />
             <Setter Property="HorizontalAlignment" Value="Stretch" />
-            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
             <Setter Property="BorderThickness" Value="0" />
-        </Style>
-        <Style Selector="Button.alertButton:pointerover /template/ ContentPresenter">
-            <Setter Property="Background" Value="Transparent" />
-            <Setter Property="Opacity" Value="0.8" />
         </Style>
     </UserControl.Styles>
 </UserControl>

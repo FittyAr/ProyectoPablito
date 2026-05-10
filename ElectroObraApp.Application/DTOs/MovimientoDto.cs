@@ -24,6 +24,7 @@ public class MovimientoDto
 
     public Guid? EmpleadoId { get; set; }
     public Guid? ClienteId { get; set; }
+    public string? ClienteNombre { get; set; }
     public Guid? TrabajoId { get; set; }
 }
 
