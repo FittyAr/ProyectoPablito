@@ -1,0 +1,30 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using ElectroObraApp.Application.Interfaces;
+using ElectroObraApp.Core.Interfaces;
+using ElectroObraApp.Infrastructure.Data;
+using ElectroObraApp.Infrastructure.Repositories;
+using ElectroObraApp.Infrastructure.Services;
+
+namespace ElectroObraApp.Infrastructure;
+
+public static class DependencyInjection
+{
+    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
+    {
+        var connectionString = configuration.GetConnectionString("DefaultConnection");
+        
+        services.AddDbContext<ApplicationDbContext>(options =>
+            options.UseSqlite(connectionString));
+
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddSingleton<ILocalizationService, LocalizationService>();
+        services.AddScoped<IExportService, ExportService>();
+        services.AddScoped<IDatabaseSeedService, DatabaseSeedService>();
+        services.AddScoped<IUserSettingsService, UserSettingsService>();
+        
+        return services;
+    }
+}
+

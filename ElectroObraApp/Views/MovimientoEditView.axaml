@@ -1,0 +1,86 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:ElectroObraApp.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="550"
+             x:Class="ElectroObraApp.Views.MovimientoEditView"
+             x:DataType="vm:MovimientoEditViewModel">
+    <UserControl.KeyBindings>
+        <KeyBinding Gesture="Escape" Command="{Binding CancelCommand}"/>
+    </UserControl.KeyBindings>
+    <Border Padding="20" Background="#2d2d2d" CornerRadius="8">
+        <StackPanel Spacing="15">
+            <TextBlock Text="{Binding Title}" FontSize="20" FontWeight="Bold" Margin="0,0,0,10"/>
+            
+            <StackPanel Spacing="5">
+                <TextBlock Text="Concepto" FontSize="12" Foreground="#aaa"/>
+                <TextBox Text="{Binding Movimiento.Concepto}" PlaceholderText="Ej: Pago de alquiler"/>
+            </StackPanel>
+
+            <Grid ColumnDefinitions="*,*">
+                <StackPanel Grid.Column="0" Spacing="5" Margin="0,0,5,0">
+                    <TextBlock Text="Monto" FontSize="12" Foreground="#aaa"/>
+                    <NumericUpDown Value="{Binding Movimiento.Monto}" FormatString="C2"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Spacing="5" Margin="5,0,0,0">
+                    <TextBlock Text="Cantidad" FontSize="12" Foreground="#aaa"/>
+                    <NumericUpDown Value="{Binding Movimiento.Cantidad}" Minimum="1"/>
+                </StackPanel>
+            </Grid>
+
+            <StackPanel Spacing="5">
+                <TextBlock Text="Tipo" FontSize="12" Foreground="#aaa"/>
+                <ComboBox ItemsSource="{Binding TiposMovimiento}" 
+                          SelectedValue="{Binding Movimiento.TipoMovimientoId}"
+                          SelectedValueBinding="{Binding Id}"
+                          HorizontalAlignment="Stretch">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Nombre}"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </StackPanel>
+
+            <StackPanel Spacing="5">
+                <TextBlock Text="Categoría" FontSize="12" Foreground="#aaa"/>
+                <ComboBox ItemsSource="{Binding Categorias}" 
+                          SelectedValue="{Binding Movimiento.CategoriaId}"
+                          SelectedValueBinding="{Binding Id}"
+                          HorizontalAlignment="Stretch">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Nombre}"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </StackPanel>
+
+            <StackPanel Spacing="5">
+                <TextBlock Text="Empleado (Opcional)" FontSize="12" Foreground="#aaa"/>
+                <ComboBox ItemsSource="{Binding Empleados}" 
+                          SelectedValue="{Binding Movimiento.EmpleadoId}"
+                          SelectedValueBinding="{Binding Id}"
+                          HorizontalAlignment="Stretch">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Nombre}"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </StackPanel>
+
+            <StackPanel Spacing="5">
+                <TextBlock Text="Fecha" FontSize="12" Foreground="#aaa"/>
+                <DatePicker SelectedDate="{Binding FechaOffset}" HorizontalAlignment="Stretch"/>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10" Margin="0,20,0,0">
+                <Button Content="Cancelar" Command="{Binding CancelCommand}" IsCancel="True" />
+                <Button Content="Guardar" Classes="accent" Command="{Binding SaveCommand}" IsDefault="True" />
+            </StackPanel>
+        </StackPanel>
+    </Border>
+</UserControl>
+

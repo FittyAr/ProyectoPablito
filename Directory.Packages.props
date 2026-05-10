@@ -15,6 +15,7 @@
     <PackageVersion Include="Avalonia.Browser" Version="12.0.2" />
     <PackageVersion Include="Avalonia.Android" Version="12.0.2" />
     <PackageVersion Include="Avalonia.Controls.DataGrid" Version="12.0.0" />
+    <PackageVersion Include="Avalonia.Svg.Skia" Version="11.3.0" />
     <PackageVersion Include="Material.Icons.Avalonia" Version="3.0.2" />
     <PackageVersion Include="LiveChartsCore.SkiaSharpView.Avalonia" Version="2.0.2" />
     <PackageVersion Include="Avalonia.Labs.Notifications" Version="12.0.2" />

@@ -452,9 +452,10 @@ $RECYCLE.BIN/
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
-ProyectoPablito.db
-ProyectoPablito.db-shm
-ProyectoPablito.db-wal
-ProyectoPablito.Desktop/ProyectoPablito.db
-ProyectoPablito.Desktop/ProyectoPablito.db-shm
-ProyectoPablito.Desktop/ProyectoPablito.db-wal
+ElectroObraApp.db
+ElectroObraApp.db-shm
+ElectroObraApp.db-wal
+ElectroObraApp.Desktop/ElectroObraApp.db
+ElectroObraApp.Desktop/ElectroObraApp.db-shm
+ElectroObraApp.Desktop/ElectroObraApp.db-wal
+

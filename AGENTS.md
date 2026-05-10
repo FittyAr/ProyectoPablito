@@ -1,6 +1,6 @@
-# AGENTS.md - Plan de Implementación "Proyecto Pablito"
+# AGENTS.md - Plan de Implementación "ElectroObraApp"
 
-Este documento detalla la hoja de ruta para el desarrollo de **Proyecto Pablito**, un sistema de gestión operativa profesional.
+Este documento detalla la hoja de ruta para el desarrollo de **ElectroObraApp**, un sistema de gestión operativa profesional.
 
 ## 🚀 Objetivo
 Construir un sistema robusto, escalable y mantenible para el control operativo y flujo de caja, utilizando las mejores prácticas de ingeniería de software.
@@ -71,7 +71,7 @@ El proyecto se dividirá en las siguientes capas para asegurar el desacoplamient
 
 ### Fase 1: Cimientos y Configuración
 - [x] Configuración de `Directory.Packages.props`.
-- [x] Creación de proyectos `ProyectoPablito.Core`, `ProyectoPablito.Application`, `ProyectoPablito.Infrastructure` y `ProyectoPablito.Tests`.
+- [x] Creación de proyectos `ElectroObraApp.Core`, `ElectroObraApp.Application`, `ElectroObraApp.Infrastructure` y `ElectroObraApp.Tests`.
 - [x] Implementación del sistema de Localización (JSON).
 - [x] Configuración de Serilog y DI.
 
@@ -119,3 +119,4 @@ El proyecto se dividirá en las siguientes capas para asegurar el desacoplamient
 
 ---
 **Nota**: Cada paso de la implementación será validado con sus respectivos tests antes de pasar al siguiente.
+

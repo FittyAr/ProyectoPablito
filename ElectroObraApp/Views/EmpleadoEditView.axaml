@@ -1,0 +1,49 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:ElectroObraApp.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="450"
+             x:Class="ElectroObraApp.Views.EmpleadoEditView"
+             x:DataType="vm:EmpleadoEditViewModel">
+    <UserControl.KeyBindings>
+        <KeyBinding Gesture="Escape" Command="{Binding CancelCommand}"/>
+    </UserControl.KeyBindings>
+    <Border Padding="20" Background="#2d2d2d" CornerRadius="8">
+        <StackPanel Spacing="15">
+            <TextBlock Text="{Binding Title}" FontSize="20" FontWeight="Bold" Margin="0,0,0,10"/>
+            
+            <StackPanel Spacing="5">
+                <TextBlock Text="Nombre" FontSize="12" Foreground="#aaa"/>
+                <TextBox Text="{Binding Empleado.Nombre}" PlaceholderText="Nombre completo"/>
+            </StackPanel>
+
+            <Grid ColumnDefinitions="*,*">
+                <StackPanel Grid.Column="0" Spacing="5" Margin="0,0,5,0">
+                    <TextBlock Text="DNI" FontSize="12" Foreground="#aaa"/>
+                    <TextBox Text="{Binding Empleado.Dni}"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Spacing="5" Margin="5,0,0,0">
+                    <TextBlock Text="Cargo" FontSize="12" Foreground="#aaa"/>
+                    <TextBox Text="{Binding Empleado.Cargo}"/>
+                </StackPanel>
+            </Grid>
+
+            <StackPanel Spacing="5">
+                <TextBlock Text="Sueldo Base" FontSize="12" Foreground="#aaa"/>
+                <NumericUpDown Value="{Binding Empleado.SueldoBase}" FormatString="C2"/>
+            </StackPanel>
+
+            <StackPanel Spacing="5">
+                <TextBlock Text="Fecha Ingreso" FontSize="12" Foreground="#aaa"/>
+                <DatePicker SelectedDate="{Binding FechaIngresoOffset}" HorizontalAlignment="Stretch"/>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10" Margin="0,20,0,0">
+                <Button Content="Cancelar" Command="{Binding CancelCommand}" IsCancel="True" />
+                <Button Content="Guardar" Classes="accent" Command="{Binding SaveCommand}" IsDefault="True" />
+            </StackPanel>
+        </StackPanel>
+    </Border>
+</UserControl>
+
