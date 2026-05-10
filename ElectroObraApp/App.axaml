@@ -20,6 +20,8 @@
         <SolidColorBrush x:Key="PaneBackgroundBrush" Color="#252526" />
         <SolidColorBrush x:Key="AccentBrush" Color="#094771" />
         <SolidColorBrush x:Key="SidebarSeparatorBrush" Color="#3e3e42" />
+        <SolidColorBrush x:Key="MainForegroundBrush" Color="#ffffff" />
+        <SolidColorBrush x:Key="SecondaryForegroundBrush" Color="#aaaaaa" />
     </Application.Resources>
 
     <Application.Styles>

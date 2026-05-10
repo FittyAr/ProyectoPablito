@@ -145,7 +145,9 @@ public partial class App : Avalonia.Application
         if (Resources.TryGetResource("MainBackgroundBrush", null, out var mb) && mb is SolidColorBrush mbBrush &&
             Resources.TryGetResource("PaneBackgroundBrush", null, out var pb) && pb is SolidColorBrush pbBrush &&
             Resources.TryGetResource("AccentBrush", null, out var ab) && ab is SolidColorBrush abBrush &&
-            Resources.TryGetResource("SidebarSeparatorBrush", null, out var sb) && sb is SolidColorBrush sbBrush)
+            Resources.TryGetResource("SidebarSeparatorBrush", null, out var sb) && sb is SolidColorBrush sbBrush &&
+            Resources.TryGetResource("MainForegroundBrush", null, out var mf) && mf is SolidColorBrush mfBrush &&
+            Resources.TryGetResource("SecondaryForegroundBrush", null, out var sf) && sf is SolidColorBrush sfBrush)
         {
             switch (themeName)
             {

@@ -23,17 +23,15 @@
             <Grid Grid.Row="0" ColumnDefinitions="*, Auto, Auto" Margin="0,0,0,20">
                 <StackPanel Grid.Column="0" Spacing="5">
                     <TextBlock Text="{Binding Title}" FontSize="36" FontWeight="Black" Foreground="{DynamicResource AccentBrush}" />
-                    <TextBlock Text="Vista general del estado operativo" Foreground="Gray" FontSize="14"/>
+                    <TextBlock Text="Vista general del estado operativo" Foreground="{DynamicResource SecondaryForegroundBrush}" FontSize="14"/>
                 </StackPanel>
 
                 <!-- Period Selector -->
                 <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center" Margin="0,0,20,0">
-                    <TextBlock Text="Periodo:" VerticalAlignment="Center" Foreground="Gray"/>
-                    <ComboBox SelectedItem="{Binding CurrentTimeRange}" Width="120">
-                        <ComboBoxItem Content="Mensual"/>
-                        <ComboBoxItem Content="Anual"/>
-                        <ComboBoxItem Content="Total"/>
-                    </ComboBox>
+                    <TextBlock Text="Periodo:" VerticalAlignment="Center" Foreground="{DynamicResource SecondaryForegroundBrush}"/>
+                    <ComboBox ItemsSource="{Binding TimeRanges}" 
+                              SelectedItem="{Binding CurrentTimeRange}" 
+                              Width="120" />
                 </StackPanel>
 
                 <!-- Modern Privacy Toggle -->
@@ -43,7 +41,9 @@
                     <StackPanel Orientation="Horizontal" Spacing="10">
                         <materialIcons:MaterialIcon Kind="{Binding IsPrivacyModeActive, Converter={StaticResource BoolToIconConverter}}" 
                                                     Foreground="{Binding IsPrivacyModeActive, Converter={StaticResource BoolToColorConverter}}" />
-                        <TextBlock Text="{Binding IsPrivacyModeActive, Converter={StaticResource BoolToTextConverter}}" FontWeight="Bold" />
+                        <TextBlock Text="{Binding IsPrivacyModeActive, Converter={StaticResource BoolToTextConverter}}" 
+                                   FontWeight="Bold" 
+                                   Foreground="{DynamicResource MainForegroundBrush}"/>
                     </StackPanel>
                 </ToggleButton>
             </Grid>
@@ -52,28 +52,28 @@
             <UniformGrid Grid.Row="1" Columns="4" Margin="0,0,0,20">
                 <Border Classes="card metricCard" Background="#1b3a1b" BorderBrush="#4caf50">
                     <StackPanel>
-                        <TextBlock Text="Ingresos" Classes="cardLabel"/>
+                        <TextBlock Text="Ingresos" Classes="cardLabel" Foreground="#aaa"/>
                         <TextBlock Text="{Binding DisplayTotalIngresos}" Classes="cardValue" Foreground="#4caf50"/>
                     </StackPanel>
                 </Border>
 
                 <Border Classes="card metricCard" Background="#3a1b1b" BorderBrush="#f44336">
                     <StackPanel>
-                        <TextBlock Text="Gastos" Classes="cardLabel"/>
+                        <TextBlock Text="Gastos" Classes="cardLabel" Foreground="#aaa"/>
                         <TextBlock Text="{Binding DisplayTotalGastos}" Classes="cardValue" Foreground="#f44336"/>
                     </StackPanel>
                 </Border>
 
                 <Border Classes="card metricCard" Background="#1b1b3a" BorderBrush="#2196f3">
                     <StackPanel>
-                        <TextBlock Text="Balance" Classes="cardLabel"/>
+                        <TextBlock Text="Balance" Classes="cardLabel" Foreground="#aaa"/>
                         <TextBlock Text="{Binding DisplayBalance}" Classes="cardValue" Foreground="#2196f3"/>
                     </StackPanel>
                 </Border>
 
-                <Border Classes="card metricCard" Background="#2a2a2a" BorderBrush="#ff9800">
+                <Border Classes="card metricCard" Background="{DynamicResource PaneBackgroundBrush}" BorderBrush="#ff9800">
                     <StackPanel>
-                        <TextBlock Text="Pendientes" Classes="cardLabel"/>
+                        <TextBlock Text="Pendientes" Classes="cardLabel" Foreground="{DynamicResource SecondaryForegroundBrush}"/>
                         <TextBlock Text="{Binding TrabajosPendientes}" Classes="cardValue" Foreground="#ff9800"/>
                     </StackPanel>
                 </Border>
@@ -83,7 +83,7 @@
             <Grid Grid.Row="2" ColumnDefinitions="2*, *" Margin="0,0,0,20">
                 <Border Classes="chartCard" Grid.Column="0" Margin="0,0,10,0">
                     <StackPanel Spacing="10">
-                        <TextBlock Text="Evolución Financiera" FontSize="20" FontWeight="Bold" Margin="0,0,0,10"/>
+                        <TextBlock Text="Evolución Financiera" FontSize="20" FontWeight="Bold" Margin="0,0,0,10" Foreground="{DynamicResource MainForegroundBrush}"/>
                         <lvc:CartesianChart Series="{Binding Series}" 
                                             XAxes="{Binding XAxes}" 
                                             Height="350"
@@ -94,7 +94,7 @@
 
                 <Border Classes="chartCard" Grid.Column="1" Margin="10,0,0,0">
                     <StackPanel Spacing="10">
-                        <TextBlock Text="Distribución" FontSize="20" FontWeight="Bold" Margin="0,0,0,10"/>
+                        <TextBlock Text="Distribución" FontSize="20" FontWeight="Bold" Margin="0,0,0,10" Foreground="{DynamicResource MainForegroundBrush}"/>
                         <lvc:PieChart Series="{Binding CategorySeries}" 
                                       Height="350" 
                                       Background="Transparent"
@@ -106,16 +106,16 @@
 
             <!-- Bottom Intelligence Row -->
             <Grid Grid.Row="3" ColumnDefinitions="*, *, *" Margin="0,0,0,20">
-                <!-- Top Clients -->
+                <!-- Top Clientes -->
                 <Border Classes="chartCard" Grid.Column="0" Margin="0,0,10,0">
                     <StackPanel Spacing="15">
-                        <TextBlock Text="💎 Top Clientes" FontSize="18" FontWeight="Bold"/>
+                        <TextBlock Text="💎 Top Clientes" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource MainForegroundBrush}"/>
                         <ItemsControl ItemsSource="{Binding TopClientes}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate x:DataType="vm:TopClienteDto">
-                                    <Border Background="#10ffffff" Margin="0,0,0,8" Padding="12" CornerRadius="10">
+                                    <Border Background="#10888888" Margin="0,0,0,8" Padding="12" CornerRadius="10">
                                         <Grid ColumnDefinitions="*, Auto">
-                                            <TextBlock Text="{Binding Nombre}" FontWeight="Medium"/>
+                                            <TextBlock Text="{Binding Nombre}" FontWeight="Medium" Foreground="{DynamicResource MainForegroundBrush}"/>
                                             <TextBlock Grid.Column="1" Text="{Binding Total, StringFormat=\{0:C\}}" Foreground="#4caf50" FontWeight="Bold"/>
                                         </Grid>
                                     </Border>
@@ -128,14 +128,14 @@
                 <!-- Recent Activity -->
                 <Border Classes="chartCard" Grid.Column="1" Margin="10,0,10,0">
                     <StackPanel Spacing="15">
-                        <TextBlock Text="🕒 Actividad Reciente" FontSize="18" FontWeight="Bold"/>
+                        <TextBlock Text="🕒 Actividad Reciente" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource MainForegroundBrush}"/>
                         <ItemsControl ItemsSource="{Binding RecentMovimientos}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate x:DataType="dto:MovimientoDto">
-                                    <Border BorderBrush="#20ffffff" BorderThickness="0,0,0,1" Padding="0,5,0,5">
+                                    <Border BorderBrush="#20888888" BorderThickness="0,0,0,1" Padding="0,5,0,5">
                                         <Grid ColumnDefinitions="Auto, *, Auto">
-                                            <TextBlock Text="{Binding Fecha, StringFormat=\{0:dd/MM\}}" Foreground="Gray" Width="40"/>
-                                            <TextBlock Grid.Column="1" Text="{Binding Concepto}" TextTrimming="CharacterEllipsis" Margin="5,0"/>
+                                            <TextBlock Text="{Binding Fecha, StringFormat=\{0:dd/MM\}}" Foreground="{DynamicResource SecondaryForegroundBrush}" Width="40"/>
+                                            <TextBlock Grid.Column="1" Text="{Binding Concepto}" Foreground="{DynamicResource MainForegroundBrush}" TextTrimming="CharacterEllipsis" Margin="5,0"/>
                                             <TextBlock Grid.Column="2" 
                                                        Text="{Binding Total, StringFormat=\{0:C\}}" 
                                                        Foreground="{Binding TipoMovimientoSuma, Converter={StaticResource BoolToColorConverter}}"
@@ -151,19 +151,19 @@
                 <!-- Notifications & Health -->
                 <Border Classes="chartCard" Grid.Column="2" Margin="10,0,0,0">
                     <StackPanel Spacing="15">
-                        <TextBlock Text="📢 Alertas" FontSize="18" FontWeight="Bold"/>
+                        <TextBlock Text="📢 Alertas" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource MainForegroundBrush}"/>
                         <Button Classes="alertButton" Command="{Binding NavigateToAlertCommand}" CommandParameter="Liquidaciones">
                             <Border Background="#20ff9800" Padding="12" CornerRadius="10" BorderBrush="#ff9800" BorderThickness="1">
                                 <StackPanel Orientation="Horizontal" Spacing="10">
                                     <TextBlock Text="⚠️" VerticalAlignment="Center"/>
-                                    <TextBlock Text="3 Liquidaciones Pendientes" FontSize="12" VerticalAlignment="Center"/>
+                                    <TextBlock Text="3 Liquidaciones Pendientes" FontSize="12" VerticalAlignment="Center" Foreground="{DynamicResource MainForegroundBrush}"/>
                                 </StackPanel>
                             </Border>
                         </Button>
                         <Border Background="#202196f3" Padding="12" CornerRadius="10" BorderBrush="#2196f3" BorderThickness="1">
                             <StackPanel Orientation="Horizontal" Spacing="10">
                                 <TextBlock Text="ℹ️" VerticalAlignment="Center"/>
-                                <TextBlock Text="Base de datos SQLite: Saludable" FontSize="12" VerticalAlignment="Center"/>
+                                <TextBlock Text="SQLite: Saludable" FontSize="12" VerticalAlignment="Center" Foreground="{DynamicResource MainForegroundBrush}"/>
                             </StackPanel>
                         </Border>
                     </StackPanel>
@@ -178,13 +178,12 @@
             <Setter Property="Margin" Value="8" />
             <Setter Property="Padding" Value="24" />
             <Setter Property="BorderThickness" Value="0,6,0,0" />
-            <Setter Property="BoxShadow" Value="0 8 20 0 #50000000" />
+            <Setter Property="BoxShadow" Value="0 8 20 0 #30000000" />
         </Style>
         
         <Style Selector="TextBlock.cardLabel">
             <Setter Property="FontSize" Value="14" />
             <Setter Property="FontWeight" Value="SemiBold" />
-            <Setter Property="Foreground" Value="#aaa" />
             <Setter Property="Margin" Value="0,0,0,8" />
         </Style>
         
@@ -197,7 +196,7 @@
             <Setter Property="Background" Value="{DynamicResource PaneBackgroundBrush}" />
             <Setter Property="CornerRadius" Value="20" />
             <Setter Property="Padding" Value="25" />
-            <Setter Property="BoxShadow" Value="0 6 25 0 #40000000" />
+            <Setter Property="BoxShadow" Value="0 6 25 0 #20000000" />
         </Style>
 
         <Style Selector="ToggleButton.privacyButton">

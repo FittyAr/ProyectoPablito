@@ -8,19 +8,19 @@
              x:DataType="vm:SettingsViewModel">
     
     <Grid RowDefinitions="Auto, *, Auto" Margin="20">
-        <TextBlock Grid.Row="0" Text="Configuración del Sistema" FontSize="24" FontWeight="Bold" Margin="0,0,0,20"/>
+        <TextBlock Grid.Row="0" Text="Configuración del Sistema" FontSize="24" FontWeight="Bold" Margin="0,0,0,20" Foreground="{DynamicResource MainForegroundBrush}"/>
         
         <TabControl Grid.Row="1">
             <!-- General Tab -->
             <TabItem Header="General">
                 <StackPanel Spacing="15" Margin="0,20">
                     <StackPanel Spacing="5">
-                        <TextBlock Text="Nombre de la Aplicación" FontWeight="Bold"/>
+                        <TextBlock Text="Nombre de la Aplicación" FontWeight="Bold" Foreground="{DynamicResource MainForegroundBrush}"/>
                         <TextBox Text="{Binding AppName}" PlaceholderText="Ej: ElectroObraApp"/>
                     </StackPanel>
                     
                     <StackPanel Spacing="5">
-                        <TextBlock Text="Idioma Predeterminado" FontWeight="Bold"/>
+                        <TextBlock Text="Idioma Predeterminado" FontWeight="Bold" Foreground="{DynamicResource MainForegroundBrush}"/>
                         <ComboBox SelectedIndex="0" HorizontalAlignment="Stretch">
                             <ComboBoxItem Content="Español (es)"/>
                             <ComboBoxItem Content="English (en)"/>
@@ -33,31 +33,31 @@
             <TabItem Header="Marca">
                 <StackPanel Spacing="15" Margin="0,20">
                     <StackPanel Spacing="5">
-                        <TextBlock Text="Ruta del Logo" FontWeight="Bold"/>
+                        <TextBlock Text="Ruta del Logo" FontWeight="Bold" Foreground="{DynamicResource MainForegroundBrush}"/>
                         <TextBox Text="{Binding LogoPath}" PlaceholderText="avares://..."/>
                     </StackPanel>
                     
                     <StackPanel Spacing="5">
-                        <TextBlock Text="Ruta del Fondo" FontWeight="Bold"/>
+                        <TextBlock Text="Ruta del Fondo" FontWeight="Bold" Foreground="{DynamicResource MainForegroundBrush}"/>
                         <TextBox Text="{Binding BackgroundPath}" PlaceholderText="avares://..."/>
                     </StackPanel>
                     
                     <TextBlock Text="Nota: Cambiar estas rutas requiere reiniciar la aplicación." 
-                               FontStyle="Italic" Foreground="Gray" FontSize="12"/>
+                               FontStyle="Italic" Foreground="{DynamicResource SecondaryForegroundBrush}" FontSize="12"/>
                 </StackPanel>
             </TabItem>
             
             <!-- Appearance Tab -->
             <TabItem Header="Apariencia">
                 <StackPanel Spacing="15" Margin="0,20">
-                    <TextBlock Text="Seleccionar Tema" FontWeight="Bold"/>
+                    <TextBlock Text="Seleccionar Tema" FontWeight="Bold" Foreground="{DynamicResource MainForegroundBrush}"/>
                     <ListBox ItemsSource="{Binding Themes}" 
                              SelectedItem="{Binding SelectedTheme}"
                              Background="Transparent">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <Border Padding="10" BorderBrush="{DynamicResource SidebarSeparatorBrush}" BorderThickness="1" CornerRadius="4" Margin="0,2">
-                                    <TextBlock Text="{Binding}"/>
+                                    <TextBlock Text="{Binding}" Foreground="{DynamicResource MainForegroundBrush}"/>
                                 </Border>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
@@ -68,9 +68,9 @@
             <!-- Dashboard Tab -->
             <TabItem Header="Dashboard">
                 <StackPanel Spacing="15" Margin="0,20">
-                    <TextBlock Text="Preferencia de Visualización" FontWeight="Bold"/>
+                    <TextBlock Text="Preferencia de Visualización" FontWeight="Bold" Foreground="{DynamicResource MainForegroundBrush}"/>
                     <TextBlock Text="Define el periodo de tiempo predeterminado para los gráficos y métricas del dashboard." 
-                               Foreground="Gray" FontSize="12" TextWrapping="Wrap"/>
+                               Foreground="{DynamicResource SecondaryForegroundBrush}" FontSize="12" TextWrapping="Wrap"/>
                     
                     <ListBox ItemsSource="{Binding DashboardPeriods}" 
                              SelectedItem="{Binding SelectedDashboardPeriod}"
@@ -78,7 +78,7 @@
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <Border Padding="10" BorderBrush="{DynamicResource SidebarSeparatorBrush}" BorderThickness="1" CornerRadius="4" Margin="0,2">
-                                    <TextBlock Text="{Binding}"/>
+                                    <TextBlock Text="{Binding}" Foreground="{DynamicResource MainForegroundBrush}"/>
                                 </Border>
                             </DataTemplate>
                         </ListBox.ItemTemplate>

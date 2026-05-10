@@ -16,7 +16,7 @@
             <Setter Property="HorizontalContentAlignment" Value="Left" />
         </Style>
         <Style Selector="Button.menuItem:pointerover /template/ ContentPresenter">
-            <Setter Property="Background" Value="#3e3e42" />
+            <Setter Property="Background" Value="{DynamicResource SidebarSeparatorBrush}" />
         </Style>
         <Style Selector="Button.active">
             <Setter Property="Background" Value="{DynamicResource AccentBrush}" />
@@ -45,42 +45,42 @@
                             Classes="menuItem"
                             Classes.active="{Binding CurrentSection, Converter={StaticResource StringEqualsConverter}, ConverterParameter=Dashboard}">
                         <StackPanel Orientation="Horizontal" Spacing="10">
-                            <TextBlock Text="Dashboard" />
+                            <TextBlock Text="Dashboard" Foreground="{DynamicResource MainForegroundBrush}" />
                         </StackPanel>
                     </Button>
                     <Button Command="{Binding NavigateToMovimientosCommand}" 
                             Classes="menuItem"
                             Classes.active="{Binding CurrentSection, Converter={StaticResource StringEqualsConverter}, ConverterParameter=Movimientos}">
                         <StackPanel Orientation="Horizontal" Spacing="10">
-                            <TextBlock Text="Movimientos" />
+                            <TextBlock Text="Movimientos" Foreground="{DynamicResource MainForegroundBrush}" />
                         </StackPanel>
                     </Button>
                     <Button Command="{Binding NavigateToClientesCommand}" 
                             Classes="menuItem"
                             Classes.active="{Binding CurrentSection, Converter={StaticResource StringEqualsConverter}, ConverterParameter=Clientes}">
                         <StackPanel Orientation="Horizontal" Spacing="10">
-                            <TextBlock Text="Clientes" />
+                            <TextBlock Text="Clientes" Foreground="{DynamicResource MainForegroundBrush}" />
                         </StackPanel>
                     </Button>
                     <Button Command="{Binding NavigateToEmpleadosCommand}" 
                             Classes="menuItem"
                             Classes.active="{Binding CurrentSection, Converter={StaticResource StringEqualsConverter}, ConverterParameter=Empleados}">
                         <StackPanel Orientation="Horizontal" Spacing="10">
-                            <TextBlock Text="Empleados" />
+                            <TextBlock Text="Empleados" Foreground="{DynamicResource MainForegroundBrush}" />
                         </StackPanel>
                     </Button>
                     <Button Command="{Binding NavigateToTrabajosCommand}" 
                             Classes="menuItem"
                             Classes.active="{Binding CurrentSection, Converter={StaticResource StringEqualsConverter}, ConverterParameter=Trabajos}">
                         <StackPanel Orientation="Horizontal" Spacing="10">
-                            <TextBlock Text="Trabajos" />
+                            <TextBlock Text="Trabajos" Foreground="{DynamicResource MainForegroundBrush}" />
                         </StackPanel>
                     </Button>
                     <Button Command="{Binding NavigateToLiquidacionesCommand}" 
                             Classes="menuItem"
                             Classes.active="{Binding CurrentSection, Converter={StaticResource StringEqualsConverter}, ConverterParameter=Liquidaciones}">
                         <StackPanel Orientation="Horizontal" Spacing="10">
-                            <TextBlock Text="Liquidaciones" />
+                            <TextBlock Text="Liquidaciones" Foreground="{DynamicResource MainForegroundBrush}" />
                         </StackPanel>
                     </Button>
                     <Button Command="{Binding NavigateToSeedCommand}" 
@@ -100,7 +100,7 @@
                             Classes="menuItem"
                             Classes.active="{Binding CurrentSection, Converter={StaticResource StringEqualsConverter}, ConverterParameter=Configuración}">
                         <StackPanel Orientation="Horizontal" Spacing="10">
-                            <TextBlock Text="Configuración" />
+                            <TextBlock Text="Configuración" Foreground="{DynamicResource MainForegroundBrush}" />
                         </StackPanel>
                     </Button>
                 </StackPanel>

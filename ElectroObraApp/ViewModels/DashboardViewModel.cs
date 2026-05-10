@@ -50,6 +50,15 @@ public partial class DashboardViewModel : ViewModelBase
     [ObservableProperty]
     private bool _isPrivacyModeActive;
 
+    partial void OnIsPrivacyModeActiveChanged(bool value)
+    {
+        OnPropertyChanged(nameof(DisplayTotalIngresos));
+        OnPropertyChanged(nameof(DisplayTotalGastos));
+        OnPropertyChanged(nameof(DisplayBalance));
+        OnPropertyChanged(nameof(ChartTooltipPosition));
+        OnPropertyChanged(nameof(PieTooltipPosition));
+    }
+
     [ObservableProperty]
     private string _currentTimeRange = "Mensual"; // Mensual, Anual, Total
 
@@ -58,6 +67,7 @@ public partial class DashboardViewModel : ViewModelBase
         _ = LoadStatsAsync();
     }
 
+    public ObservableCollection<string> TimeRanges { get; } = new() { "Mensual", "Anual", "Total" };
     public ObservableCollection<TopClienteDto> TopClientes { get; } = new();
     public ObservableCollection<MovimientoDto> RecentMovimientos { get; } = new();
 
@@ -102,11 +112,6 @@ public partial class DashboardViewModel : ViewModelBase
         NavigateToAlertCommand = new RelayCommand<string>(NavigateToAlert);
         TogglePrivacyModeCommand = new RelayCommand(() => {
             IsPrivacyModeActive = !IsPrivacyModeActive;
-            OnPropertyChanged(nameof(DisplayTotalIngresos));
-            OnPropertyChanged(nameof(DisplayTotalGastos));
-            OnPropertyChanged(nameof(DisplayBalance));
-            OnPropertyChanged(nameof(ChartTooltipPosition));
-            OnPropertyChanged(nameof(PieTooltipPosition));
         });
         _ = LoadStatsAsync();
     }
@@ -197,7 +202,8 @@ public partial class DashboardViewModel : ViewModelBase
             {
                 Name = cat.Name,
                 Values = new double[] { cat.Value },
-                DataLabelsFormatter = point => $"{cat.Name}: {point.Coordinate.PrimaryValue:C}"
+                ToolTipLabelFormatter = point => $"{cat.Name}: {point.Coordinate.PrimaryValue:C}",
+                DataLabelsFormatter = point => $"{point.Coordinate.PrimaryValue:C}"
             });
         }
     }
