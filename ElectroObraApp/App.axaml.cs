@@ -161,6 +161,30 @@ public partial class App : Avalonia.Application
                     abBrush.Color = Color.Parse("#e67e22");
                     sbBrush.Color = Color.Parse("#465e75");
                     break;
+                case "Solar":
+                    mbBrush.Color = Color.Parse("#2d2d2d");
+                    pbBrush.Color = Color.Parse("#3d3d3d");
+                    abBrush.Color = Color.Parse("#f1c40f");
+                    sbBrush.Color = Color.Parse("#4d4d4d");
+                    break;
+                case "Cibernético":
+                    mbBrush.Color = Color.Parse("#050505");
+                    pbBrush.Color = Color.Parse("#101010");
+                    abBrush.Color = Color.Parse("#ff00ff");
+                    sbBrush.Color = Color.Parse("#202020");
+                    break;
+                case "Océano":
+                    mbBrush.Color = Color.Parse("#0b132b");
+                    pbBrush.Color = Color.Parse("#1c2541");
+                    abBrush.Color = Color.Parse("#5bc0be");
+                    sbBrush.Color = Color.Parse("#3a506b");
+                    break;
+                case "Claro":
+                    mbBrush.Color = Color.Parse("#f5f5f5");
+                    pbBrush.Color = Color.Parse("#ffffff");
+                    abBrush.Color = Color.Parse("#094771");
+                    sbBrush.Color = Color.Parse("#dddddd");
+                    break;
                 default: // Oscuro
                     mbBrush.Color = Color.Parse("#1e1e1e");
                     pbBrush.Color = Color.Parse("#252526");

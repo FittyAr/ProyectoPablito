@@ -22,7 +22,7 @@ public partial class SettingsViewModel : ViewModelBase
     [ObservableProperty]
     private string _selectedTheme;
 
-    public ObservableCollection<string> Themes { get; } = new() { "Oscuro", "Media Noche", "Industrial" };
+    public ObservableCollection<string> Themes { get; } = new() { "Oscuro", "Media Noche", "Industrial", "Solar", "Cibernético", "Océano", "Claro" };
 
     public SettingsViewModel(IUserSettingsService settingsService)
     {
