@@ -19,7 +19,7 @@
             <Setter Property="Background" Value="#3e3e42" />
         </Style>
         <Style Selector="Button.active">
-            <Setter Property="Background" Value="#094771" />
+            <Setter Property="Background" Value="{DynamicResource AccentBrush}" />
             <Setter Property="FontWeight" Value="SemiBold" />
         </Style>
     </UserControl.Styles>
@@ -27,68 +27,84 @@
     <SplitView IsPaneOpen="True"
                DisplayMode="CompactInline"
                OpenPaneLength="220"
-               Background="#1e1e1e"
-               PaneBackground="#252526">
+               Background="{DynamicResource MainBackgroundBrush}"
+               PaneBackground="{DynamicResource PaneBackgroundBrush}">
         <SplitView.Pane>
-            <StackPanel Spacing="5" Margin="5">
-                <Image Source="{Binding LogoImage}" 
-                       Height="120" 
-                       Margin="10,20" 
-                       HorizontalAlignment="Center"/>
+            <Grid RowDefinitions="Auto, Auto, *, Auto">
+                <StackPanel Grid.Row="0" Spacing="5" Margin="5">
+                    <Image Source="{Binding LogoImage}" 
+                           Height="120" 
+                           Margin="10,20" 
+                           HorizontalAlignment="Center"/>
+                    
+                    <Separator Height="1" Background="{DynamicResource SidebarSeparatorBrush}" Margin="10,0,10,10"/>
+                </StackPanel>
                 
-                <Separator Height="1" Background="#3e3e42" Margin="10,0,10,10"/>
-                
-                <Button Command="{Binding NavigateToDashboardCommand}" 
-                        Classes="menuItem"
-                        Classes.active="{Binding CurrentSection, Converter={StaticResource StringEqualsConverter}, ConverterParameter=Dashboard}">
-                    <StackPanel Orientation="Horizontal" Spacing="10">
-                        <TextBlock Text="Dashboard" />
-                    </StackPanel>
-                </Button>
-                <Button Command="{Binding NavigateToMovimientosCommand}" 
-                        Classes="menuItem"
-                        Classes.active="{Binding CurrentSection, Converter={StaticResource StringEqualsConverter}, ConverterParameter=Movimientos}">
-                    <StackPanel Orientation="Horizontal" Spacing="10">
-                        <TextBlock Text="Movimientos" />
-                    </StackPanel>
-                </Button>
-                <Button Command="{Binding NavigateToClientesCommand}" 
-                        Classes="menuItem"
-                        Classes.active="{Binding CurrentSection, Converter={StaticResource StringEqualsConverter}, ConverterParameter=Clientes}">
-                    <StackPanel Orientation="Horizontal" Spacing="10">
-                        <TextBlock Text="Clientes" />
-                    </StackPanel>
-                </Button>
-                <Button Command="{Binding NavigateToEmpleadosCommand}" 
-                        Classes="menuItem"
-                        Classes.active="{Binding CurrentSection, Converter={StaticResource StringEqualsConverter}, ConverterParameter=Empleados}">
-                    <StackPanel Orientation="Horizontal" Spacing="10">
-                        <TextBlock Text="Empleados" />
-                    </StackPanel>
-                </Button>
-                <Button Command="{Binding NavigateToTrabajosCommand}" 
-                        Classes="menuItem"
-                        Classes.active="{Binding CurrentSection, Converter={StaticResource StringEqualsConverter}, ConverterParameter=Trabajos}">
-                    <StackPanel Orientation="Horizontal" Spacing="10">
-                        <TextBlock Text="Trabajos" />
-                    </StackPanel>
-                </Button>
-                <Button Command="{Binding NavigateToLiquidacionesCommand}" 
-                        Classes="menuItem"
-                        Classes.active="{Binding CurrentSection, Converter={StaticResource StringEqualsConverter}, ConverterParameter=Liquidaciones}">
-                    <StackPanel Orientation="Horizontal" Spacing="10">
-                        <TextBlock Text="Liquidaciones" />
-                    </StackPanel>
-                </Button>
-                <Button Command="{Binding NavigateToSeedCommand}" 
-                        Classes="menuItem"
-                        Classes.active="{Binding CurrentSection, Converter={StaticResource StringEqualsConverter}, ConverterParameter=Seed}"
-                        IsVisible="{Binding IsSeedEnabled}">
-                    <StackPanel Orientation="Horizontal" Spacing="10">
-                        <TextBlock Text="Seed" Foreground="Orange"/>
-                    </StackPanel>
-                </Button>
-            </StackPanel>
+                <StackPanel Grid.Row="1" Spacing="5" Margin="5">
+                    <Button Command="{Binding NavigateToDashboardCommand}" 
+                            Classes="menuItem"
+                            Classes.active="{Binding CurrentSection, Converter={StaticResource StringEqualsConverter}, ConverterParameter=Dashboard}">
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <TextBlock Text="Dashboard" />
+                        </StackPanel>
+                    </Button>
+                    <Button Command="{Binding NavigateToMovimientosCommand}" 
+                            Classes="menuItem"
+                            Classes.active="{Binding CurrentSection, Converter={StaticResource StringEqualsConverter}, ConverterParameter=Movimientos}">
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <TextBlock Text="Movimientos" />
+                        </StackPanel>
+                    </Button>
+                    <Button Command="{Binding NavigateToClientesCommand}" 
+                            Classes="menuItem"
+                            Classes.active="{Binding CurrentSection, Converter={StaticResource StringEqualsConverter}, ConverterParameter=Clientes}">
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <TextBlock Text="Clientes" />
+                        </StackPanel>
+                    </Button>
+                    <Button Command="{Binding NavigateToEmpleadosCommand}" 
+                            Classes="menuItem"
+                            Classes.active="{Binding CurrentSection, Converter={StaticResource StringEqualsConverter}, ConverterParameter=Empleados}">
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <TextBlock Text="Empleados" />
+                        </StackPanel>
+                    </Button>
+                    <Button Command="{Binding NavigateToTrabajosCommand}" 
+                            Classes="menuItem"
+                            Classes.active="{Binding CurrentSection, Converter={StaticResource StringEqualsConverter}, ConverterParameter=Trabajos}">
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <TextBlock Text="Trabajos" />
+                        </StackPanel>
+                    </Button>
+                    <Button Command="{Binding NavigateToLiquidacionesCommand}" 
+                            Classes="menuItem"
+                            Classes.active="{Binding CurrentSection, Converter={StaticResource StringEqualsConverter}, ConverterParameter=Liquidaciones}">
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <TextBlock Text="Liquidaciones" />
+                        </StackPanel>
+                    </Button>
+                    <Button Command="{Binding NavigateToSeedCommand}" 
+                            Classes="menuItem"
+                            Classes.active="{Binding CurrentSection, Converter={StaticResource StringEqualsConverter}, ConverterParameter=Seed}"
+                            IsVisible="{Binding IsSeedEnabled}">
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <TextBlock Text="Seed" Foreground="Orange"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+
+                <!-- Bottom Button -->
+                <StackPanel Grid.Row="3" Margin="5,0,5,10">
+                    <Separator Height="1" Background="{DynamicResource SidebarSeparatorBrush}" Margin="10,0,10,10"/>
+                    <Button Command="{Binding NavigateToSettingsCommand}" 
+                            Classes="menuItem"
+                            Classes.active="{Binding CurrentSection, Converter={StaticResource StringEqualsConverter}, ConverterParameter=Configuración}">
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <TextBlock Text="Configuración" />
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Grid>
         </SplitView.Pane>
 
         <Grid>

@@ -16,7 +16,7 @@
     <PackageReference Include="Avalonia.Fonts.Inter" />
     <PackageReference Include="Avalonia.Controls.DataGrid" />
     <PackageReference Include="Material.Icons.Avalonia" />
-    <PackageReference Include="Avalonia.Svg.Skia" />
+
     <PackageReference Include="LiveChartsCore.SkiaSharpView.Avalonia" />
     <PackageReference Include="Avalonia.Labs.Notifications" />
     <PackageReference Include="AvaloniaUI.DiagnosticsSupport">

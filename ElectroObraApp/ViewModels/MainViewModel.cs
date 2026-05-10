@@ -7,7 +7,6 @@ using Microsoft.Extensions.Configuration;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
-using Avalonia.Svg.Skia;
 
 namespace ElectroObraApp.ViewModels;
 
@@ -54,6 +53,7 @@ public partial class MainViewModel : ViewModelBase
         NavigateToTrabajosCommand = new RelayCommand(NavigateToTrabajos);
         NavigateToLiquidacionesCommand = new RelayCommand(NavigateToLiquidaciones);
         NavigateToSeedCommand = new RelayCommand(NavigateToSeed);
+        NavigateToSettingsCommand = new RelayCommand(NavigateToSettings);
         NavigateToCommand = new RelayCommand<string>(NavigateTo);
         
         // Pagina inicial
@@ -67,6 +67,7 @@ public partial class MainViewModel : ViewModelBase
     public IRelayCommand NavigateToTrabajosCommand { get; }
     public IRelayCommand NavigateToLiquidacionesCommand { get; }
     public IRelayCommand NavigateToSeedCommand { get; }
+    public IRelayCommand NavigateToSettingsCommand { get; }
     public IRelayCommand<string> NavigateToCommand { get; }
 
     private void NavigateToDashboard() { CurrentPage = _serviceProvider.GetRequiredService<DashboardViewModel>(); CurrentSection = "Dashboard"; }
@@ -83,6 +84,7 @@ public partial class MainViewModel : ViewModelBase
         CurrentSection = "Liquidaciones";
     }
     private void NavigateToSeed() { CurrentPage = _serviceProvider.GetRequiredService<SeedViewModel>(); CurrentSection = "Seed"; }
+    private void NavigateToSettings() { CurrentPage = _serviceProvider.GetRequiredService<SettingsViewModel>(); CurrentSection = "Configuración"; }
 
     private void NavigateTo(string? destination)
     {
@@ -102,12 +104,6 @@ public partial class MainViewModel : ViewModelBase
         try
         {
             var uri = new Uri(path);
-            if (path.EndsWith(".svg", StringComparison.OrdinalIgnoreCase))
-            {
-                var source = SvgSource.Load(path, null);
-                return new SvgImage { Source = source };
-            }
-            
             using (var stream = AssetLoader.Open(uri))
             {
                 return new Bitmap(stream);

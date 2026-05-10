@@ -19,15 +19,23 @@ public class UserSettingsService : IUserSettingsService
         _settingsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appsettings.json");
     }
 
-    public int GetPageSize()
-    {
-        return _configuration.GetValue<int>("Application:LastPageSize", 30);
-    }
+    public int GetPageSize() => _configuration.GetValue<int>("Application:LastPageSize", 30);
+    public Task SetPageSizeAsync(int pageSize) => SaveValueAsync("LastPageSize", pageSize);
 
-    public async Task SetPageSizeAsync(int pageSize)
-    {
-        if (pageSize <= 0) return; // Don't save "All" as default
+    public string GetTheme() => _configuration.GetValue<string>("Application:Appearance:Theme", "Dark") ?? "Dark";
+    public Task SetThemeAsync(string theme) => SaveValueAsync("Appearance:Theme", theme);
 
+    public string GetLogoPath() => _configuration.GetValue<string>("Application:Branding:LogoPath", "avares://ElectroObraApp/Assets/Images/electro-obra.png") ?? "";
+    public Task SetLogoPathAsync(string path) => SaveValueAsync("Branding:LogoPath", path);
+
+    public string GetBackgroundPath() => _configuration.GetValue<string>("Application:Branding:BackgroundPath", "avares://ElectroObraApp/Assets/Images/electro-obra3.png") ?? "";
+    public Task SetBackgroundPathAsync(string path) => SaveValueAsync("Branding:BackgroundPath", path);
+
+    public string GetAppName() => _configuration.GetValue<string>("Application:Name", "ElectroObraApp") ?? "ElectroObraApp";
+    public Task SetAppNameAsync(string name) => SaveValueAsync("Name", name);
+
+    private async Task SaveValueAsync<T>(string keyPath, T value)
+    {
         try
         {
             var jsonString = await File.ReadAllTextAsync(_settingsPath);
@@ -35,7 +43,19 @@ public class UserSettingsService : IUserSettingsService
             if (root != null)
             {
                 var appSection = root["Application"] ?? (root["Application"] = new JsonObject());
-                appSection["LastPageSize"] = pageSize;
+                
+                // Handle nested keys like "Appearance:Theme"
+                var parts = keyPath.Split(':');
+                JsonNode currentNode = appSection;
+                
+                for (int i = 0; i < parts.Length - 1; i++)
+                {
+                    var part = parts[i];
+                    currentNode[part] ??= new JsonObject();
+                    currentNode = currentNode[part]!;
+                }
+
+                currentNode[parts[^1]] = JsonValue.Create(value);
 
                 var options = new JsonSerializerOptions { WriteIndented = true };
                 await File.WriteAllTextAsync(_settingsPath, root.ToJsonString(options));
@@ -43,8 +63,7 @@ public class UserSettingsService : IUserSettingsService
         }
         catch (Exception)
         {
-            // Silently fail if cannot save (e.g. read-only file)
+            // Silently fail or log
         }
     }
 }
-

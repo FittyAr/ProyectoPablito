@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using Avalonia.Media;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -63,6 +64,10 @@ public partial class App : Avalonia.Application
 
         // 5. Inicialización de UI
         var mainViewModel = Services.GetRequiredService<MainViewModel>();
+        
+        // Cargar Tema
+        var settings = Services.GetRequiredService<IUserSettingsService>();
+        SetTheme(settings.GetTheme());
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
@@ -103,6 +108,7 @@ public partial class App : Avalonia.Application
         services.AddTransient<LiquidacionesViewModel>();
         services.AddTransient<LiquidacionEditViewModel>();
         services.AddTransient<SeedViewModel>();
+        services.AddTransient<SettingsViewModel>();
     }
 
     private void InitializeDatabase()
@@ -131,6 +137,37 @@ public partial class App : Avalonia.Application
         catch (Exception ex)
         {
             logger.LogError(ex, "Error al inicializar la base de datos.");
+        }
+    }
+
+    public void SetTheme(string themeName)
+    {
+        if (Resources.TryGetResource("MainBackgroundBrush", null, out var mb) && mb is SolidColorBrush mbBrush &&
+            Resources.TryGetResource("PaneBackgroundBrush", null, out var pb) && pb is SolidColorBrush pbBrush &&
+            Resources.TryGetResource("AccentBrush", null, out var ab) && ab is SolidColorBrush abBrush &&
+            Resources.TryGetResource("SidebarSeparatorBrush", null, out var sb) && sb is SolidColorBrush sbBrush)
+        {
+            switch (themeName)
+            {
+                case "Media Noche":
+                    mbBrush.Color = Color.Parse("#0f0f12");
+                    pbBrush.Color = Color.Parse("#1a1a2e");
+                    abBrush.Color = Color.Parse("#6c5ce7");
+                    sbBrush.Color = Color.Parse("#2e2e4e");
+                    break;
+                case "Industrial":
+                    mbBrush.Color = Color.Parse("#2c3e50");
+                    pbBrush.Color = Color.Parse("#34495e");
+                    abBrush.Color = Color.Parse("#e67e22");
+                    sbBrush.Color = Color.Parse("#465e75");
+                    break;
+                default: // Oscuro
+                    mbBrush.Color = Color.Parse("#1e1e1e");
+                    pbBrush.Color = Color.Parse("#252526");
+                    abBrush.Color = Color.Parse("#094771");
+                    sbBrush.Color = Color.Parse("#3e3e42");
+                    break;
+            }
         }
     }
 }
