@@ -96,7 +96,7 @@ public partial class App : Avalonia.Application
 
         // ViewModels
         services.AddTransient<MainViewModel>();
-        services.AddTransient<DashboardViewModel>();
+        services.AddSingleton<DashboardViewModel>();
         services.AddTransient<MovimientosViewModel>();
         services.AddTransient<MovimientoEditViewModel>();
         services.AddTransient<ClientesViewModel>();

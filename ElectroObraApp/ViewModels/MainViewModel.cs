@@ -85,7 +85,13 @@ public partial class MainViewModel : ViewModelBase
     public IRelayCommand NavigateToSettingsCommand { get; }
     public IRelayCommand<string> NavigateToCommand { get; }
 
-    private void NavigateToDashboard() { CurrentPage = _serviceProvider.GetRequiredService<DashboardViewModel>(); CurrentSection = "Dashboard"; }
+    private void NavigateToDashboard() 
+    { 
+        var vm = _serviceProvider.GetRequiredService<DashboardViewModel>(); 
+        _ = vm.LoadStatsAsync();
+        CurrentPage = vm; 
+        CurrentSection = "Dashboard"; 
+    }
     private void NavigateToMovimientos() { CurrentPage = _serviceProvider.GetRequiredService<MovimientosViewModel>(); CurrentSection = "Movimientos"; }
     private void NavigateToClientes() { CurrentPage = _serviceProvider.GetRequiredService<ClientesViewModel>(); CurrentSection = "Clientes"; }
     private void NavigateToEmpleados() { CurrentPage = _serviceProvider.GetRequiredService<EmpleadosViewModel>(); CurrentSection = "Empleados"; }
