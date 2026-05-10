@@ -52,6 +52,7 @@ public partial class DashboardViewModel : ViewModelBase
 
     partial void OnIsPrivacyModeActiveChanged(bool value)
     {
+        _ = _settingsService.SetIsPrivacyModeAsync(value);
         OnPropertyChanged(nameof(DisplayTotalIngresos));
         OnPropertyChanged(nameof(DisplayTotalGastos));
         OnPropertyChanged(nameof(DisplayBalance));
@@ -107,6 +108,7 @@ public partial class DashboardViewModel : ViewModelBase
         _settingsService = settingsService;
         
         CurrentTimeRange = settingsService.GetDashboardPeriod();
+        IsPrivacyModeActive = settingsService.GetIsPrivacyMode();
 
         LoadStatsCommand = new AsyncRelayCommand(LoadStatsAsync);
         NavigateToAlertCommand = new RelayCommand<string>(NavigateToAlert);
@@ -202,7 +204,7 @@ public partial class DashboardViewModel : ViewModelBase
             {
                 Name = cat.Name,
                 Values = new double[] { cat.Value },
-                ToolTipLabelFormatter = point => $"{cat.Name}: {point.Coordinate.PrimaryValue:C}",
+                ToolTipLabelFormatter = point => $"{point.Coordinate.PrimaryValue:C}",
                 DataLabelsFormatter = point => $"{point.Coordinate.PrimaryValue:C}"
             });
         }

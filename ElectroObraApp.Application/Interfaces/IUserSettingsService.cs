@@ -21,5 +21,8 @@ public interface IUserSettingsService
 
     string GetDashboardPeriod();
     Task SetDashboardPeriodAsync(string period);
+
+    bool GetIsPrivacyMode();
+    Task SetIsPrivacyModeAsync(bool isPrivate);
 }
 

@@ -37,6 +37,9 @@ public class UserSettingsService : IUserSettingsService
     public string GetDashboardPeriod() => GetValue("Application:Dashboard:Period", "Mensual");
     public async Task SetDashboardPeriodAsync(string period) => await SetValueAsync("Application:Dashboard:Period", period);
 
+    public bool GetIsPrivacyMode() => bool.TryParse(GetValue("Application:Dashboard:IsPrivacyMode", "false"), out var result) && result;
+    public async Task SetIsPrivacyModeAsync(bool isPrivate) => await SetValueAsync("Application:Dashboard:IsPrivacyMode", isPrivate.ToString().ToLower());
+
     private string GetValue(string key, string defaultValue)
     {
         try

@@ -34,17 +34,14 @@
                               Width="120" />
                 </StackPanel>
 
-                <!-- Modern Privacy Toggle -->
+                <!-- Modern Privacy Toggle (Icon Only) -->
                 <ToggleButton Grid.Column="2" 
                               IsChecked="{Binding IsPrivacyModeActive}"
-                              Classes="privacyButton">
-                    <StackPanel Orientation="Horizontal" Spacing="10">
-                        <materialIcons:MaterialIcon Kind="{Binding IsPrivacyModeActive, Converter={StaticResource BoolToIconConverter}}" 
-                                                    Foreground="{Binding IsPrivacyModeActive, Converter={StaticResource BoolToColorConverter}}" />
-                        <TextBlock Text="{Binding IsPrivacyModeActive, Converter={StaticResource BoolToTextConverter}}" 
-                                   FontWeight="Bold" 
-                                   Foreground="{DynamicResource MainForegroundBrush}"/>
-                    </StackPanel>
+                              Classes="privacyButton"
+                              ToolTip.Tip="Alternar Modo Privado (Ocultar montos)">
+                    <materialIcons:MaterialIcon Kind="{Binding IsPrivacyModeActive, Converter={StaticResource BoolToIconConverter}}" 
+                                                Width="24" Height="24"
+                                                Foreground="{Binding IsPrivacyModeActive, Converter={StaticResource BoolToColorConverter}}" />
                 </ToggleButton>
             </Grid>
 
@@ -201,8 +198,10 @@
 
         <Style Selector="ToggleButton.privacyButton">
             <Setter Property="Background" Value="{DynamicResource PaneBackgroundBrush}" />
-            <Setter Property="Padding" Value="16,10" />
-            <Setter Property="CornerRadius" Value="12" />
+            <Setter Property="Padding" Value="10" />
+            <Setter Property="Width" Value="45" />
+            <Setter Property="Height" Value="45" />
+            <Setter Property="CornerRadius" Value="22" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="BorderBrush" Value="{DynamicResource SidebarSeparatorBrush}" />
             <Setter Property="Template">
@@ -212,7 +211,9 @@
                             BorderThickness="{TemplateBinding BorderThickness}"
                             CornerRadius="{TemplateBinding CornerRadius}"
                             Padding="{TemplateBinding Padding}">
-                        <ContentPresenter Content="{TemplateBinding Content}" />
+                        <ContentPresenter Content="{TemplateBinding Content}" 
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"/>
                     </Border>
                 </ControlTemplate>
             </Setter>
