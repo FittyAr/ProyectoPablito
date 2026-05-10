@@ -10,6 +10,8 @@ using LiveChartsCore;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
 using SkiaSharp;
+using CommunityToolkit.Mvvm.Messaging;
+using LiveChartsCore.Measure;
 
 namespace ElectroObraApp.ViewModels;
 
@@ -37,6 +39,21 @@ public partial class DashboardViewModel : ViewModelBase
     [ObservableProperty]
     private int _trabajosPendientes;
 
+    [ObservableProperty]
+    private bool _isPrivacyModeActive;
+
+    public string DisplayTotalIngresos => IsPrivacyModeActive ? "$ *********" : TotalIngresos.ToString("C");
+    public string DisplayTotalGastos => IsPrivacyModeActive ? "$ *********" : TotalGastos.ToString("C");
+    public string DisplayBalance => IsPrivacyModeActive ? "$ *********" : Balance.ToString("C");
+
+    public LiveChartsCore.Measure.TooltipPosition ChartTooltipPosition => IsPrivacyModeActive 
+        ? LiveChartsCore.Measure.TooltipPosition.Hidden 
+        : LiveChartsCore.Measure.TooltipPosition.Bottom;
+
+    public LiveChartsCore.Measure.TooltipPosition PieTooltipPosition => IsPrivacyModeActive 
+        ? LiveChartsCore.Measure.TooltipPosition.Hidden 
+        : LiveChartsCore.Measure.TooltipPosition.Right;
+
     // Charts
     public ObservableCollection<ISeries> Series { get; set; } = new();
     public ObservableCollection<ISeries> CategorySeries { get; set; } = new();
@@ -56,10 +73,27 @@ public partial class DashboardViewModel : ViewModelBase
         _trabajoService = trabajoService;
         
         LoadStatsCommand = new AsyncRelayCommand(LoadStatsAsync);
+        NavigateToAlertCommand = new RelayCommand<string>(NavigateToAlert);
+        TogglePrivacyModeCommand = new RelayCommand(() => {
+            IsPrivacyModeActive = !IsPrivacyModeActive;
+            OnPropertyChanged(nameof(DisplayTotalIngresos));
+            OnPropertyChanged(nameof(DisplayTotalGastos));
+            OnPropertyChanged(nameof(DisplayBalance));
+            OnPropertyChanged(nameof(ChartTooltipPosition));
+            OnPropertyChanged(nameof(PieTooltipPosition));
+        });
         _ = LoadStatsAsync();
     }
 
     public IAsyncRelayCommand LoadStatsCommand { get; }
+    public IRelayCommand TogglePrivacyModeCommand { get; }
+    public IRelayCommand<string> NavigateToAlertCommand { get; }
+
+    private void NavigateToAlert(string? destination)
+    {
+        if (string.IsNullOrEmpty(destination)) return;
+        WeakReferenceMessenger.Default.Send(destination);
+    }
 
     public async Task LoadStatsAsync()
     {
@@ -92,14 +126,16 @@ public partial class DashboardViewModel : ViewModelBase
             Name = "Ingresos",
             Values = monthlyIncome,
             Stroke = new SolidColorPaint(SKColors.LightGreen) { StrokeThickness = 2 },
-            Fill = new SolidColorPaint(SKColors.LightGreen.WithAlpha(100))
+            Fill = new SolidColorPaint(SKColors.LightGreen.WithAlpha(100)),
+            YToolTipLabelFormatter = point => $"Ingresos: {point.Coordinate.PrimaryValue:C}"
         });
         Series.Add(new ColumnSeries<double>
         {
             Name = "Gastos",
             Values = monthlyExpenses,
             Stroke = new SolidColorPaint(SKColors.Salmon) { StrokeThickness = 2 },
-            Fill = new SolidColorPaint(SKColors.Salmon.WithAlpha(100))
+            Fill = new SolidColorPaint(SKColors.Salmon.WithAlpha(100)),
+            YToolTipLabelFormatter = point => $"Gastos: {point.Coordinate.PrimaryValue:C}"
         });
 
         // Category Distribution
@@ -116,7 +152,8 @@ public partial class DashboardViewModel : ViewModelBase
             CategorySeries.Add(new PieSeries<double>
             {
                 Name = cat.Name,
-                Values = new double[] { cat.Value }
+                Values = new double[] { cat.Value },
+                DataLabelsFormatter = point => $"{cat.Name}: {point.Coordinate.PrimaryValue:C}"
             });
         }
     }

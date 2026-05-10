@@ -4,38 +4,56 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:ElectroObraApp.ViewModels"
              xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.Avalonia;assembly=LiveChartsCore.SkiaSharpView.Avalonia"
+             xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:conv="using:ElectroObraApp.Views.Converters"
              mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="800"
              x:Class="ElectroObraApp.Views.DashboardView"
              x:DataType="vm:DashboardViewModel">
     
+    <UserControl.Resources>
+        <conv:StringEqualsConverter x:Key="StringEqualsConverter" />
+    </UserControl.Resources>
+
     <ScrollViewer>
         <Grid RowDefinitions="Auto, Auto, *, *" Margin="25">
             <!-- Header -->
-            <StackPanel Grid.Row="0" Spacing="5">
-                <TextBlock Text="{Binding Title}" FontSize="32" FontWeight="ExtraBold" Foreground="{DynamicResource AccentBrush}" />
-                <TextBlock Text="Vista general del estado operativo de la empresa" Foreground="Gray" FontSize="14"/>
-            </StackPanel>
+            <Grid Grid.Row="0" ColumnDefinitions="*, Auto">
+                <StackPanel Grid.Column="0" Spacing="5">
+                    <TextBlock Text="{Binding Title}" FontSize="32" FontWeight="ExtraBold" Foreground="{DynamicResource AccentBrush}" />
+                    <TextBlock Text="Vista general del estado operativo de la empresa" Foreground="Gray" FontSize="14"/>
+                </StackPanel>
+
+                <Button Grid.Column="1" 
+                        Command="{Binding TogglePrivacyModeCommand}"
+                        Classes="privacyToggle"
+                        ToolTip.Tip="Alternar modo privacidad">
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <materialIcons:MaterialIcon Kind="{Binding IsPrivacyModeActive, Converter={StaticResource StringEqualsConverter}, ConverterParameter='True?EyeOff?Eye'}" />
+                        <TextBlock Text="{Binding IsPrivacyModeActive, Converter={StaticResource StringEqualsConverter}, ConverterParameter='True?Privacidad: ON?Privacidad: OFF'}" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+            </Grid>
 
             <!-- Metrics Cards -->
             <UniformGrid Grid.Row="1" Columns="4">
                 <Border Classes="card" Background="#1b3a1b" BorderBrush="#4caf50">
                     <StackPanel>
                         <TextBlock Text="Total Ingresos" Classes="cardLabel"/>
-                        <TextBlock Text="{Binding TotalIngresos, StringFormat=\{0:C\}}" Classes="cardValue" Foreground="#4caf50"/>
+                        <TextBlock Text="{Binding DisplayTotalIngresos}" Classes="cardValue" Foreground="#4caf50"/>
                     </StackPanel>
                 </Border>
 
                 <Border Classes="card" Background="#3a1b1b" BorderBrush="#f44336">
                     <StackPanel>
                         <TextBlock Text="Total Gastos" Classes="cardLabel"/>
-                        <TextBlock Text="{Binding TotalGastos, StringFormat=\{0:C\}}" Classes="cardValue" Foreground="#f44336"/>
+                        <TextBlock Text="{Binding DisplayTotalGastos}" Classes="cardValue" Foreground="#f44336"/>
                     </StackPanel>
                 </Border>
 
                 <Border Classes="card" Background="#1b1b3a" BorderBrush="#2196f3">
                     <StackPanel>
                         <TextBlock Text="Balance Neto" Classes="cardLabel"/>
-                        <TextBlock Text="{Binding Balance, StringFormat=\{0:C\}}" Classes="cardValue" Foreground="#2196f3"/>
+                        <TextBlock Text="{Binding DisplayBalance}" Classes="cardValue" Foreground="#2196f3"/>
                     </StackPanel>
                 </Border>
 
@@ -57,6 +75,7 @@
                                             XAxes="{Binding XAxes}" 
                                             Height="300"
                                             Background="Transparent"
+                                            TooltipPosition="{Binding ChartTooltipPosition}"
                                             LegendPosition="Bottom"/>
                     </StackPanel>
                 </Border>
@@ -68,6 +87,7 @@
                         <lvc:PieChart Series="{Binding CategorySeries}" 
                                       Height="300" 
                                       Background="Transparent"
+                                      TooltipPosition="{Binding PieTooltipPosition}"
                                       LegendPosition="Right"/>
                     </StackPanel>
                 </Border>
@@ -78,22 +98,32 @@
                  <Border Classes="chartCard" Grid.Column="0" Margin="0,25,12,0">
                     <StackPanel Spacing="15">
                         <TextBlock Text="Alertas y Notificaciones" FontSize="18" FontWeight="Bold"/>
-                        <Border Background="#33ff9800" Padding="15" CornerRadius="8" BorderBrush="#ff9800" BorderThickness="1">
-                            <StackPanel Orientation="Horizontal" Spacing="15">
-                                <TextBlock Text="⚠️" FontSize="20" VerticalAlignment="Center"/>
-                                <TextBlock Text="Hay 3 liquidaciones pendientes para este mes." VerticalAlignment="Center"/>
-                            </StackPanel>
-                        </Border>
-                        <Border Background="#332196f3" Padding="15" CornerRadius="8" BorderBrush="#2196f3" BorderThickness="1">
-                            <StackPanel Orientation="Horizontal" Spacing="15">
-                                <TextBlock Text="ℹ️" FontSize="20" VerticalAlignment="Center"/>
-                                <TextBlock Text="El cliente 'García Construcciones' ha sido actualizado." VerticalAlignment="Center"/>
-                            </StackPanel>
-                        </Border>
+                        
+                        <!-- Interactive Alerts -->
+                        <Button Classes="alertButton" Command="{Binding NavigateToAlertCommand}" CommandParameter="Liquidaciones">
+                            <Border Background="#33ff9800" Padding="15" CornerRadius="8" BorderBrush="#ff9800" BorderThickness="1">
+                                <StackPanel Orientation="Horizontal" Spacing="15">
+                                    <TextBlock Text="⚠️" FontSize="20" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Hay 3 liquidaciones pendientes para este mes." VerticalAlignment="Center"/>
+                                    <materialIcons:MaterialIcon Kind="ChevronRight" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="50,0,0,0"/>
+                                </StackPanel>
+                            </Border>
+                        </Button>
+
+                        <Button Classes="alertButton" Command="{Binding NavigateToAlertCommand}" CommandParameter="Clientes">
+                            <Border Background="#332196f3" Padding="15" CornerRadius="8" BorderBrush="#2196f3" BorderThickness="1">
+                                <StackPanel Orientation="Horizontal" Spacing="15">
+                                    <TextBlock Text="ℹ️" FontSize="20" VerticalAlignment="Center"/>
+                                    <TextBlock Text="El cliente 'García Construcciones' ha sido actualizado." VerticalAlignment="Center"/>
+                                    <materialIcons:MaterialIcon Kind="ChevronRight" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="30,0,0,0"/>
+                                </StackPanel>
+                            </Border>
+                        </Button>
                     </StackPanel>
                 </Border>
                 
-                <Border Classes="chartCard" Grid.Column="1" Margin="12,25,0,0" Background="{DynamicResource PaneBackgroundBrush}">
+                <!-- Network Status (Hidden as requested for SQLite usage) -->
+                <Border Classes="chartCard" Grid.Column="1" Margin="12,25,0,0" IsVisible="False">
                     <StackPanel Spacing="10" VerticalAlignment="Center" HorizontalAlignment="Center">
                          <TextBlock Text="Estatus de Red" Foreground="Gray" FontSize="12" HorizontalAlignment="Center"/>
                          <TextBlock Text="Sincronizado" Foreground="#4caf50" FontWeight="Bold" HorizontalAlignment="Center"/>
@@ -126,6 +156,30 @@
             <Setter Property="CornerRadius" Value="15" />
             <Setter Property="Padding" Value="20" />
             <Setter Property="BoxShadow" Value="0 4 15 0 #60000000" />
+        </Style>
+
+        <Style Selector="Button.privacyToggle">
+            <Setter Property="Background" Value="{DynamicResource PaneBackgroundBrush}" />
+            <Setter Property="Padding" Value="15,8" />
+            <Setter Property="CornerRadius" Value="10" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="BorderBrush" Value="{DynamicResource SidebarSeparatorBrush}" />
+        </Style>
+        <Style Selector="Button.privacyToggle:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource AccentBrush}" />
+            <Setter Property="Foreground" Value="White" />
+        </Style>
+
+        <Style Selector="Button.alertButton">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="BorderThickness" Value="0" />
+        </Style>
+        <Style Selector="Button.alertButton:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Opacity" Value="0.8" />
         </Style>
     </UserControl.Styles>
 </UserControl>

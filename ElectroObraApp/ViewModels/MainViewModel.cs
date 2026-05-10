@@ -1,6 +1,7 @@
 using System;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.DependencyInjection;
 using ElectroObraApp.Application.Interfaces;
 using Microsoft.Extensions.Configuration;
@@ -58,6 +59,20 @@ public partial class MainViewModel : ViewModelBase
         
         // Pagina inicial
         NavigateToDashboard();
+
+        // Registro de Mensajería para navegación externa
+        WeakReferenceMessenger.Default.Register<string>(this, (r, m) => {
+            switch(m)
+            {
+                case "Dashboard": NavigateToDashboard(); break;
+                case "Movimientos": NavigateToMovimientos(); break;
+                case "Clientes": NavigateToClientes(); break;
+                case "Empleados": NavigateToEmpleados(); break;
+                case "Trabajos": NavigateToTrabajos(); break;
+                case "Liquidaciones": NavigateToLiquidaciones(); break;
+                case "Configuración": NavigateToSettings(); break;
+            }
+        });
     }
 
     public IRelayCommand NavigateToDashboardCommand { get; }
