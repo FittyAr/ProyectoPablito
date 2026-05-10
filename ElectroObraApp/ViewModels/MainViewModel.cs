@@ -4,6 +4,10 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
 using ElectroObraApp.Application.Interfaces;
 using Microsoft.Extensions.Configuration;
+using Avalonia.Media;
+using Avalonia.Media.Imaging;
+using Avalonia.Platform;
+using Avalonia.Svg.Skia;
 
 namespace ElectroObraApp.ViewModels;
 
@@ -25,10 +29,10 @@ public partial class MainViewModel : ViewModelBase
     private bool _isSeedEnabled;
 
     [ObservableProperty]
-    private string _logoPath;
+    private IImage? _logoImage;
 
     [ObservableProperty]
-    private string _backgroundPath;
+    private IImage? _backgroundImage;
 
     public MainViewModel(ILocalizationService localizationService, IServiceProvider serviceProvider, IDatabaseSeedService seedService, IConfiguration configuration)
     {
@@ -37,8 +41,11 @@ public partial class MainViewModel : ViewModelBase
         _greeting = configuration.GetValue<string>("Application:Name", "ElectroObraApp");
         _isSeedEnabled = seedService.IsSeedEnabled();
         
-        _logoPath = configuration.GetValue<string>("Application:Branding:LogoPath", "avares://ElectroObraApp/Assets/Images/electro-obra-logo.svg");
-        _backgroundPath = configuration.GetValue<string>("Application:Branding:BackgroundPath", "avares://ElectroObraApp/Assets/Images/electro-obra.svg");
+        var logoPath = configuration.GetValue<string>("Application:Branding:LogoPath", "avares://ElectroObraApp/Assets/Images/electro-obra-logo.svg");
+        var backgroundPath = configuration.GetValue<string>("Application:Branding:BackgroundPath", "avares://ElectroObraApp/Assets/Images/electro-obra.svg");
+        
+        LogoImage = LoadImageFromPath(logoPath);
+        BackgroundImage = LoadImageFromPath(backgroundPath);
         
         NavigateToDashboardCommand = new RelayCommand(NavigateToDashboard);
         NavigateToMovimientosCommand = new RelayCommand(NavigateToMovimientos);
@@ -88,5 +95,28 @@ public partial class MainViewModel : ViewModelBase
             CurrentSection = "Liquidaciones";
         }
     }
-}
 
+    private IImage? LoadImageFromPath(string? path)
+    {
+        if (string.IsNullOrEmpty(path)) return null;
+        try
+        {
+            var uri = new Uri(path);
+            if (path.EndsWith(".svg", StringComparison.OrdinalIgnoreCase))
+            {
+                var source = SvgSource.Load(path, null);
+                return new SvgImage { Source = source };
+            }
+            
+            using (var stream = AssetLoader.Open(uri))
+            {
+                return new Bitmap(stream);
+            }
+        }
+        catch (Exception ex)
+        {
+            Serilog.Log.Error(ex, "Error al cargar imagen de marca desde {Path}", path);
+            return null;
+        }
+    }
+}
