@@ -10,7 +10,7 @@ SolidCompression=yes
 SetupIconFile=ElectroObraApp\Assets\electro-obra-logo.ico
 WizardImageFile=ElectroObraApp\Assets\Images\electro-obra.png
 WizardSmallImageFile=ElectroObraApp\Assets\Images\electro-obra.png
-UninstallDisplayIcon={app}\ElectroObraApp.Desktop.exe
+UninstallDisplayIcon={app}\electro-obra-logo.ico
 ArchitecturesAllowed=x64
 ArchitecturesInstallIn64BitMode=x64
 
