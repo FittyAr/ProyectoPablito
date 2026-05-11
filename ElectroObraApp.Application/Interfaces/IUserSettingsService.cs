@@ -54,5 +54,8 @@ public interface IUserSettingsService
 
     bool GetAutoUpdateDollar();
     Task SetAutoUpdateDollarAsync(bool value);
+
+    string GetDollarApiUrl();
+    Task SetDollarApiUrlAsync(string url);
 }
 

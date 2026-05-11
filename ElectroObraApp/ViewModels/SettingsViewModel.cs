@@ -55,6 +55,9 @@ public partial class SettingsViewModel : ViewModelBase
     private string _holidayApiUrl;
 
     [ObservableProperty]
+    private string _dollarApiUrl;
+
+    [ObservableProperty]
     private decimal _multiplierSaturday;
 
     [ObservableProperty]
@@ -88,6 +91,7 @@ public partial class SettingsViewModel : ViewModelBase
         _selectedEmailClient = _settingsService.GetPreferredEmailClient();
         _autoUpdateDollar = _settingsService.GetAutoUpdateDollar();
         _holidayApiUrl = _settingsService.GetHolidayApiUrl();
+        _dollarApiUrl = _settingsService.GetDollarApiUrl();
         _multiplierSaturday = _settingsService.GetDefaultMultiplierSaturday();
         _multiplierSunday = _settingsService.GetDefaultMultiplierSunday();
         _multiplierHoliday = _settingsService.GetDefaultMultiplierHoliday();
@@ -200,6 +204,7 @@ public partial class SettingsViewModel : ViewModelBase
             await _settingsService.SetPreferredEmailClientAsync(SelectedEmailClient);
             await _settingsService.SetAutoUpdateDollarAsync(AutoUpdateDollar);
             await _settingsService.SetHolidayApiUrlAsync(HolidayApiUrl);
+            await _settingsService.SetDollarApiUrlAsync(DollarApiUrl);
             await _settingsService.SetDefaultMultiplierSaturdayAsync(MultiplierSaturday);
             await _settingsService.SetDefaultMultiplierSundayAsync(MultiplierSunday);
             await _settingsService.SetDefaultMultiplierHolidayAsync(MultiplierHoliday);

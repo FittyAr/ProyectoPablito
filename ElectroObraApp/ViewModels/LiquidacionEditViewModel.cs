@@ -68,13 +68,16 @@ public partial class LiquidacionEditViewModel : ViewModelBase
         _empleadoService = empleadoService;
         _settingsService = settingsService;
 
-        // Cargar defaults del config
-        Liquidacion.MultiplicadorSabado = _settingsService.GetDefaultMultiplierSaturday();
-        Liquidacion.MultiplicadorDomingo = _settingsService.GetDefaultMultiplierSunday();
-        Liquidacion.MultiplicadorFeriado = _settingsService.GetDefaultMultiplierHoliday();
-        Liquidacion.IncluirSabados = _settingsService.GetDefaultIncludeSaturday();
-        Liquidacion.IncluirDomingos = _settingsService.GetDefaultIncludeSunday();
-        Liquidacion.IncluirFeriados = _settingsService.GetDefaultIncludeHoliday();
+        // Cargar defaults del config solo si es nueva
+        if (Liquidacion.Id == Guid.Empty)
+        {
+            Liquidacion.MultiplicadorSabado = _settingsService.GetDefaultMultiplierSaturday();
+            Liquidacion.MultiplicadorDomingo = _settingsService.GetDefaultMultiplierSunday();
+            Liquidacion.MultiplicadorFeriado = _settingsService.GetDefaultMultiplierHoliday();
+            Liquidacion.IncluirSabados = _settingsService.GetDefaultIncludeSaturday();
+            Liquidacion.IncluirDomingos = _settingsService.GetDefaultIncludeSunday();
+            Liquidacion.IncluirFeriados = _settingsService.GetDefaultIncludeHoliday();
+        }
 
         SaveCommand = new AsyncRelayCommand(SaveAsync);
         CancelCommand = new RelayCommand(Cancel);
@@ -169,8 +172,18 @@ public partial class LiquidacionEditViewModel : ViewModelBase
 
     private async Task SaveAsync()
     {
-        var success = await _liquidacionService.CreateAsync(Liquidacion);
-        if (success != null)
+        bool success;
+        if (Liquidacion.Id == Guid.Empty)
+        {
+            var result = await _liquidacionService.CreateAsync(Liquidacion);
+            success = result != null;
+        }
+        else
+        {
+            success = await _liquidacionService.UpdateAsync(Liquidacion);
+        }
+
+        if (success)
         {
             CloseRequest?.Invoke(this, true);
         }

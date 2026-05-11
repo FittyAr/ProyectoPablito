@@ -25,7 +25,7 @@ public class MainViewModelTests
         // Arrange
         var serviceProvider = Substitute.For<IServiceProvider>();
         var localization = Substitute.For<ILocalizationService>();
-        var dashboardVm = new DashboardViewModel(Substitute.For<IMovimientoService>(), Substitute.For<IClienteService>(), Substitute.For<ITrabajoService>(), Substitute.For<IUserSettingsService>());
+        var dashboardVm = new DashboardViewModel(Substitute.For<IMovimientoService>(), Substitute.For<IClienteService>(), Substitute.For<ITrabajoService>(), Substitute.For<IUserSettingsService>(), Substitute.For<IDollarService>());
         
         serviceProvider.GetService(typeof(DashboardViewModel)).Returns(dashboardVm);
         _configuration["Application:Name"].Returns("Proyecto Pablito");
@@ -47,7 +47,7 @@ public class MainViewModelTests
         var serviceProvider = Substitute.For<IServiceProvider>();
         var seedService = Substitute.For<IDatabaseSeedService>();
         var movimientoService = Substitute.For<IMovimientoService>();
-        var dashboardVm = new DashboardViewModel(Substitute.For<IMovimientoService>(), Substitute.For<IClienteService>(), Substitute.For<ITrabajoService>(), Substitute.For<IUserSettingsService>());
+        var dashboardVm = new DashboardViewModel(Substitute.For<IMovimientoService>(), Substitute.For<IClienteService>(), Substitute.For<ITrabajoService>(), Substitute.For<IUserSettingsService>(), Substitute.For<IDollarService>());
         var movimientosVm = new MovimientosViewModel(movimientoService, Substitute.For<ITipoMovimientoService>(), Substitute.For<IExportService>(), Substitute.For<IUserSettingsService>(), serviceProvider);
         
         serviceProvider.GetService(typeof(DashboardViewModel)).Returns(dashboardVm);
@@ -69,7 +69,7 @@ public class MainViewModelTests
         // Arrange
         var serviceProvider = Substitute.For<IServiceProvider>();
         var seedService = Substitute.For<IDatabaseSeedService>();
-        var dashboardVm = new DashboardViewModel(Substitute.For<IMovimientoService>(), Substitute.For<IClienteService>(), Substitute.For<ITrabajoService>(), Substitute.For<IUserSettingsService>());
+        var dashboardVm = new DashboardViewModel(Substitute.For<IMovimientoService>(), Substitute.For<IClienteService>(), Substitute.For<ITrabajoService>(), Substitute.For<IUserSettingsService>(), Substitute.For<IDollarService>());
         var trabajosVm = new TrabajosViewModel(Substitute.For<ITrabajoService>(), Substitute.For<IClienteService>(), Substitute.For<IUserSettingsService>(), serviceProvider);
         
         serviceProvider.GetService(typeof(DashboardViewModel)).Returns(dashboardVm);
@@ -91,7 +91,7 @@ public class MainViewModelTests
         // Arrange
         var serviceProvider = Substitute.For<IServiceProvider>();
         var seedService = Substitute.For<IDatabaseSeedService>();
-        var dashboardVm = new DashboardViewModel(Substitute.For<IMovimientoService>(), Substitute.For<IClienteService>(), Substitute.For<ITrabajoService>(), Substitute.For<IUserSettingsService>());
+        var dashboardVm = new DashboardViewModel(Substitute.For<IMovimientoService>(), Substitute.For<IClienteService>(), Substitute.For<ITrabajoService>(), Substitute.For<IUserSettingsService>(), Substitute.For<IDollarService>());
         var clientesVm = new ClientesViewModel(Substitute.For<IClienteService>(), Substitute.For<IUserSettingsService>(), serviceProvider);
         serviceProvider.GetService(typeof(DashboardViewModel)).Returns(dashboardVm);
         serviceProvider.GetService(typeof(ClientesViewModel)).Returns(clientesVm);
@@ -113,7 +113,7 @@ public class MainViewModelTests
         // Arrange
         var serviceProvider = Substitute.For<IServiceProvider>();
         var seedService = Substitute.For<IDatabaseSeedService>();
-        var dashboardVm = new DashboardViewModel(Substitute.For<IMovimientoService>(), Substitute.For<IClienteService>(), Substitute.For<ITrabajoService>(), Substitute.For<IUserSettingsService>());
+        var dashboardVm = new DashboardViewModel(Substitute.For<IMovimientoService>(), Substitute.For<IClienteService>(), Substitute.For<ITrabajoService>(), Substitute.For<IUserSettingsService>(), Substitute.For<IDollarService>());
         var empleadosVm = new EmpleadosViewModel(Substitute.For<IEmpleadoService>(), Substitute.For<IUserSettingsService>(), serviceProvider);
         
         serviceProvider.GetService(typeof(DashboardViewModel)).Returns(dashboardVm);

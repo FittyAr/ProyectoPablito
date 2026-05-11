@@ -17,6 +17,7 @@ public class DashboardViewModelTests
     private readonly IClienteService _clienteService;
     private readonly ITrabajoService _trabajoService;
     private readonly IUserSettingsService _settingsService;
+    private readonly IDollarService _dollarService;
 
     public DashboardViewModelTests()
     {
@@ -24,6 +25,7 @@ public class DashboardViewModelTests
         _clienteService = Substitute.For<IClienteService>();
         _trabajoService = Substitute.For<ITrabajoService>();
         _settingsService = Substitute.For<IUserSettingsService>();
+        _dollarService = Substitute.For<IDollarService>();
     }
 
     [Fact]
@@ -38,7 +40,7 @@ public class DashboardViewModelTests
         _movimientoService.GetAllAsync().Returns(movimientos);
 
         // Act
-        var vm = new DashboardViewModel(_movimientoService, _clienteService, _trabajoService, _settingsService);
+        var vm = new DashboardViewModel(_movimientoService, _clienteService, _trabajoService, _settingsService, _dollarService);
         await vm.LoadStatsCommand.ExecuteAsync(null);
 
         // Assert
@@ -54,7 +56,7 @@ public class DashboardViewModelTests
         _movimientoService.GetAllAsync().Returns(new List<MovimientoDto>());
 
         // Act
-        var vm = new DashboardViewModel(_movimientoService, _clienteService, _trabajoService, _settingsService);
+        var vm = new DashboardViewModel(_movimientoService, _clienteService, _trabajoService, _settingsService, _dollarService);
         await vm.LoadStatsCommand.ExecuteAsync(null);
 
         // Assert
@@ -74,7 +76,7 @@ public class DashboardViewModelTests
         _movimientoService.GetAllAsync().Returns(movimientos);
 
         // Act
-        var vm = new DashboardViewModel(_movimientoService, _clienteService, _trabajoService, _settingsService);
+        var vm = new DashboardViewModel(_movimientoService, _clienteService, _trabajoService, _settingsService, _dollarService);
         await vm.LoadStatsCommand.ExecuteAsync(null);
 
         // Assert

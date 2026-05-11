@@ -270,7 +270,9 @@
 
                             <StackPanel Spacing="5">
                                 <TextBlock Text="Cotización de Dólar" FontWeight="Medium"/>
-                                <TextBlock Text="Actualizar automáticamente la cotización desde el servicio público al iniciar el dashboard." FontSize="12" Foreground="{DynamicResource SecondaryForegroundBrush}" Margin="0,0,0,5"/>
+                                <TextBlock Text="URL del servicio para obtener las cotizaciones actuales." FontSize="12" Foreground="{DynamicResource SecondaryForegroundBrush}" Margin="0,0,0,5"/>
+                                <TextBox Text="{Binding DollarApiUrl}" PlaceholderText="https://dolarapi..."/>
+                                <TextBlock Text="Actualizar automáticamente al iniciar el dashboard." FontSize="12" Foreground="{DynamicResource SecondaryForegroundBrush}" Margin="0,10,0,5"/>
                                 <ToggleSwitch IsChecked="{Binding AutoUpdateDollar}" OnContent="Activado" OffContent="Desactivado" HorizontalAlignment="Left"/>
                             </StackPanel>
 

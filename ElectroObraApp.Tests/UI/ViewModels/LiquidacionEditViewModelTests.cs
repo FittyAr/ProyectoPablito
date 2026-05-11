@@ -106,8 +106,8 @@ public class LiquidacionEditViewModelTests
         var newEnd = new DateTimeOffset(2026, 1, 15, 0, 0, 0, TimeSpan.Zero);
 
         // Act
-        _viewModel.FechaInicioOffset = newStart;
-        _viewModel.FechaFinOffset = newEnd;
+        _viewModel.FechaInicioOffset = newStart.DateTime;
+        _viewModel.FechaFinOffset = newEnd.DateTime;
 
         // Assert
         _viewModel.Liquidacion.FechaInicio.Should().Be(newStart.DateTime);

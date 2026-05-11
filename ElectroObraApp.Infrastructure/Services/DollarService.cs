@@ -12,23 +12,25 @@ namespace ElectroObraApp.Infrastructure.Services;
 public class DollarService : IDollarService
 {
     private readonly HttpClient _httpClient;
-    private const string ApiUrl = "https://dolarapi.com/v1/dolares";
+    private readonly IUserSettingsService _settingsService;
 
-    public DollarService(HttpClient httpClient)
+    public DollarService(HttpClient httpClient, IUserSettingsService settingsService)
     {
         _httpClient = httpClient;
+        _settingsService = settingsService;
     }
 
     public async Task<List<DollarDto>> GetDollarRatesAsync()
     {
+        var apiUrl = _settingsService.GetDollarApiUrl();
         try
         {
-            var response = await _httpClient.GetFromJsonAsync<List<DollarDto>>(ApiUrl);
+            var response = await _httpClient.GetFromJsonAsync<List<DollarDto>>(apiUrl);
             return response ?? new List<DollarDto>();
         }
         catch (Exception ex)
         {
-            Log.Error(ex, "Error al obtener las cotizaciones del dólar desde {Url}", ApiUrl);
+            Log.Error(ex, "Error al obtener las cotizaciones del dólar desde {Url}", apiUrl);
             return new List<DollarDto>();
         }
     }
