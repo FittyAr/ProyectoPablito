@@ -269,6 +269,14 @@
                             <Separator Background="{DynamicResource SidebarSeparatorBrush}"/>
 
                             <StackPanel Spacing="5">
+                                <TextBlock Text="Cotización de Dólar" FontWeight="Medium"/>
+                                <TextBlock Text="Actualizar automáticamente la cotización desde el servicio público al iniciar el dashboard." FontSize="12" Foreground="{DynamicResource SecondaryForegroundBrush}" Margin="0,0,0,5"/>
+                                <ToggleSwitch IsChecked="{Binding AutoUpdateDollar}" OnContent="Activado" OffContent="Desactivado" HorizontalAlignment="Left"/>
+                            </StackPanel>
+
+                            <Separator Background="{DynamicResource SidebarSeparatorBrush}"/>
+
+                            <StackPanel Spacing="5">
                                 <TextBlock Text="Cliente de Correo" FontWeight="Medium"/>
                                 <TextBlock Text="Servicio utilizado para el envío de presupuestos y facturas." FontSize="12" Foreground="{DynamicResource SecondaryForegroundBrush}" Margin="0,0,0,5"/>
                                 <ComboBox ItemsSource="{Binding EmailClients}" 

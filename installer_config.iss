@@ -1,6 +1,9 @@
 [Setup]
+#ifndef AppVersion
+  #define AppVersion "1.1.0"
+#endif
 AppName=ElectroObraApp
-AppVersion=1.0
+AppVersion={#AppVersion}
 AppPublisher=ElectroObra Software
 DefaultDirName={autopf}\ElectroObraApp
 DefaultGroupName=ElectroObra App

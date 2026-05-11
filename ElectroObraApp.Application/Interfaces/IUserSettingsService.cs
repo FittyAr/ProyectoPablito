@@ -51,5 +51,8 @@ public interface IUserSettingsService
 
     string GetHolidayApiUrl();
     Task SetHolidayApiUrlAsync(string url);
+
+    bool GetAutoUpdateDollar();
+    Task SetAutoUpdateDollarAsync(bool value);
 }
 

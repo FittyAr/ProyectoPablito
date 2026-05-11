@@ -82,6 +82,9 @@ public class UserSettingsService : IUserSettingsService
     public string GetHolidayApiUrl() => GetValue("Application:Settlement:HolidayApiUrl", "https://api.argentinadatos.com/v1/feriados/");
     public async Task SetHolidayApiUrlAsync(string url) => await SetValueAsync("Application:Settlement:HolidayApiUrl", url);
 
+    public bool GetAutoUpdateDollar() => _configuration.GetValue<bool>("Application:Dollar:AutoUpdate", true);
+    public async Task SetAutoUpdateDollarAsync(bool value) => await SetValueAsync("Application:Dollar:AutoUpdate", value);
+
     private string GetValue(string key, string defaultValue)
     {
         try

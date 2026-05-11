@@ -28,9 +28,16 @@ public partial class DashboardViewModel : ViewModelBase
     private readonly IClienteService _clienteService;
     private readonly ITrabajoService _trabajoService;
     private readonly IUserSettingsService _settingsService;
+    private readonly IDollarService _dollarService;
 
     [ObservableProperty]
     private string _title = "Dashboard Operativo";
+
+    [ObservableProperty]
+    private ObservableCollection<DollarDto> _dollarRates = new();
+
+    [ObservableProperty]
+    private bool _showDollarRates = false;
 
     [ObservableProperty]
     private decimal _totalIngresos;
@@ -100,12 +107,14 @@ public partial class DashboardViewModel : ViewModelBase
         IMovimientoService movimientoService, 
         IClienteService clienteService,
         ITrabajoService trabajoService,
-        IUserSettingsService settingsService)
+        IUserSettingsService settingsService,
+        IDollarService dollarService)
     {
         _movimientoService = movimientoService;
         _clienteService = clienteService;
         _trabajoService = trabajoService;
         _settingsService = settingsService;
+        _dollarService = dollarService;
         
         CurrentTimeRange = settingsService.GetDashboardPeriod();
         IsPrivacyModeActive = settingsService.GetIsPrivacyMode();
@@ -116,6 +125,20 @@ public partial class DashboardViewModel : ViewModelBase
             IsPrivacyModeActive = !IsPrivacyModeActive;
         });
         _ = LoadStatsAsync();
+        _ = LoadDollarRatesAsync();
+    }
+
+    private async Task LoadDollarRatesAsync()
+    {
+        if (!_settingsService.GetAutoUpdateDollar()) return;
+
+        var rates = await _dollarService.GetDollarRatesAsync();
+        DollarRates.Clear();
+        foreach (var rate in rates.Where(r => r.Casa == "oficial" || r.Casa == "blue"))
+        {
+            DollarRates.Add(rate);
+        }
+        ShowDollarRates = DollarRates.Any();
     }
 
     public IAsyncRelayCommand LoadStatsCommand { get; }

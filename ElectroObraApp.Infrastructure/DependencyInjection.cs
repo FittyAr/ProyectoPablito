@@ -27,6 +27,7 @@ public static class DependencyInjection
         
         services.AddHttpClient();
         services.AddScoped<IHolidayService, HolidayService>();
+        services.AddScoped<IDollarService, DollarService>();
         
         return services;
     }

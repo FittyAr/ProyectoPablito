@@ -4,10 +4,33 @@
 
 $ErrorActionPreference = "Stop"
 
+$versionFile = ".\VERSION"
 $projectPath = ".\ElectroObraApp.Desktop\ElectroObraApp.Desktop.csproj"
 $publishDir = ".\publish_win"
 $issPath = ".\installer_config.iss"
 $isccPath = "C:\Program Files\Inno Setup 7\ISCC.exe"
+
+# 0. Incrementar versión automáticamente
+if (Test-Path $versionFile) {
+    $currentVersion = Get-Content $versionFile
+    Write-Host "Version actual: $currentVersion" -ForegroundColor Gray
+    
+    # Incrementar el último dígito
+    if ($currentVersion -match '(\d+\.\d+\.)(\d+)') {
+        $base = $Matches[1]
+        $patch = [int]$Matches[2] + 1
+        $newVersion = "$base$patch"
+    } else {
+        $newVersion = "$currentVersion.1"
+    }
+    
+    $newVersion | Out-File $versionFile -Encoding utf8
+    Write-Host "Nueva version generada: $newVersion" -ForegroundColor Cyan
+} else {
+    $newVersion = "1.0.0"
+    $newVersion | Out-File $versionFile -Encoding utf8
+    Write-Host "Archivo VERSION no encontrado. Iniciando en 1.0.0" -ForegroundColor Yellow
+}
 
 if (-not (Test-Path $isccPath)) {
     # Fallback a Inno Setup 6 o rutas comunes
@@ -34,10 +57,10 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 # 3. Compilar el instalador con Inno Setup
-Write-Host "Compilando instalador con Inno Setup..." -ForegroundColor Yellow
+Write-Host "Compilando instalador con Inno Setup (Version $newVersion)..." -ForegroundColor Yellow
 
 if (Test-Path $isccPath) {
-    & $isccPath $issPath
+    & $isccPath $issPath "/DAppVersion=$newVersion"
 } else {
     Write-Host "Error: No se encontro ISCC.exe. Por favor verifica la ruta de Inno Setup." -ForegroundColor Red
     Write-Host "Ruta intentada: $isccPath" -ForegroundColor Gray
