@@ -24,6 +24,9 @@ public static class DependencyInjection
         services.AddScoped<IDatabaseSeedService, DatabaseSeedService>();
         services.AddScoped<IUserSettingsService, UserSettingsService>();
         
+        services.AddHttpClient();
+        services.AddScoped<IHolidayService, HolidayService>();
+        
         return services;
     }
 }

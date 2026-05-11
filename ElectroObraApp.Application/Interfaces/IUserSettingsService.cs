@@ -48,5 +48,8 @@ public interface IUserSettingsService
 
     bool GetDefaultIncludeHoliday();
     Task SetDefaultIncludeHolidayAsync(bool value);
+
+    string GetHolidayApiUrl();
+    Task SetHolidayApiUrlAsync(string url);
 }
 

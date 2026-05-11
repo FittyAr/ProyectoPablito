@@ -65,6 +65,9 @@ public class UserSettingsService : IUserSettingsService
     public bool GetDefaultIncludeHoliday() => _configuration.GetValue<bool>("Application:Settlement:IncludeHoliday", false);
     public async Task SetDefaultIncludeHolidayAsync(bool value) => await SetValueAsync("Application:Settlement:IncludeHoliday", value);
 
+    public string GetHolidayApiUrl() => GetValue("Application:Settlement:HolidayApiUrl", "https://api.argentinadatos.com/v1/feriados/");
+    public async Task SetHolidayApiUrlAsync(string url) => await SetValueAsync("Application:Settlement:HolidayApiUrl", url);
+
     private string GetValue(string key, string defaultValue)
     {
         try
@@ -91,10 +94,10 @@ public class UserSettingsService : IUserSettingsService
         {
             var jsonString = await File.ReadAllTextAsync(_settingsPath);
             var root = JsonNode.Parse(jsonString) ?? new JsonObject();
-            
+
             var parts = keyPath.Split(':');
             JsonNode currentNode = root;
-            
+
             for (int i = 0; i < parts.Length - 1; i++)
             {
                 var part = parts[i];
@@ -122,11 +125,11 @@ public class UserSettingsService : IUserSettingsService
             if (root != null)
             {
                 var appSection = root["Application"] ?? (root["Application"] = new JsonObject());
-                
+
                 // Handle nested keys like "Appearance:Theme"
                 var parts = keyPath.Split(':');
                 JsonNode currentNode = appSection;
-                
+
                 for (int i = 0; i < parts.Length - 1; i++)
                 {
                     var part = parts[i];

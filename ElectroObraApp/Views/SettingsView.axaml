@@ -3,155 +3,306 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:ElectroObraApp.ViewModels"
+             xmlns:material="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
              mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="400"
              x:Class="ElectroObraApp.Views.SettingsView"
              x:DataType="vm:SettingsViewModel">
     
-    <Grid RowDefinitions="Auto, *, Auto" Margin="20">
-        <TextBlock Grid.Row="0" Text="Configuración del Sistema" FontSize="24" FontWeight="Bold" Margin="0,0,0,20" Foreground="{DynamicResource MainForegroundBrush}"/>
-        
-        <TabControl Grid.Row="1">
-            <!-- General Tab -->
-            <TabItem Header="General">
-                <StackPanel Spacing="15" Margin="0,20">
-                    <StackPanel Spacing="5">
-                        <TextBlock Text="Nombre de la Aplicación" FontWeight="Bold" Foreground="{DynamicResource MainForegroundBrush}"/>
-                        <TextBox Text="{Binding AppName}" PlaceholderText="Ej: ElectroObraApp"/>
-                    </StackPanel>
-                    
-                    <StackPanel Spacing="5">
-                        <TextBlock Text="Idioma Predeterminado" FontWeight="Bold" Foreground="{DynamicResource MainForegroundBrush}"/>
-                        <ComboBox SelectedIndex="0" HorizontalAlignment="Stretch">
-                            <ComboBoxItem Content="Español (es)"/>
-                            <ComboBoxItem Content="English (en)"/>
-                        </ComboBox>
-                    </StackPanel>
+    <Grid ColumnDefinitions="250, *" Margin="0">
+        <!-- Sidebar Navigation -->
+        <Border Grid.Column="0" Background="{DynamicResource PaneBackgroundBrush}" BorderBrush="{DynamicResource SidebarSeparatorBrush}" BorderThickness="0,0,1,0">
+            <Grid RowDefinitions="Auto, *, Auto">
+                <StackPanel Grid.Row="0" Margin="20,30,20,20">
+                    <TextBlock Text="Configuración" FontSize="20" FontWeight="Bold" Foreground="{DynamicResource MainForegroundBrush}"/>
+                    <TextBlock Text="Ajustes del sistema" FontSize="12" Foreground="{DynamicResource SecondaryForegroundBrush}"/>
                 </StackPanel>
-            </TabItem>
-            
-            <!-- Branding Tab -->
-            <TabItem Header="Marca">
-                <StackPanel Spacing="15" Margin="0,20">
-                    <StackPanel Spacing="5">
-                        <TextBlock Text="Ruta del Logo" FontWeight="Bold" Foreground="{DynamicResource MainForegroundBrush}"/>
-                        <TextBox Text="{Binding LogoPath}" PlaceholderText="avares://..."/>
-                    </StackPanel>
-                    
-                    <StackPanel Spacing="5">
-                        <TextBlock Text="Ruta del Fondo" FontWeight="Bold" Foreground="{DynamicResource MainForegroundBrush}"/>
-                        <TextBox Text="{Binding BackgroundPath}" PlaceholderText="avares://..."/>
-                    </StackPanel>
-                    
-                    <TextBlock Text="Nota: Cambiar estas rutas requiere reiniciar la aplicación." 
-                               FontStyle="Italic" Foreground="{DynamicResource SecondaryForegroundBrush}" FontSize="12"/>
-                </StackPanel>
-            </TabItem>
-            
-            <!-- Appearance Tab -->
-            <TabItem Header="Apariencia">
-                <StackPanel Spacing="15" Margin="0,20">
-                    <TextBlock Text="Seleccionar Tema" FontWeight="Bold" Foreground="{DynamicResource MainForegroundBrush}"/>
-                    <ListBox ItemsSource="{Binding Themes}" 
-                             SelectedItem="{Binding SelectedTheme}"
-                             Background="Transparent">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <Border Padding="10" BorderBrush="{DynamicResource SidebarSeparatorBrush}" BorderThickness="1" CornerRadius="4" Margin="0,2">
-                                    <TextBlock Text="{Binding}" Foreground="{DynamicResource MainForegroundBrush}"/>
-                                </Border>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
-                </StackPanel>
-            </TabItem>
 
-            <!-- Dashboard Tab -->
-            <TabItem Header="Dashboard">
-                <StackPanel Spacing="15" Margin="0,20">
-                    <TextBlock Text="Preferencia de Visualización" FontWeight="Bold" Foreground="{DynamicResource MainForegroundBrush}"/>
-                    <TextBlock Text="Define el periodo de tiempo predeterminado para los gráficos y métricas del dashboard." 
-                               Foreground="{DynamicResource SecondaryForegroundBrush}" FontSize="12" TextWrapping="Wrap"/>
+                <ListBox Grid.Row="1" 
+                         Background="Transparent" 
+                         BorderThickness="0"
+                         SelectedIndex="{Binding SelectedCategoryIndex}"
+                         Padding="10">
+                    <ListBox.Styles>
+                        <Style Selector="ListBoxItem">
+                            <Setter Property="Padding" Value="15,12"/>
+                            <Setter Property="CornerRadius" Value="8"/>
+                            <Setter Property="Margin" Value="0,2"/>
+                        </Style>
+                    </ListBox.Styles>
                     
-                    <ListBox ItemsSource="{Binding DashboardPeriods}" 
-                             SelectedItem="{Binding SelectedDashboardPeriod}"
-                             Background="Transparent">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <Border Padding="10" BorderBrush="{DynamicResource SidebarSeparatorBrush}" BorderThickness="1" CornerRadius="4" Margin="0,2">
-                                    <TextBlock Text="{Binding}" Foreground="{DynamicResource MainForegroundBrush}"/>
-                                </Border>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
-                </StackPanel>
-            </TabItem>
-
-            <!-- Módulos Tab -->
-            <TabItem Header="Módulos">
-                <ScrollViewer>
-                    <StackPanel Spacing="20" Margin="0,20">
-                        <!-- Email Section -->
-                        <StackPanel Spacing="10">
-                            <TextBlock Text="Correo Electrónico" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource AccentBrush}"/>
-                            <TextBlock Text="Cliente de correo preferido para enviar emails a clientes." 
-                                       Foreground="{DynamicResource SecondaryForegroundBrush}" FontSize="12"/>
-                            <ComboBox ItemsSource="{Binding EmailClients}" 
-                                      SelectedItem="{Binding SelectedEmailClient}" 
-                                      HorizontalAlignment="Stretch"/>
+                    <ListBoxItem>
+                        <StackPanel Orientation="Horizontal" Spacing="15">
+                            <material:MaterialIcon Kind="Settings" Width="18" Height="18" Foreground="{DynamicResource AccentBrush}"/>
+                            <TextBlock Text="General" VerticalAlignment="Center"/>
                         </StackPanel>
+                    </ListBoxItem>
+                    
+                    <ListBoxItem>
+                        <StackPanel Orientation="Horizontal" Spacing="15">
+                            <material:MaterialIcon Kind="Palette" Width="18" Height="18" Foreground="{DynamicResource AccentBrush}"/>
+                            <TextBlock Text="Personalización" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </ListBoxItem>
+                    
+                    <ListBoxItem>
+                        <StackPanel Orientation="Horizontal" Spacing="15">
+                            <material:MaterialIcon Kind="Cash" Width="18" Height="18" Foreground="{DynamicResource AccentBrush}"/>
+                            <TextBlock Text="Liquidaciones" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </ListBoxItem>
+                    
+                    <ListBoxItem>
+                        <StackPanel Orientation="Horizontal" Spacing="15">
+                            <material:MaterialIcon Kind="CloudSync" Width="18" Height="18" Foreground="{DynamicResource AccentBrush}"/>
+                            <TextBlock Text="Sistema" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </ListBoxItem>
+                </ListBox>
 
-                        <Separator Height="1" Background="{DynamicResource SidebarSeparatorBrush}"/>
+                <Button Grid.Row="2" 
+                        Content="Guardar Cambios" 
+                        Command="{Binding SaveCommand}"
+                        HorizontalAlignment="Stretch"
+                        Margin="15,20"
+                        Padding="0,12"
+                        Background="{DynamicResource AccentBrush}"
+                        Foreground="White"
+                        FontWeight="Bold"
+                        CornerRadius="8"/>
+            </Grid>
+        </Border>
 
-                        <!-- Settlements Section -->
-                        <StackPanel Spacing="10">
-                            <TextBlock Text="Liquidaciones" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource AccentBrush}"/>
-                            <TextBlock Text="Multiplicadores por defecto para días especiales." 
-                                       Foreground="{DynamicResource SecondaryForegroundBrush}" FontSize="12"/>
+        <!-- Main Content Area -->
+        <ScrollViewer Grid.Column="1" Padding="40,30">
+            <Carousel SelectedIndex="{Binding SelectedCategoryIndex}">
+                <Carousel.PageTransition>
+                    <PageSlide Duration="0:0:0.3" Orientation="Vertical"/>
+                </Carousel.PageTransition>
+                
+                <!-- 0: General Section -->
+                <StackPanel Spacing="25">
+                    <HeaderedContentControl Header="General">
+                        <HeaderedContentControl.Template>
+                            <ControlTemplate>
+                                <StackPanel Spacing="5" Margin="0,0,0,10">
+                                    <TextBlock Text="General" FontSize="24" FontWeight="SemiBold"/>
+                                    <TextBlock Text="Configuración básica y preferencias de visualización." Foreground="{DynamicResource SecondaryForegroundBrush}"/>
+                                </StackPanel>
+                            </ControlTemplate>
+                        </HeaderedContentControl.Template>
+                    </HeaderedContentControl>
+
+                    <Border Classes="card">
+                        <StackPanel Spacing="20">
+                            <StackPanel Spacing="5">
+                                <TextBlock Text="Nombre de la Aplicación" FontWeight="Medium"/>
+                                <TextBlock Text="El nombre que aparecerá en la barra de título y reportes." FontSize="12" Foreground="{DynamicResource SecondaryForegroundBrush}" Margin="0,0,0,5"/>
+                                <TextBox Text="{Binding AppName}" PlaceholderText="Ej: ElectroObraApp" MaxWidth="400" HorizontalAlignment="Left"/>
+                            </StackPanel>
+
+                            <Separator Background="{DynamicResource SidebarSeparatorBrush}"/>
+
+                            <StackPanel Spacing="5">
+                                <TextBlock Text="Idioma del Sistema" FontWeight="Medium"/>
+                                <TextBlock Text="Selecciona el idioma preferido para la interfaz de usuario." FontSize="12" Foreground="{DynamicResource SecondaryForegroundBrush}" Margin="0,0,0,5"/>
+                                <ComboBox SelectedIndex="0" HorizontalAlignment="Left" Width="200">
+                                    <ComboBoxItem Content="Español (es)"/>
+                                    <ComboBoxItem Content="English (en)"/>
+                                </ComboBox>
+                            </StackPanel>
+
+                            <Separator Background="{DynamicResource SidebarSeparatorBrush}"/>
+
+                            <StackPanel Spacing="5">
+                                <TextBlock Text="Periodo del Dashboard" FontWeight="Medium"/>
+                                <TextBlock Text="Define el intervalo de tiempo por defecto para los gráficos estadísticos." FontSize="12" Foreground="{DynamicResource SecondaryForegroundBrush}" Margin="0,0,0,5"/>
+                                <ListBox ItemsSource="{Binding DashboardPeriods}" 
+                                         SelectedItem="{Binding SelectedDashboardPeriod}"
+                                         Background="Transparent"
+                                         HorizontalAlignment="Left">
+                                    <ListBox.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Orientation="Horizontal" Spacing="10"/>
+                                        </ItemsPanelTemplate>
+                                    </ListBox.ItemsPanel>
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border Padding="15,8" BorderBrush="{DynamicResource SidebarSeparatorBrush}" BorderThickness="1" CornerRadius="20">
+                                                <TextBlock Text="{Binding}"/>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+
+                <!-- 1: Personalización Section -->
+                <StackPanel Spacing="25">
+                    <StackPanel Spacing="5" Margin="0,0,0,10">
+                        <TextBlock Text="Personalización" FontSize="24" FontWeight="SemiBold"/>
+                        <TextBlock Text="Ajusta la apariencia visual para adaptarla a tu gusto." Foreground="{DynamicResource SecondaryForegroundBrush}"/>
+                    </StackPanel>
+
+                    <Border Classes="card">
+                        <StackPanel Spacing="25">
+                            <StackPanel Spacing="10">
+                                <TextBlock Text="Tema Visual" FontWeight="Medium"/>
+                                <ListBox ItemsSource="{Binding Themes}" 
+                                         SelectedItem="{Binding SelectedTheme}"
+                                         Background="Transparent">
+                                    <ListBox.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel/>
+                                        </ItemsPanelTemplate>
+                                    </ListBox.ItemsPanel>
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border Padding="15,10" Margin="0,5,10,5" BorderBrush="{DynamicResource SidebarSeparatorBrush}" BorderThickness="1" CornerRadius="8">
+                                                <StackPanel Orientation="Horizontal" Spacing="10">
+                                                    <Ellipse Width="12" Height="12" Fill="{DynamicResource AccentBrush}"/>
+                                                    <TextBlock Text="{Binding}"/>
+                                                </StackPanel>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </StackPanel>
+
+                            <Separator Background="{DynamicResource SidebarSeparatorBrush}"/>
+
+                            <Grid ColumnDefinitions="*, *" ColumnSpacing="30">
+                                <StackPanel Spacing="5">
+                                    <TextBlock Text="Logotipo de la Empresa" FontWeight="Medium"/>
+                                    <TextBlock Text="Imagen que aparecerá en reportes PDF." FontSize="12" Foreground="{DynamicResource SecondaryForegroundBrush}" Margin="0,0,0,5"/>
+                                    <TextBox Text="{Binding LogoPath}" Watermark="avares://..."/>
+                                </StackPanel>
+                                
+                                <StackPanel Spacing="5">
+                                    <TextBlock Text="Imagen de Fondo" FontWeight="Medium"/>
+                                    <TextBlock Text="Fondo personalizado para la vista principal." FontSize="12" Foreground="{DynamicResource SecondaryForegroundBrush}" Margin="0,0,0,5"/>
+                                    <TextBox Text="{Binding BackgroundPath}" Watermark="avares://..."/>
+                                </StackPanel>
+                            </Grid>
                             
-                            <Grid ColumnDefinitions="*, *" RowDefinitions="Auto, Auto, Auto" Margin="0,10">
-                                <TextBlock Grid.Row="0" Grid.Column="0" Text="Sábados:" VerticalAlignment="Center"/>
-                                <NumericUpDown Grid.Row="0" Grid.Column="1" Value="{Binding MultiplierSaturday}" Increment="0.1" Minimum="0" FormatString="0.0"/>
-                                
-                                <TextBlock Grid.Row="1" Grid.Column="0" Text="Domingos:" VerticalAlignment="Center" Margin="0,10,0,0"/>
-                                <NumericUpDown Grid.Row="1" Grid.Column="1" Value="{Binding MultiplierSunday}" Increment="0.1" Minimum="0" FormatString="0.0" Margin="0,10,0,0"/>
-                                
-                                <TextBlock Grid.Row="2" Grid.Column="0" Text="Feriados:" VerticalAlignment="Center" Margin="0,10,0,0"/>
-                                <NumericUpDown Grid.Row="2" Grid.Column="1" Value="{Binding MultiplierHoliday}" Increment="0.1" Minimum="0" FormatString="0.0" Margin="0,10,0,0"/>
+                            <Border Background="#20FFCC00" Padding="15" CornerRadius="8">
+                                <StackPanel Orientation="Horizontal" Spacing="10">
+                                    <material:MaterialIcon Kind="Info" Foreground="#FFCC00"/>
+                                    <TextBlock Text="Nota: Algunos cambios estéticos pueden requerir reiniciar la aplicación para aplicarse por completo." 
+                                               VerticalAlignment="Center" FontSize="12" Foreground="#DDAA00"/>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+
+                <!-- 2: Liquidaciones Section -->
+                <StackPanel Spacing="25">
+                    <StackPanel Spacing="5" Margin="0,0,0,10">
+                        <TextBlock Text="Liquidaciones y Pagos" FontSize="24" FontWeight="SemiBold"/>
+                        <TextBlock Text="Configura los parámetros para el cálculo automático de haberes." Foreground="{DynamicResource SecondaryForegroundBrush}"/>
+                    </StackPanel>
+
+                    <Border Classes="card">
+                        <StackPanel Spacing="20">
+                            <TextBlock Text="Multiplicadores por Jornada" FontWeight="Medium"/>
+                            <TextBlock Text="Define cuánto se incrementa el pago base según el tipo de día." FontSize="12" Foreground="{DynamicResource SecondaryForegroundBrush}"/>
+                            
+                            <Grid ColumnDefinitions="*, *, *" ColumnSpacing="15" Margin="0,10">
+                                <StackPanel Spacing="5">
+                                    <TextBlock Text="Sábados" FontSize="12" Opacity="0.7"/>
+                                    <NumericUpDown Value="{Binding MultiplierSaturday}" Increment="0.1" Minimum="1.0" Maximum="3.0" FormatString="0.0x"/>
+                                </StackPanel>
+                                <StackPanel Spacing="5">
+                                    <TextBlock Text="Domingos" FontSize="12" Opacity="0.7"/>
+                                    <NumericUpDown Value="{Binding MultiplierSunday}" Increment="0.1" Minimum="1.0" Maximum="3.0" FormatString="0.0x"/>
+                                </StackPanel>
+                                <StackPanel Spacing="5">
+                                    <TextBlock Text="Feriados" FontSize="12" Opacity="0.7"/>
+                                    <NumericUpDown Value="{Binding MultiplierHoliday}" Increment="0.1" Minimum="1.0" Maximum="3.0" FormatString="0.0x"/>
+                                </StackPanel>
                             </Grid>
 
-                            <TextBlock Text="Calendario de Feriados" FontWeight="Bold" Margin="0,15,0,5"/>
-                            <Grid ColumnDefinitions="*, Auto" ColumnSpacing="10" Margin="0,5">
-                                <CalendarDatePicker SelectedDate="{Binding NewHolidayDate}" HorizontalAlignment="Stretch"/>
-                                <Button Grid.Column="1" Content="Agregar Feriado" Command="{Binding AddHolidayCommand}" Classes="outline"/>
+                            <Separator Background="{DynamicResource SidebarSeparatorBrush}"/>
+
+                            <TextBlock Text="Calendario de Feriados" FontWeight="Medium"/>
+                            <TextBlock Text="Los días marcados aquí serán calculados con el multiplicador de feriados." FontSize="12" Foreground="{DynamicResource SecondaryForegroundBrush}"/>
+                            
+                            <Grid ColumnDefinitions="*, *, Auto" ColumnSpacing="10" Margin="0,10">
+                                <CalendarDatePicker SelectedDate="{Binding NewHolidayDate}" HorizontalAlignment="Stretch" Watermark="Fecha..."/>
+                                <TextBox Grid.Column="1" Text="{Binding NewHolidayName}" Watermark="Descripción del feriado..."/>
+                                <Button Grid.Column="2" Content="Agregar" Command="{Binding AddHolidayCommand}" Classes="accent"/>
                             </Grid>
 
-                            <Border Background="#252525" CornerRadius="8" Margin="0,10,0,0" Height="150">
+                            <Border Background="{DynamicResource MainBackgroundBrush}" CornerRadius="12" BorderThickness="1" BorderBrush="{DynamicResource SidebarSeparatorBrush}" Height="200">
                                 <ListBox ItemsSource="{Binding Holidays}" Background="Transparent">
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
-                                            <Grid ColumnDefinitions="*, Auto" Margin="5">
-                                                <TextBlock Text="{Binding StringFormat=dd/MM/yyyy}" VerticalAlignment="Center"/>
-                                                <Button Grid.Column="1" Content="Eliminar" 
+                                            <Grid ColumnDefinitions="120, *, Auto" Margin="10,5">
+                                                <TextBlock Text="{Binding Date, StringFormat=dd/MM/yyyy}" VerticalAlignment="Center" FontWeight="Bold" Foreground="{DynamicResource AccentBrush}"/>
+                                                <TextBlock Grid.Column="1" Text="{Binding Name}" VerticalAlignment="Center" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Margin="10,0"/>
+                                                <Button Grid.Column="2" 
                                                         Command="{Binding $parent[UserControl].((vm:SettingsViewModel)DataContext).RemoveHolidayCommand}"
                                                         CommandParameter="{Binding}"
-                                                        Classes="outline" BorderThickness="0"/>
+                                                        Padding="5" Background="Transparent" BorderThickness="0">
+                                                    <material:MaterialIcon Kind="Delete" Width="16" Height="16" Foreground="#FF5555"/>
+                                                </Button>
                                             </Grid>
                                         </DataTemplate>
                                     </ListBox.ItemTemplate>
                                 </ListBox>
                             </Border>
                         </StackPanel>
+                    </Border>
+                </StackPanel>
+
+                <!-- 3: Sistema Section -->
+                <StackPanel Spacing="25">
+                    <StackPanel Spacing="5" Margin="0,0,0,10">
+                        <TextBlock Text="Sistema e Integraciones" FontSize="24" FontWeight="SemiBold"/>
+                        <TextBlock Text="Configuración técnica y conexiones externas." Foreground="{DynamicResource SecondaryForegroundBrush}"/>
                     </StackPanel>
-                </ScrollViewer>
-            </TabItem>
-        </TabControl>
-        
-        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10" Margin="0,20,0,0">
-            <Button Content="Guardar Cambios" 
-                    Command="{Binding SaveCommand}"
-                    Background="{DynamicResource AccentBrush}" 
-                    Foreground="White" 
-                    Padding="20,10"/>
-        </StackPanel>
+
+                    <Border Classes="card">
+                        <StackPanel Spacing="20">
+                            <StackPanel Spacing="5">
+                                <TextBlock Text="Sincronización de Feriados" FontWeight="Medium"/>
+                                <TextBlock Text="URL del servicio para actualizar el calendario automáticamente." FontSize="12" Foreground="{DynamicResource SecondaryForegroundBrush}" Margin="0,0,0,5"/>
+                                <Grid ColumnDefinitions="*, Auto" ColumnSpacing="10">
+                                    <TextBox Text="{Binding HolidayApiUrl}" Watermark="https://api..."/>
+                                    <Button Grid.Column="1" Content="Sincronizar Ahora" Command="{Binding SyncHolidaysCommand}" Classes="outline"/>
+                                </Grid>
+                            </StackPanel>
+
+                            <Separator Background="{DynamicResource SidebarSeparatorBrush}"/>
+
+                            <StackPanel Spacing="5">
+                                <TextBlock Text="Cliente de Correo" FontWeight="Medium"/>
+                                <TextBlock Text="Servicio utilizado para el envío de presupuestos y facturas." FontSize="12" Foreground="{DynamicResource SecondaryForegroundBrush}" Margin="0,0,0,5"/>
+                                <ComboBox ItemsSource="{Binding EmailClients}" 
+                                          SelectedItem="{Binding SelectedEmailClient}" 
+                                          HorizontalAlignment="Left" Width="250"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </Carousel>
+        </ScrollViewer>
+
+        <!-- Styles for the page -->
+        <Grid.Styles>
+            <Style Selector="Border.card">
+                <Setter Property="Background" Value="{DynamicResource PaneBackgroundBrush}"/>
+                <Setter Property="Padding" Value="25"/>
+                <Setter Property="CornerRadius" Value="12"/>
+                <Setter Property="BorderBrush" Value="{DynamicResource SidebarSeparatorBrush}"/>
+                <Setter Property="BorderThickness" Value="1"/>
+            </Style>
+            <Style Selector="Separator">
+                <Setter Property="Height" Value="1"/>
+                <Setter Property="Margin" Value="0,15"/>
+            </Style>
+        </Grid.Styles>
     </Grid>
 </UserControl>
