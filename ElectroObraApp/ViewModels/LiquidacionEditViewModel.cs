@@ -31,28 +31,28 @@ public partial class LiquidacionEditViewModel : ViewModelBase
         OnPropertyChanged(nameof(FechaFinOffset));
     }
 
-    public DateTimeOffset? FechaInicioOffset
+    public DateTime? FechaInicioOffset
     {
         get => Liquidacion.FechaInicio;
         set
         {
-            if (value.HasValue && Liquidacion.FechaInicio != value.Value.DateTime)
+            if (value.HasValue && Liquidacion.FechaInicio != value.Value)
             {
-                Liquidacion.FechaInicio = value.Value.DateTime;
+                Liquidacion.FechaInicio = value.Value;
                 OnPropertyChanged(nameof(FechaInicioOffset));
                 _ = ReclacularAutomaticamente();
             }
         }
     }
 
-    public DateTimeOffset? FechaFinOffset
+    public DateTime? FechaFinOffset
     {
         get => Liquidacion.FechaFin;
         set
         {
-            if (value.HasValue && Liquidacion.FechaFin != value.Value.DateTime)
+            if (value.HasValue && Liquidacion.FechaFin != value.Value)
             {
-                Liquidacion.FechaFin = value.Value.DateTime;
+                Liquidacion.FechaFin = value.Value;
                 OnPropertyChanged(nameof(FechaFinOffset));
                 _ = ReclacularAutomaticamente();
             }
@@ -110,10 +110,24 @@ public partial class LiquidacionEditViewModel : ViewModelBase
             Liquidacion.FechaFin, 
             Liquidacion.DiasTrabajados);
 
-        // Aplicamos lógica de días trabajados avanzada localmente en el VM para respuesta inmediata
-        // o actualizamos el DTO sugerido.
-        // El servicio ya hace un cálculo base (L-V).
-        
+        // Mantenemos los valores que el usuario pudo haber editado en la UI antes de reasignar
+        sugerencia.IncluirSabados = Liquidacion.IncluirSabados;
+        sugerencia.IncluirDomingos = Liquidacion.IncluirDomingos;
+        sugerencia.IncluirFeriados = Liquidacion.IncluirFeriados;
+        sugerencia.MultiplicadorSabado = Liquidacion.MultiplicadorSabado;
+        sugerencia.MultiplicadorDomingo = Liquidacion.MultiplicadorDomingo;
+        sugerencia.MultiplicadorFeriado = Liquidacion.MultiplicadorFeriado;
+        sugerencia.Observaciones = Liquidacion.Observaciones;
+
+        // Obtener lista de feriados configurados
+        var holidaysJson = _settingsService.GetHolidaysJson();
+        var feriados = new System.Collections.Generic.HashSet<DateTime>();
+        try {
+            var dates = System.Text.Json.JsonSerializer.Deserialize<System.Collections.Generic.List<DateTime>>(holidaysJson);
+            if (dates != null) foreach(var d in dates) feriados.Add(d.Date);
+        } catch { /* Ignorar errores de parseo */ }
+
+        // Recalculamos totales con la tarifa sugerida y los multiplicadores actuales
         var totalDias = 0m;
         var totalBruto = 0m;
         
@@ -121,18 +135,22 @@ public partial class LiquidacionEditViewModel : ViewModelBase
         {
             var esSabado = date.DayOfWeek == DayOfWeek.Saturday;
             var esDomingo = date.DayOfWeek == DayOfWeek.Sunday;
+            var esFeriado = feriados.Contains(date.Date);
             
             var multiplicador = 1.0m;
             
-            if (esSabado)
+            if (esFeriado)
             {
-                multiplicador = Liquidacion.IncluirSabados ? Liquidacion.MultiplicadorSabado : 0.0m;
+                multiplicador = sugerencia.IncluirFeriados ? sugerencia.MultiplicadorFeriado : 0.0m;
             }
             else if (esDomingo)
             {
-                multiplicador = Liquidacion.IncluirDomingos ? Liquidacion.MultiplicadorDomingo : 0.0m;
+                multiplicador = sugerencia.IncluirDomingos ? sugerencia.MultiplicadorDomingo : 0.0m;
             }
-            // TODO: Feriados requerirían una lista
+            else if (esSabado)
+            {
+                multiplicador = sugerencia.IncluirSabados ? sugerencia.MultiplicadorSabado : 0.0m;
+            }
             
             if (multiplicador > 0)
             {
@@ -141,15 +159,12 @@ public partial class LiquidacionEditViewModel : ViewModelBase
             }
         }
 
-        Liquidacion.DiasTrabajados = totalDias;
-        Liquidacion.TotalBruto = totalBruto;
-        Liquidacion.TotalAdelantos = sugerencia.TotalAdelantos;
-        Liquidacion.TotalNeto = totalBruto - sugerencia.TotalAdelantos;
-        Liquidacion.TarifaAplicada = sugerencia.TarifaAplicada;
+        sugerencia.DiasTrabajados = totalDias;
+        sugerencia.TotalBruto = totalBruto;
+        sugerencia.TotalNeto = totalBruto - sugerencia.TotalAdelantos;
         
-        OnPropertyChanged(nameof(Liquidacion));
-        OnPropertyChanged(nameof(FechaInicioOffset));
-        OnPropertyChanged(nameof(FechaFinOffset));
+        // REASIGNAMOS EL OBJETO para disparar la notificación de cambio a la UI
+        Liquidacion = sugerencia;
     }
 
     private async Task SaveAsync()

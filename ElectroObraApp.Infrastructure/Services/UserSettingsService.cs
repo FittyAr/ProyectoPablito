@@ -5,6 +5,7 @@ using System.IO;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
+using System.Globalization;
 
 namespace ElectroObraApp.Infrastructure.Services;
 
@@ -43,14 +44,14 @@ public class UserSettingsService : IUserSettingsService
     public string GetPreferredEmailClient() => GetValue("Application:Email:PreferredClient", "SystemDefault");
     public async Task SetPreferredEmailClientAsync(string client) => await SetValueAsync("Application:Email:PreferredClient", client);
 
-    public decimal GetDefaultMultiplierSaturday() => decimal.TryParse(GetValue("Application:Settlement:MultiplierSaturday", "1.0"), out var result) ? result : 1.0m;
-    public async Task SetDefaultMultiplierSaturdayAsync(decimal multiplier) => await SetValueAsync("Application:Settlement:MultiplierSaturday", multiplier.ToString());
+    public decimal GetDefaultMultiplierSaturday() => decimal.TryParse(GetValue("Application:Settlement:MultiplierSaturday", "1.5"), CultureInfo.InvariantCulture, out var result) ? result : 1.5m;
+    public async Task SetDefaultMultiplierSaturdayAsync(decimal multiplier) => await SetValueAsync("Application:Settlement:MultiplierSaturday", multiplier.ToString(CultureInfo.InvariantCulture));
 
-    public decimal GetDefaultMultiplierSunday() => decimal.TryParse(GetValue("Application:Settlement:MultiplierSunday", "1.0"), out var result) ? result : 1.0m;
-    public async Task SetDefaultMultiplierSundayAsync(decimal multiplier) => await SetValueAsync("Application:Settlement:MultiplierSunday", multiplier.ToString());
+    public decimal GetDefaultMultiplierSunday() => decimal.TryParse(GetValue("Application:Settlement:MultiplierSunday", "2.0"), CultureInfo.InvariantCulture, out var result) ? result : 2.0m;
+    public async Task SetDefaultMultiplierSundayAsync(decimal multiplier) => await SetValueAsync("Application:Settlement:MultiplierSunday", multiplier.ToString(CultureInfo.InvariantCulture));
 
-    public decimal GetDefaultMultiplierHoliday() => decimal.TryParse(GetValue("Application:Settlement:MultiplierHoliday", "1.0"), out var result) ? result : 1.0m;
-    public async Task SetDefaultMultiplierHolidayAsync(decimal multiplier) => await SetValueAsync("Application:Settlement:MultiplierHoliday", multiplier.ToString());
+    public decimal GetDefaultMultiplierHoliday() => decimal.TryParse(GetValue("Application:Settlement:MultiplierHoliday", "2.0"), CultureInfo.InvariantCulture, out var result) ? result : 2.0m;
+    public async Task SetDefaultMultiplierHolidayAsync(decimal multiplier) => await SetValueAsync("Application:Settlement:MultiplierHoliday", multiplier.ToString(CultureInfo.InvariantCulture));
 
     public string GetHolidaysJson() => GetValue("Application:Settlement:Holidays", "[]");
     public async Task SetHolidaysJsonAsync(string holidaysJson) => await SetValueAsync("Application:Settlement:Holidays", holidaysJson);

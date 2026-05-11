@@ -6,69 +6,76 @@
              mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="600"
              x:Class="ElectroObraApp.Views.LiquidacionEditView"
              x:DataType="vm:LiquidacionEditViewModel">
-    <Border Padding="25" Background="#2d2d2d" CornerRadius="12" BoxShadow="0 4 10 0 #40000000" Width="650">
+    <Border Padding="25" Background="#2d2d2d" CornerRadius="12" BoxShadow="0 4 10 0 #40000000" Width="750">
         <ScrollViewer MaxHeight="750">
             <StackPanel Spacing="18" Margin="0,0,15,0">
                 <TextBlock Text="Generar Nueva Liquidación" FontSize="22" FontWeight="Bold" Margin="0,0,0,5" Foreground="White"/>
-            
-            <Grid ColumnDefinitions="*, *" RowDefinitions="Auto, Auto" RowSpacing="15" ColumnSpacing="20">
-                <!-- Fila 1: Empleado y Días -->
-                <StackPanel Grid.Row="0" Grid.Column="0" Spacing="5">
-                    <TextBlock Text="Empleado" FontSize="11" FontWeight="SemiBold" Foreground="#888"/>
-                    <ComboBox ItemsSource="{Binding Empleados}" 
-                              SelectedValue="{Binding Liquidacion.EmpleadoId}"
-                              SelectedValueBinding="{Binding Id}"
-                              HorizontalAlignment="Stretch">
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Nombre}"/>
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                    </ComboBox>
+            <Grid ColumnDefinitions="1.2*, *" ColumnSpacing="35" Margin="0,5">
+                <!-- Columna Izquierda: Identificación y Fechas -->
+                <StackPanel Grid.Column="0" Spacing="20">
+                    <StackPanel Spacing="5">
+                        <TextBlock Text="Empleado" FontSize="11" FontWeight="SemiBold" Foreground="#888"/>
+                        <ComboBox ItemsSource="{Binding Empleados}" 
+                                  SelectedValue="{Binding Liquidacion.EmpleadoId}"
+                                  SelectedValueBinding="{Binding Id}"
+                                  HorizontalAlignment="Stretch">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Nombre}"/>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                    </StackPanel>
+
+                    <StackPanel Spacing="5">
+                        <TextBlock Text="Fecha Inicio" FontSize="11" FontWeight="SemiBold" Foreground="#888"/>
+                        <CalendarDatePicker SelectedDate="{Binding FechaInicioOffset}" HorizontalAlignment="Stretch"/>
+                    </StackPanel>
+                    
+                    <StackPanel Spacing="5">
+                        <TextBlock Text="Fecha Fin" FontSize="11" FontWeight="SemiBold" Foreground="#888"/>
+                        <CalendarDatePicker SelectedDate="{Binding FechaFinOffset}" HorizontalAlignment="Stretch"/>
+                    </StackPanel>
+
+                    <Button Content="Sugerir Liquidación" 
+                            Command="{Binding SugerirCommand}" 
+                            HorizontalAlignment="Stretch" Classes="outline" Height="40" Margin="0,10,0,0"/>
                 </StackPanel>
 
-                <StackPanel Grid.Row="0" Grid.Column="1" Spacing="5">
-                    <TextBlock Text="Días Trabajados" FontSize="11" FontWeight="SemiBold" Foreground="#888"/>
-                    <NumericUpDown Value="{Binding Liquidacion.DiasTrabajados}" Minimum="0" Maximum="31" HorizontalAlignment="Stretch"/>
-                </StackPanel>
+                <!-- Columna Derecha: Días y Configuración Especial -->
+                <StackPanel Grid.Column="1" Spacing="20">
+                    <StackPanel Spacing="5">
+                        <TextBlock Text="Días Trabajados (Total)" FontSize="11" FontWeight="SemiBold" Foreground="#888"/>
+                        <NumericUpDown Value="{Binding Liquidacion.DiasTrabajados}" Minimum="0" Maximum="31" HorizontalAlignment="Stretch"/>
+                    </StackPanel>
 
-                <!-- Fila 2: Fechas -->
-                <StackPanel Grid.Row="1" Grid.Column="0" Spacing="5">
-                    <TextBlock Text="Fecha Inicio" FontSize="11" FontWeight="SemiBold" Foreground="#888"/>
-                    <CalendarDatePicker SelectedDate="{Binding FechaInicioOffset}" HorizontalAlignment="Stretch"/>
-                </StackPanel>
-                
-                <StackPanel Grid.Row="1" Grid.Column="1" Spacing="5">
-                    <TextBlock Text="Fecha Fin" FontSize="11" FontWeight="SemiBold" Foreground="#888"/>
-                    <CalendarDatePicker SelectedDate="{Binding FechaFinOffset}" HorizontalAlignment="Stretch"/>
+                    <Border Background="#353535" CornerRadius="8" Padding="15">
+                        <StackPanel Spacing="15">
+                            <TextBlock Text="Días Especiales" FontSize="12" FontWeight="Bold" Margin="0,0,0,5"/>
+                            
+                            <Grid ColumnDefinitions="*, Auto, 115" ColumnSpacing="12" Margin="0,2">
+                                <CheckBox Grid.Column="0" Content="Sábados" IsChecked="{Binding IncluirSabados}" FontSize="12"/>
+                                <TextBlock Grid.Column="1" Text="x" VerticalAlignment="Center" Foreground="#666"/>
+                                <NumericUpDown Grid.Column="2" Value="{Binding Liquidacion.MultiplicadorSabado}" Increment="0.1" Minimum="0" FormatString="0.0" HorizontalContentAlignment="Center"/>
+                            </Grid>
+                            
+                            <Grid ColumnDefinitions="*, Auto, 115" ColumnSpacing="12" Margin="0,2">
+                                <CheckBox Grid.Column="0" Content="Domingos" IsChecked="{Binding IncluirDomingos}" FontSize="12"/>
+                                <TextBlock Grid.Column="1" Text="x" VerticalAlignment="Center" Foreground="#666"/>
+                                <NumericUpDown Grid.Column="2" Value="{Binding Liquidacion.MultiplicadorDomingo}" Increment="0.1" Minimum="0" FormatString="0.0" HorizontalContentAlignment="Center"/>
+                            </Grid>
+                            
+                            <Grid ColumnDefinitions="*, Auto, 115" ColumnSpacing="12" Margin="0,2">
+                                <CheckBox Grid.Column="0" Content="Feriados" IsChecked="{Binding IncluirFeriados}" FontSize="12"/>
+                                <TextBlock Grid.Column="1" Text="x" VerticalAlignment="Center" Foreground="#666"/>
+                                <NumericUpDown Grid.Column="2" Value="{Binding Liquidacion.MultiplicadorFeriado}" Increment="0.1" Minimum="0" FormatString="0.0" HorizontalContentAlignment="Center"/>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
                 </StackPanel>
             </Grid>
 
-            <Expander Header="Configuración de Días Especiales" HorizontalAlignment="Stretch" Margin="0,5">
-                <StackPanel Spacing="10" Margin="5">
-                    <Grid ColumnDefinitions="*, Auto, 120" ColumnSpacing="15">
-                        <CheckBox Grid.Column="0" Content="Incluir Sábados" IsChecked="{Binding IncluirSabados}"/>
-                        <TextBlock Grid.Column="1" Text="x" VerticalAlignment="Center" Foreground="#666"/>
-                        <NumericUpDown Grid.Column="2" Value="{Binding Liquidacion.MultiplicadorSabado}" Increment="0.1" Minimum="0" FormatString="0.0"/>
-                    </Grid>
-                    <Grid ColumnDefinitions="*, Auto, 120" ColumnSpacing="15">
-                        <CheckBox Grid.Column="0" Content="Incluir Domingos" IsChecked="{Binding IncluirDomingos}"/>
-                        <TextBlock Grid.Column="1" Text="x" VerticalAlignment="Center" Foreground="#666"/>
-                        <NumericUpDown Grid.Column="2" Value="{Binding Liquidacion.MultiplicadorDomingo}" Increment="0.1" Minimum="0" FormatString="0.0"/>
-                    </Grid>
-                    <Grid ColumnDefinitions="*, Auto, 120" ColumnSpacing="15">
-                        <CheckBox Grid.Column="0" Content="Incluir Feriados" IsChecked="{Binding IncluirFeriados}"/>
-                        <TextBlock Grid.Column="1" Text="x" VerticalAlignment="Center" Foreground="#666"/>
-                        <NumericUpDown Grid.Column="2" Value="{Binding Liquidacion.MultiplicadorFeriado}" Increment="0.1" Minimum="0" FormatString="0.0"/>
-                    </Grid>
-                </StackPanel>
-            </Expander>
-
-            <Button Content="Sugerir Liquidación (Calcular Adelantos)" 
-                    Command="{Binding SugerirCommand}" 
-                    HorizontalAlignment="Stretch" Classes="outline" Height="40"/>
-
-            <Border Background="#353535" CornerRadius="8" Padding="15">
+            <Border Background="#353535" CornerRadius="8" Padding="15" Margin="0,10,0,0">
                 <Grid RowDefinitions="Auto, Auto, Auto" ColumnDefinitions="*, Auto" RowSpacing="8">
                     <TextBlock Grid.Row="0" Grid.Column="0" Text="Total Bruto:" Foreground="#aaa"/>
                     <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Liquidacion.TotalBruto, StringFormat=C2}" FontWeight="SemiBold"/>
@@ -83,12 +90,12 @@
                 </Grid>
             </Border>
 
-            <StackPanel Spacing="5">
+            <StackPanel Spacing="5" Margin="0,10,0,0">
                 <TextBlock Text="Observaciones" FontSize="11" FontWeight="SemiBold" Foreground="#888"/>
                 <TextBox Text="{Binding Liquidacion.Observaciones}" TextWrapping="Wrap" AcceptsReturn="True" Height="60" PlaceholderText="Notas adicionales..."/>
             </StackPanel>
 
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="12" Margin="0,10,0,0">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="12" Margin="0,15,0,0">
                 <Button Content="Cancelar" Command="{Binding CancelCommand}" IsCancel="True" Padding="20,0"/>
                 <Button Content="Confirmar y Guardar" Classes="accent" Command="{Binding SaveCommand}" IsDefault="True" Padding="20,0"/>
             </StackPanel>
