@@ -14,13 +14,20 @@ public class LiquidacionEditViewModelTests
 {
     private readonly ILiquidacionService _liquidacionService;
     private readonly IEmpleadoService _empleadoService;
+    private readonly IUserSettingsService _settingsService;
     private readonly LiquidacionEditViewModel _viewModel;
 
     public LiquidacionEditViewModelTests()
     {
         _liquidacionService = Substitute.For<ILiquidacionService>();
         _empleadoService = Substitute.For<IEmpleadoService>();
-        _viewModel = new LiquidacionEditViewModel(_liquidacionService, _empleadoService);
+        _settingsService = Substitute.For<IUserSettingsService>();
+        
+        _settingsService.GetDefaultMultiplierSaturday().Returns(1.0m);
+        _settingsService.GetDefaultMultiplierSunday().Returns(1.0m);
+        _settingsService.GetDefaultMultiplierHoliday().Returns(1.0m);
+
+        _viewModel = new LiquidacionEditViewModel(_liquidacionService, _empleadoService, _settingsService);
     }
 
     [Fact]
@@ -45,7 +52,11 @@ public class LiquidacionEditViewModelTests
         // Arrange
         var empleadoId = Guid.NewGuid();
         _viewModel.Liquidacion.EmpleadoId = empleadoId;
-        var sugerencia = new LiquidacionDto { TotalNeto = 5000 };
+        // Lunes 2026-05-04 a Viernes 2026-05-08 (5 días hábiles)
+        _viewModel.Liquidacion.FechaInicio = new DateTime(2026, 5, 4);
+        _viewModel.Liquidacion.FechaFin = new DateTime(2026, 5, 8);
+        
+        var sugerencia = new LiquidacionDto { TarifaAplicada = 1000, TotalAdelantos = 500 };
         _liquidacionService.SugerirLiquidacionAsync(empleadoId, Arg.Any<DateTime>(), Arg.Any<DateTime>(), Arg.Any<decimal>())
             .Returns(sugerencia);
 
@@ -53,7 +64,10 @@ public class LiquidacionEditViewModelTests
         await _viewModel.SugerirCommand.ExecuteAsync(null);
 
         // Assert
-        _viewModel.Liquidacion.TotalNeto.Should().Be(5000);
+        // 5 días * 1000 = 5000 bruto. Neto = 5000 - 500 = 4500
+        _viewModel.Liquidacion.TotalBruto.Should().Be(5000);
+        _viewModel.Liquidacion.TotalNeto.Should().Be(4500);
+        _viewModel.Liquidacion.DiasTrabajados.Should().Be(5);
     }
 
     [Fact]

@@ -25,8 +25,21 @@ public partial class SettingsViewModel : ViewModelBase
     [ObservableProperty]
     private string _selectedDashboardPeriod;
 
+    [ObservableProperty]
+    private string _selectedEmailClient;
+
+    [ObservableProperty]
+    private decimal _multiplierSaturday;
+
+    [ObservableProperty]
+    private decimal _multiplierSunday;
+
+    [ObservableProperty]
+    private decimal _multiplierHoliday;
+
     public ObservableCollection<string> Themes { get; } = new() { "Oscuro", "Media Noche", "Industrial", "Solar", "Cibernético", "Océano", "Claro" };
     public ObservableCollection<string> DashboardPeriods { get; } = new() { "Mensual", "Anual", "Total" };
+    public ObservableCollection<string> EmailClients { get; } = new() { "SystemDefault", "Gmail", "Yahoo", "OutlookWeb" };
 
     public SettingsViewModel(IUserSettingsService settingsService)
     {
@@ -37,6 +50,10 @@ public partial class SettingsViewModel : ViewModelBase
         _backgroundPath = _settingsService.GetBackgroundPath();
         _selectedTheme = _settingsService.GetTheme();
         _selectedDashboardPeriod = _settingsService.GetDashboardPeriod();
+        _selectedEmailClient = _settingsService.GetPreferredEmailClient();
+        _multiplierSaturday = _settingsService.GetDefaultMultiplierSaturday();
+        _multiplierSunday = _settingsService.GetDefaultMultiplierSunday();
+        _multiplierHoliday = _settingsService.GetDefaultMultiplierHoliday();
     }
 
     [RelayCommand]
@@ -47,6 +64,10 @@ public partial class SettingsViewModel : ViewModelBase
         await _settingsService.SetBackgroundPathAsync(BackgroundPath);
         await _settingsService.SetThemeAsync(SelectedTheme);
         await _settingsService.SetDashboardPeriodAsync(SelectedDashboardPeriod);
+        await _settingsService.SetPreferredEmailClientAsync(SelectedEmailClient);
+        await _settingsService.SetDefaultMultiplierSaturdayAsync(MultiplierSaturday);
+        await _settingsService.SetDefaultMultiplierSundayAsync(MultiplierSunday);
+        await _settingsService.SetDefaultMultiplierHolidayAsync(MultiplierHoliday);
         
         if (Avalonia.Application.Current is App app)
         {

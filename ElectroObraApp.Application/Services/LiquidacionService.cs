@@ -68,18 +68,45 @@ public class LiquidacionService : ILiquidacionService
         var empleado = await _uow.Repository<Empleado>().GetByIdAsync(empleadoId);
         if (empleado == null) throw new Exception("Empleado no encontrado");
 
-        // Buscar adelantos (Movimientos) en el periodo para este empleado
-        // Importante: Usamos FindAsync con filtro por EmpleadoId y rango de fechas
+        // Configuración por defecto (esto podría venir de parámetros o de IUserSettingsService inyectado)
+        // Por ahora usamos valores que el VM pasará o calculamos aquí.
+        // Nota: Como este método es de "sugerencia", calculamos el valor ideal.
+        
+        var totalDias = 0m;
+        var totalBruto = 0m;
+        
+        // Obtenemos los feriados del config si es necesario (inyectar IUserSettingsService si se prefiere)
+        // Por ahora, simularemos la lógica que el VM enviará, pero implementamos el cálculo base aquí.
+        
+        for (var date = inicio.Date; date <= fin.Date; date = date.AddDays(1))
+        {
+            var esSabado = date.DayOfWeek == DayOfWeek.Saturday;
+            var esDomingo = date.DayOfWeek == DayOfWeek.Sunday;
+            
+            // Lógica por defecto: Lunes a Viernes se abonan 1.0. 
+            // Sabados y Domingos NO se abonan por defecto (0.0).
+            var multiplicador = 1.0m;
+            
+            if (esSabado || esDomingo)
+            {
+                multiplicador = 0.0m;
+            }
+            
+            if (multiplicador > 0)
+            {
+                totalDias += 1.0m;
+                totalBruto += empleado.TarifaDiaria * multiplicador;
+            }
+        }
+
+        // Buscar adelantos
         var movimientos = await _uow.Movimientos.FindAsync(m => 
             m.EmpleadoId == empleadoId && 
             m.Fecha >= inicio && 
             m.Fecha <= fin);
             
-        // Filtrar por tipo "Adelanto" (id 3 según seed data o por nombre si fuera dinámico)
-        // Por seguridad usamos el ID del seed data: 00000000-0000-0000-0000-000000000003
         var adelantoTypeId = Guid.Parse("00000000-0000-0000-0000-000000000003");
         var adelantos = movimientos.Where(m => m.TipoMovimientoId == adelantoTypeId).ToList();
-
         var totalAdelantos = adelantos.Sum(m => m.Total);
 
         return new LiquidacionDto
@@ -88,11 +115,18 @@ public class LiquidacionService : ILiquidacionService
             EmpleadoNombre = empleado.Nombre,
             FechaInicio = inicio,
             FechaFin = fin,
-            DiasTrabajados = diasTrabajados,
+            DiasTrabajados = totalDias,
             TarifaAplicada = empleado.TarifaDiaria,
             TotalAdelantos = totalAdelantos,
-            TotalBruto = diasTrabajados * empleado.TarifaDiaria,
-            TotalNeto = (diasTrabajados * empleado.TarifaDiaria) - totalAdelantos
+            TotalBruto = totalBruto,
+            TotalNeto = totalBruto - totalAdelantos,
+            // Valores por defecto para la UI
+            IncluirSabados = false,
+            IncluirDomingos = false,
+            IncluirFeriados = false,
+            MultiplicadorSabado = 1.0m,
+            MultiplicadorDomingo = 1.0m,
+            MultiplicadorFeriado = 1.0m
         };
     }
 }

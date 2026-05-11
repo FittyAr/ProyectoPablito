@@ -38,7 +38,7 @@ public partial class MainViewModel : ViewModelBase
     {
         _localizationService = localizationService;
         _serviceProvider = serviceProvider;
-        _greeting = configuration.GetValue<string>("Application:Name", "ElectroObraApp");
+        _greeting = configuration["Application:Name"] ?? "ElectroObraApp";
         _isSeedEnabled = seedService.IsSeedEnabled();
         
         var logoPath = configuration.GetValue<string>("Application:Branding:LogoPath", "avares://ElectroObraApp/Assets/Images/electro-obra-logo.svg");

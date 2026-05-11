@@ -14,10 +14,16 @@ namespace ElectroObraApp.Tests.UI.ViewModels;
 public class DashboardViewModelTests
 {
     private readonly IMovimientoService _movimientoService;
+    private readonly IClienteService _clienteService;
+    private readonly ITrabajoService _trabajoService;
+    private readonly IUserSettingsService _settingsService;
 
     public DashboardViewModelTests()
     {
         _movimientoService = Substitute.For<IMovimientoService>();
+        _clienteService = Substitute.For<IClienteService>();
+        _trabajoService = Substitute.For<ITrabajoService>();
+        _settingsService = Substitute.For<IUserSettingsService>();
     }
 
     [Fact]
@@ -32,7 +38,7 @@ public class DashboardViewModelTests
         _movimientoService.GetAllAsync().Returns(movimientos);
 
         // Act
-        var vm = new DashboardViewModel(_movimientoService);
+        var vm = new DashboardViewModel(_movimientoService, _clienteService, _trabajoService, _settingsService);
         await vm.LoadStatsCommand.ExecuteAsync(null);
 
         // Assert
@@ -48,7 +54,7 @@ public class DashboardViewModelTests
         _movimientoService.GetAllAsync().Returns(new List<MovimientoDto>());
 
         // Act
-        var vm = new DashboardViewModel(_movimientoService);
+        var vm = new DashboardViewModel(_movimientoService, _clienteService, _trabajoService, _settingsService);
         await vm.LoadStatsCommand.ExecuteAsync(null);
 
         // Assert
@@ -68,7 +74,7 @@ public class DashboardViewModelTests
         _movimientoService.GetAllAsync().Returns(movimientos);
 
         // Act
-        var vm = new DashboardViewModel(_movimientoService);
+        var vm = new DashboardViewModel(_movimientoService, _clienteService, _trabajoService, _settingsService);
         await vm.LoadStatsCommand.ExecuteAsync(null);
 
         // Assert

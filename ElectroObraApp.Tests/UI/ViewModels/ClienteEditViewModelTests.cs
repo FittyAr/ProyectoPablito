@@ -12,12 +12,14 @@ namespace ElectroObraApp.Tests.UI.ViewModels;
 public class ClienteEditViewModelTests
 {
     private readonly IClienteService _clienteService;
+    private readonly IUserSettingsService _settingsService;
     private readonly ClienteEditViewModel _viewModel;
 
     public ClienteEditViewModelTests()
     {
         _clienteService = Substitute.For<IClienteService>();
-        _viewModel = new ClienteEditViewModel(_clienteService);
+        _settingsService = Substitute.For<IUserSettingsService>();
+        _viewModel = new ClienteEditViewModel(_clienteService, _settingsService);
     }
 
     [Fact]

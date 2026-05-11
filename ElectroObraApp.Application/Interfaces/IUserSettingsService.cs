@@ -24,5 +24,20 @@ public interface IUserSettingsService
 
     bool GetIsPrivacyMode();
     Task SetIsPrivacyModeAsync(bool isPrivate);
+
+    string GetPreferredEmailClient();
+    Task SetPreferredEmailClientAsync(string client);
+
+    decimal GetDefaultMultiplierSaturday();
+    Task SetDefaultMultiplierSaturdayAsync(decimal multiplier);
+
+    decimal GetDefaultMultiplierSunday();
+    Task SetDefaultMultiplierSundayAsync(decimal multiplier);
+
+    decimal GetDefaultMultiplierHoliday();
+    Task SetDefaultMultiplierHolidayAsync(decimal multiplier);
+
+    string GetHolidaysJson();
+    Task SetHolidaysJsonAsync(string holidaysJson);
 }
 

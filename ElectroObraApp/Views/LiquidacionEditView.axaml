@@ -40,6 +40,26 @@
                 <NumericUpDown Value="{Binding Liquidacion.DiasTrabajados}" Minimum="0" Maximum="31"/>
             </StackPanel>
 
+            <Expander Header="Configuración de Días Especiales" HorizontalAlignment="Stretch" Margin="0,5">
+                <StackPanel Spacing="10" Margin="5">
+                    <Grid ColumnDefinitions="*, Auto, Auto">
+                        <CheckBox Grid.Column="0" Content="Incluir Sábados" IsChecked="{Binding IncluirSabados}"/>
+                        <TextBlock Grid.Column="1" Text="x" VerticalAlignment="Center" Margin="10,0"/>
+                        <NumericUpDown Grid.Column="2" Value="{Binding Liquidacion.MultiplicadorSabado}" Increment="0.1" Minimum="0" FormatString="0.0" Width="100"/>
+                    </Grid>
+                    <Grid ColumnDefinitions="*, Auto, Auto">
+                        <CheckBox Grid.Column="0" Content="Incluir Domingos" IsChecked="{Binding IncluirDomingos}"/>
+                        <TextBlock Grid.Column="1" Text="x" VerticalAlignment="Center" Margin="10,0"/>
+                        <NumericUpDown Grid.Column="2" Value="{Binding Liquidacion.MultiplicadorDomingo}" Increment="0.1" Minimum="0" FormatString="0.0" Width="100"/>
+                    </Grid>
+                    <Grid ColumnDefinitions="*, Auto, Auto">
+                        <CheckBox Grid.Column="0" Content="Incluir Feriados" IsChecked="{Binding IncluirFeriados}"/>
+                        <TextBlock Grid.Column="1" Text="x" VerticalAlignment="Center" Margin="10,0"/>
+                        <NumericUpDown Grid.Column="2" Value="{Binding Liquidacion.MultiplicadorFeriado}" Increment="0.1" Minimum="0" FormatString="0.0" Width="100"/>
+                    </Grid>
+                </StackPanel>
+            </Expander>
+
             <Button Content="Sugerir Liquidación (Calcular Adelantos)" 
                     Command="{Binding SugerirCommand}" 
                     HorizontalAlignment="Stretch" Classes="outline"/>

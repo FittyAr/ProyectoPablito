@@ -14,7 +14,8 @@ public class LiquidacionTests
         var liq = new Liquidacion
         {
             DiasTrabajados = 10.5m,
-            TarifaAplicada = 1000m
+            TarifaAplicada = 1000m,
+            TotalBruto = 10500m
         };
 
         // Assert
@@ -29,6 +30,7 @@ public class LiquidacionTests
         {
             DiasTrabajados = 10,
             TarifaAplicada = 1000,
+            TotalBruto = 10000,
             TotalAdelantos = 2000
         };
 

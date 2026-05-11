@@ -40,6 +40,21 @@ public class UserSettingsService : IUserSettingsService
     public bool GetIsPrivacyMode() => bool.TryParse(GetValue("Application:Dashboard:IsPrivacyMode", "false"), out var result) && result;
     public async Task SetIsPrivacyModeAsync(bool isPrivate) => await SetValueAsync("Application:Dashboard:IsPrivacyMode", isPrivate.ToString().ToLower());
 
+    public string GetPreferredEmailClient() => GetValue("Application:Email:PreferredClient", "SystemDefault");
+    public async Task SetPreferredEmailClientAsync(string client) => await SetValueAsync("Application:Email:PreferredClient", client);
+
+    public decimal GetDefaultMultiplierSaturday() => decimal.TryParse(GetValue("Application:Settlement:MultiplierSaturday", "1.0"), out var result) ? result : 1.0m;
+    public async Task SetDefaultMultiplierSaturdayAsync(decimal multiplier) => await SetValueAsync("Application:Settlement:MultiplierSaturday", multiplier.ToString());
+
+    public decimal GetDefaultMultiplierSunday() => decimal.TryParse(GetValue("Application:Settlement:MultiplierSunday", "1.0"), out var result) ? result : 1.0m;
+    public async Task SetDefaultMultiplierSundayAsync(decimal multiplier) => await SetValueAsync("Application:Settlement:MultiplierSunday", multiplier.ToString());
+
+    public decimal GetDefaultMultiplierHoliday() => decimal.TryParse(GetValue("Application:Settlement:MultiplierHoliday", "1.0"), out var result) ? result : 1.0m;
+    public async Task SetDefaultMultiplierHolidayAsync(decimal multiplier) => await SetValueAsync("Application:Settlement:MultiplierHoliday", multiplier.ToString());
+
+    public string GetHolidaysJson() => GetValue("Application:Settlement:Holidays", "[]");
+    public async Task SetHolidaysJsonAsync(string holidaysJson) => await SetValueAsync("Application:Settlement:Holidays", holidaysJson);
+
     private string GetValue(string key, string defaultValue)
     {
         try

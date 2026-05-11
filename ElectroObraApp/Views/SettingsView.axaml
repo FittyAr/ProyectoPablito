@@ -85,6 +85,43 @@
                     </ListBox>
                 </StackPanel>
             </TabItem>
+
+            <!-- Módulos Tab -->
+            <TabItem Header="Módulos">
+                <ScrollViewer>
+                    <StackPanel Spacing="20" Margin="0,20">
+                        <!-- Email Section -->
+                        <StackPanel Spacing="10">
+                            <TextBlock Text="Correo Electrónico" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource AccentBrush}"/>
+                            <TextBlock Text="Cliente de correo preferido para enviar emails a clientes." 
+                                       Foreground="{DynamicResource SecondaryForegroundBrush}" FontSize="12"/>
+                            <ComboBox ItemsSource="{Binding EmailClients}" 
+                                      SelectedItem="{Binding SelectedEmailClient}" 
+                                      HorizontalAlignment="Stretch"/>
+                        </StackPanel>
+
+                        <Separator Height="1" Background="{DynamicResource SidebarSeparatorBrush}"/>
+
+                        <!-- Settlements Section -->
+                        <StackPanel Spacing="10">
+                            <TextBlock Text="Liquidaciones" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource AccentBrush}"/>
+                            <TextBlock Text="Multiplicadores por defecto para días especiales." 
+                                       Foreground="{DynamicResource SecondaryForegroundBrush}" FontSize="12"/>
+                            
+                            <Grid ColumnDefinitions="*, *" RowDefinitions="Auto, Auto, Auto" Margin="0,10">
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="Sábados:" VerticalAlignment="Center"/>
+                                <NumericUpDown Grid.Row="0" Grid.Column="1" Value="{Binding MultiplierSaturday}" Increment="0.1" Minimum="0" FormatString="0.0"/>
+                                
+                                <TextBlock Grid.Row="1" Grid.Column="0" Text="Domingos:" VerticalAlignment="Center" Margin="0,10,0,0"/>
+                                <NumericUpDown Grid.Row="1" Grid.Column="1" Value="{Binding MultiplierSunday}" Increment="0.1" Minimum="0" FormatString="0.0" Margin="0,10,0,0"/>
+                                
+                                <TextBlock Grid.Row="2" Grid.Column="0" Text="Feriados:" VerticalAlignment="Center" Margin="0,10,0,0"/>
+                                <NumericUpDown Grid.Row="2" Grid.Column="1" Value="{Binding MultiplierHoliday}" Increment="0.1" Minimum="0" FormatString="0.0" Margin="0,10,0,0"/>
+                            </Grid>
+                        </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
         </TabControl>
         
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10" Margin="0,20,0,0">

@@ -3,6 +3,7 @@ using FluentAssertions;
 using NSubstitute;
 using ElectroObraApp.Application.Interfaces;
 using ElectroObraApp.ViewModels;
+using Microsoft.Extensions.Configuration;
 using Xunit;
 
 namespace ElectroObraApp.Tests.UI.ViewModels;
@@ -10,10 +11,12 @@ namespace ElectroObraApp.Tests.UI.ViewModels;
 public class MainViewModelTests
 {
     private readonly ILocalizationService _localizationService;
+    private readonly IConfiguration _configuration;
 
     public MainViewModelTests()
     {
         _localizationService = Substitute.For<ILocalizationService>();
+        _configuration = Substitute.For<IConfiguration>();
     }
 
     [Fact]
@@ -22,20 +25,19 @@ public class MainViewModelTests
         // Arrange
         var serviceProvider = Substitute.For<IServiceProvider>();
         var localization = Substitute.For<ILocalizationService>();
-        var movimientoService = Substitute.For<IMovimientoService>();
-        var dashboardVm = new DashboardViewModel(movimientoService);
+        var dashboardVm = new DashboardViewModel(Substitute.For<IMovimientoService>(), Substitute.For<IClienteService>(), Substitute.For<ITrabajoService>(), Substitute.For<IUserSettingsService>());
         
         serviceProvider.GetService(typeof(DashboardViewModel)).Returns(dashboardVm);
+        _configuration["Application:Name"].Returns("Proyecto Pablito");
         _localizationService.GetString("General.AppName").Returns("Proyecto Pablito");
 
         var seedService = Substitute.For<IDatabaseSeedService>();
 
         // Act
-        var vm = new MainViewModel(_localizationService, serviceProvider, seedService);
+        var vm = new MainViewModel(_localizationService, serviceProvider, seedService, _configuration);
 
         // Assert
         vm.Greeting.Should().Be("Proyecto Pablito");
-        _localizationService.Received(1).GetString("General.AppName");
     }
 
     [Fact]
@@ -45,14 +47,14 @@ public class MainViewModelTests
         var serviceProvider = Substitute.For<IServiceProvider>();
         var seedService = Substitute.For<IDatabaseSeedService>();
         var movimientoService = Substitute.For<IMovimientoService>();
-        var dashboardVm = new DashboardViewModel(movimientoService);
+        var dashboardVm = new DashboardViewModel(Substitute.For<IMovimientoService>(), Substitute.For<IClienteService>(), Substitute.For<ITrabajoService>(), Substitute.For<IUserSettingsService>());
         var movimientosVm = new MovimientosViewModel(movimientoService, Substitute.For<ITipoMovimientoService>(), Substitute.For<IExportService>(), Substitute.For<IUserSettingsService>(), serviceProvider);
         
         serviceProvider.GetService(typeof(DashboardViewModel)).Returns(dashboardVm);
         serviceProvider.GetService(typeof(MovimientosViewModel)).Returns(movimientosVm);
         _localizationService.GetString(Arg.Any<string>()).Returns("Test");
 
-        var vm = new MainViewModel(_localizationService, serviceProvider, seedService);
+        var vm = new MainViewModel(_localizationService, serviceProvider, seedService, _configuration);
 
         // Act
         vm.NavigateToMovimientosCommand.Execute(null);
@@ -67,14 +69,14 @@ public class MainViewModelTests
         // Arrange
         var serviceProvider = Substitute.For<IServiceProvider>();
         var seedService = Substitute.For<IDatabaseSeedService>();
-        var dashboardVm = new DashboardViewModel(Substitute.For<IMovimientoService>());
+        var dashboardVm = new DashboardViewModel(Substitute.For<IMovimientoService>(), Substitute.For<IClienteService>(), Substitute.For<ITrabajoService>(), Substitute.For<IUserSettingsService>());
         var trabajosVm = new TrabajosViewModel(Substitute.For<ITrabajoService>(), Substitute.For<IClienteService>(), Substitute.For<IUserSettingsService>(), serviceProvider);
         
         serviceProvider.GetService(typeof(DashboardViewModel)).Returns(dashboardVm);
         serviceProvider.GetService(typeof(TrabajosViewModel)).Returns(trabajosVm);
         _localizationService.GetString(Arg.Any<string>()).Returns("Test");
 
-        var vm = new MainViewModel(_localizationService, serviceProvider, seedService);
+        var vm = new MainViewModel(_localizationService, serviceProvider, seedService, _configuration);
 
         // Act
         vm.NavigateToTrabajosCommand.Execute(null);
@@ -89,14 +91,14 @@ public class MainViewModelTests
         // Arrange
         var serviceProvider = Substitute.For<IServiceProvider>();
         var seedService = Substitute.For<IDatabaseSeedService>();
-        var dashboardVm = new DashboardViewModel(Substitute.For<IMovimientoService>());
+        var dashboardVm = new DashboardViewModel(Substitute.For<IMovimientoService>(), Substitute.For<IClienteService>(), Substitute.For<ITrabajoService>(), Substitute.For<IUserSettingsService>());
         var clientesVm = new ClientesViewModel(Substitute.For<IClienteService>(), Substitute.For<IUserSettingsService>(), serviceProvider);
-        
         serviceProvider.GetService(typeof(DashboardViewModel)).Returns(dashboardVm);
         serviceProvider.GetService(typeof(ClientesViewModel)).Returns(clientesVm);
         _localizationService.GetString(Arg.Any<string>()).Returns("Test");
 
-        var vm = new MainViewModel(_localizationService, serviceProvider, seedService);
+        var vm = new MainViewModel(_localizationService, serviceProvider, seedService, _configuration);
+
 
         // Act
         vm.NavigateToClientesCommand.Execute(null);
@@ -111,14 +113,14 @@ public class MainViewModelTests
         // Arrange
         var serviceProvider = Substitute.For<IServiceProvider>();
         var seedService = Substitute.For<IDatabaseSeedService>();
-        var dashboardVm = new DashboardViewModel(Substitute.For<IMovimientoService>());
+        var dashboardVm = new DashboardViewModel(Substitute.For<IMovimientoService>(), Substitute.For<IClienteService>(), Substitute.For<ITrabajoService>(), Substitute.For<IUserSettingsService>());
         var empleadosVm = new EmpleadosViewModel(Substitute.For<IEmpleadoService>(), Substitute.For<IUserSettingsService>(), serviceProvider);
         
         serviceProvider.GetService(typeof(DashboardViewModel)).Returns(dashboardVm);
         serviceProvider.GetService(typeof(EmpleadosViewModel)).Returns(empleadosVm);
         _localizationService.GetString(Arg.Any<string>()).Returns("Test");
 
-        var vm = new MainViewModel(_localizationService, serviceProvider, seedService);
+        var vm = new MainViewModel(_localizationService, serviceProvider, seedService, _configuration);
 
         // Act
         vm.NavigateToEmpleadosCommand.Execute(null);

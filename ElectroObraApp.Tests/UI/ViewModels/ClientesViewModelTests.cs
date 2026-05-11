@@ -49,7 +49,7 @@ public class ClientesViewModelTests
     public void Add_ShouldSetIsEditingAndEditViewModel()
     {
         // Arrange
-        var editVm = new ClienteEditViewModel(_clienteService);
+        var editVm = new ClienteEditViewModel(_clienteService, _settingsService);
         _serviceProvider.GetService(typeof(ClienteEditViewModel)).Returns(editVm);
 
         // Act

@@ -22,6 +22,8 @@ public partial class EmpleadoEditViewModel : ViewModelBase
     [ObservableProperty]
     private string _title = "Nuevo Empleado";
 
+    public Core.Enums.PaymentFrequency[] PaymentFrequencies => (Core.Enums.PaymentFrequency[])Enum.GetValues(typeof(Core.Enums.PaymentFrequency));
+
     public DateTimeOffset? FechaIngresoOffset
     {
         get => new DateTimeOffset(Empleado.FechaIngreso);

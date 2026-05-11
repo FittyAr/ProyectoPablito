@@ -50,6 +50,7 @@ public partial class ClientesViewModel : ViewModelBase
         AddCommand = new RelayCommand(Add);
         EditCommand = new RelayCommand<ClienteDto>(Edit);
         LimpiarFiltrosCommand = new RelayCommand(LimpiarFiltros);
+        OpenEmailCommand = new RelayCommand<string>(OpenEmail);
 
         _ = LoadClientesAsync();
     }
@@ -58,6 +59,15 @@ public partial class ClientesViewModel : ViewModelBase
     public IRelayCommand AddCommand { get; }
     public IRelayCommand<ClienteDto> EditCommand { get; }
     public IRelayCommand LimpiarFiltrosCommand { get; }
+    public IRelayCommand<string> OpenEmailCommand { get; }
+
+    private void OpenEmail(string? email)
+    {
+        if (!string.IsNullOrEmpty(email))
+        {
+            Application.Helpers.EmailHelper.OpenEmailClient(email, _settingsService);
+        }
+    }
 
     partial void OnPageSizeChanged(int value)
     {

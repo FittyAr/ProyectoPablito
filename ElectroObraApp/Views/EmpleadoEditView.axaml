@@ -29,9 +29,23 @@
                 </StackPanel>
             </Grid>
 
+            <Grid ColumnDefinitions="*,*">
+                <StackPanel Grid.Column="0" Spacing="5" Margin="0,0,5,0">
+                    <TextBlock Text="Sueldo Base" FontSize="12" Foreground="#aaa"/>
+                    <NumericUpDown Value="{Binding Empleado.SueldoBase}" FormatString="C2"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Spacing="5" Margin="5,0,0,0">
+                    <TextBlock Text="Frecuencia" FontSize="12" Foreground="#aaa"/>
+                    <ComboBox ItemsSource="{Binding PaymentFrequencies}" 
+                              SelectedItem="{Binding Empleado.PagoFrecuencia}"
+                              HorizontalAlignment="Stretch"/>
+                </StackPanel>
+            </Grid>
+
             <StackPanel Spacing="5">
-                <TextBlock Text="Sueldo Base" FontSize="12" Foreground="#aaa"/>
-                <NumericUpDown Value="{Binding Empleado.SueldoBase}" FormatString="C2"/>
+                <TextBlock Text="Tarifa Diaria (Calculada)" FontSize="12" Foreground="#aaa"/>
+                <NumericUpDown Value="{Binding Empleado.TarifaDiaria}" FormatString="C2" 
+                               ToolTip.Tip="Valor diario para liquidaciones. Si es mensual: Sueldo/30, Quincenal: Sueldo/15."/>
             </StackPanel>
 
             <StackPanel Spacing="5">

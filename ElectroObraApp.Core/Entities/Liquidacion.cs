@@ -14,7 +14,16 @@ public class Liquidacion : BaseEntity
     public decimal DiasTrabajados { get; set; }
     public decimal TarifaAplicada { get; set; }
     
-    public decimal TotalBruto => DiasTrabajados * TarifaAplicada;
+    // Configuración de días especiales para esta liquidación
+    public bool IncluirSabados { get; set; }
+    public bool IncluirDomingos { get; set; }
+    public bool IncluirFeriados { get; set; }
+
+    public decimal MultiplicadorSabado { get; set; } = 1.0m;
+    public decimal MultiplicadorDomingo { get; set; } = 1.0m;
+    public decimal MultiplicadorFeriado { get; set; } = 1.0m;
+
+    public decimal TotalBruto { get; set; } // Ahora se guarda el total calculado
     public decimal TotalAdelantos { get; set; }
     public decimal TotalNeto => TotalBruto - TotalAdelantos;
 

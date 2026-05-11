@@ -11,6 +11,15 @@ public class LiquidacionDto
     public DateTime FechaFin { get; set; }
     public decimal DiasTrabajados { get; set; }
     public decimal TarifaAplicada { get; set; }
+    
+    public bool IncluirSabados { get; set; }
+    public bool IncluirDomingos { get; set; }
+    public bool IncluirFeriados { get; set; }
+
+    public decimal MultiplicadorSabado { get; set; }
+    public decimal MultiplicadorDomingo { get; set; }
+    public decimal MultiplicadorFeriado { get; set; }
+
     public decimal TotalBruto { get; set; }
     public decimal TotalAdelantos { get; set; }
     public decimal TotalNeto { get; set; }
