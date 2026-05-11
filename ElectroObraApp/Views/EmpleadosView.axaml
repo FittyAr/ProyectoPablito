@@ -73,7 +73,7 @@
         </DockPanel>
 
         <!-- Overlay de Edición -->
-        <Border Background="#AA000000" IsVisible="{Binding IsEditing}">
+        <Border Background="#AA000000" IsVisible="{Binding IsEditing}" Focusable="True">
             <ContentControl Content="{Binding EditViewModel}" 
                             HorizontalAlignment="Center" 
                             VerticalAlignment="Center" />

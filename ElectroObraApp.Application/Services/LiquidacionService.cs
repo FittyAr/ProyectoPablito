@@ -68,46 +68,31 @@ public class LiquidacionService : ILiquidacionService
         var empleado = await _uow.Repository<Empleado>().GetByIdAsync(empleadoId);
         if (empleado == null) throw new Exception("Empleado no encontrado");
 
-        // Configuración por defecto (esto podría venir de parámetros o de IUserSettingsService inyectado)
-        // Por ahora usamos valores que el VM pasará o calculamos aquí.
-        // Nota: Como este método es de "sugerencia", calculamos el valor ideal.
+        var totalDias = diasTrabajados;
         
-        var totalDias = 0m;
-        var totalBruto = 0m;
-        
-        // Obtenemos los feriados del config si es necesario (inyectar IUserSettingsService si se prefiere)
-        // Por ahora, simularemos la lógica que el VM enviará, pero implementamos el cálculo base aquí.
-        
-        for (var date = inicio.Date; date <= fin.Date; date = date.AddDays(1))
+        // Si no se especifican días, sugerimos los días hábiles (Lunes a Viernes)
+        if (totalDias == 0)
         {
-            var esSabado = date.DayOfWeek == DayOfWeek.Saturday;
-            var esDomingo = date.DayOfWeek == DayOfWeek.Sunday;
-            
-            // Lógica por defecto: Lunes a Viernes se abonan 1.0. 
-            // Sabados y Domingos NO se abonan por defecto (0.0).
-            var multiplicador = 1.0m;
-            
-            if (esSabado || esDomingo)
+            for (var date = inicio.Date; date <= fin.Date; date = date.AddDays(1))
             {
-                multiplicador = 0.0m;
-            }
-            
-            if (multiplicador > 0)
-            {
-                totalDias += 1.0m;
-                totalBruto += empleado.TarifaDiaria * multiplicador;
+                if (date.DayOfWeek != DayOfWeek.Saturday && date.DayOfWeek != DayOfWeek.Sunday)
+                {
+                    totalDias += 1.0m;
+                }
             }
         }
 
+        var totalBruto = totalDias * empleado.TarifaDiaria;
+
         // Buscar adelantos
+        var adelantoTypeId = ElectroObraApp.Core.Constants.TiposMovimiento.Adelanto;
         var movimientos = await _uow.Movimientos.FindAsync(m => 
             m.EmpleadoId == empleadoId && 
             m.Fecha >= inicio && 
-            m.Fecha <= fin);
+            m.Fecha <= fin &&
+            m.TipoMovimientoId == adelantoTypeId);
             
-        var adelantoTypeId = Guid.Parse("00000000-0000-0000-0000-000000000003");
-        var adelantos = movimientos.Where(m => m.TipoMovimientoId == adelantoTypeId).ToList();
-        var totalAdelantos = adelantos.Sum(m => m.Total);
+        var totalAdelantos = movimientos.Sum(m => m.Total);
 
         return new LiquidacionDto
         {

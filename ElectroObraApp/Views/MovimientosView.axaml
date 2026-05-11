@@ -37,39 +37,41 @@
                         </StackPanel>
                         <Button Grid.Column="1" HorizontalAlignment="Right" Content="Limpiar Filtros" Classes="link" Command="{Binding LimpiarFiltrosCommand}" FontSize="11"/>
                     </Grid>
-
+                    
                     <WrapPanel Orientation="Horizontal" Margin="-5">
                         <StackPanel Margin="5">
                             <TextBlock Text="Concepto" FontSize="10" Foreground="#aaa" Margin="0,0,0,4"/>
-                            <TextBox Width="200" Text="{Binding FiltroConcepto}" PlaceholderText="Buscar..."/>
+                            <TextBox Width="180" Text="{Binding FiltroConcepto}" PlaceholderText="Buscar..."/>
                         </StackPanel>
                         
                         <StackPanel Margin="5">
                             <TextBlock Text="Tipo" FontSize="10" Foreground="#aaa" Margin="0,0,0,4"/>
-                            <ComboBox Width="150" 
+                            <ComboBox Width="140" 
                                       ItemsSource="{Binding TiposMovimiento}" 
                                       SelectedValue="{Binding FiltroTipoId}" 
                                       SelectedValueBinding="{Binding Id}" 
                                       DisplayMemberBinding="{Binding Nombre}"
                                       PlaceholderText="Seleccionar..."/>
                         </StackPanel>
-
+                        
                         <StackPanel Margin="5">
-                            <TextBlock Text="Rango de Fechas" FontSize="10" Foreground="#aaa" Margin="0,0,0,4"/>
-                            <StackPanel Orientation="Horizontal" Spacing="5">
-                                <CalendarDatePicker SelectedDate="{Binding FiltroFechaDesde}" PlaceholderText="Desde"/>
-                                <TextBlock Text="-" VerticalAlignment="Center" Foreground="#555"/>
-                                <CalendarDatePicker SelectedDate="{Binding FiltroFechaHasta}" PlaceholderText="Hasta"/>
-                            </StackPanel>
+                            <TextBlock Text="Fecha Desde" FontSize="10" Foreground="#aaa" Margin="0,0,0,4"/>
+                            <CalendarDatePicker SelectedDate="{Binding FiltroFechaDesde}" PlaceholderText="Desde" Width="140"/>
                         </StackPanel>
 
                         <StackPanel Margin="5">
-                            <TextBlock Text="Rango de Montos" FontSize="10" Foreground="#aaa" Margin="0,0,0,4"/>
-                            <StackPanel Orientation="Horizontal" Spacing="5">
-                                <NumericUpDown Width="110" Value="{Binding FiltroMontoMin}" FormatString="C0" PlaceholderText="Mín"/>
-                                <TextBlock Text="-" VerticalAlignment="Center" Foreground="#555"/>
-                                <NumericUpDown Width="110" Value="{Binding FiltroMontoMax}" FormatString="C0" PlaceholderText="Máx"/>
-                            </StackPanel>
+                            <TextBlock Text="Fecha Hasta" FontSize="10" Foreground="#aaa" Margin="0,0,0,4"/>
+                            <CalendarDatePicker SelectedDate="{Binding FiltroFechaHasta}" PlaceholderText="Hasta" Width="140"/>
+                        </StackPanel>
+
+                        <StackPanel Margin="5">
+                            <TextBlock Text="Monto Mín" FontSize="10" Foreground="#aaa" Margin="0,0,0,4"/>
+                            <NumericUpDown Width="110" Value="{Binding FiltroMontoMin}" FormatString="C0" PlaceholderText="Mín"/>
+                        </StackPanel>
+
+                        <StackPanel Margin="5">
+                            <TextBlock Text="Monto Máx" FontSize="10" Foreground="#aaa" Margin="0,0,0,4"/>
+                            <NumericUpDown Width="110" Value="{Binding FiltroMontoMax}" FormatString="C0" PlaceholderText="Máx"/>
                         </StackPanel>
                     </WrapPanel>
                 </StackPanel>
@@ -104,7 +106,7 @@
         </DockPanel>
 
         <!-- Overlay de Edición -->
-        <Border Background="#AA000000" IsVisible="{Binding IsEditing}" Focusable="True" x:Name="EditOverlay">
+        <Border Background="#AA000000" IsVisible="{Binding IsEditing}" Focusable="True">
             <ContentControl Content="{Binding EditViewModel}" 
                             HorizontalAlignment="Center" 
                             VerticalAlignment="Center" />

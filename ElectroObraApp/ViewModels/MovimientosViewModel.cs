@@ -158,8 +158,8 @@ public partial class MovimientosViewModel : ViewModelBase
 
     private async Task ExportCsvAsync()
     {
-        // TODO: Implementar en ExportService
-        await Task.Yield();
+        var bytes = await _exportService.ExportMovimientosToCsvAsync(Movimientos);
+        await SaveFileAsync(bytes, "csv");
     }
 
     private async Task ExportJsonAsync()
@@ -171,8 +171,8 @@ public partial class MovimientosViewModel : ViewModelBase
 
     private async Task ExportWordAsync()
     {
-        // TODO: Implementar en ExportService
-        await Task.Yield();
+        var bytes = await _exportService.ExportMovimientosToWordAsync(Movimientos);
+        await SaveFileAsync(bytes, "docx");
     }
 
     private async Task SaveFileAsync(byte[] bytes, string ext)

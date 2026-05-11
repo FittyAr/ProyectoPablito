@@ -27,33 +27,33 @@ public partial class LiquidacionEditViewModel : ViewModelBase
     
     partial void OnLiquidacionChanged(LiquidacionDto value)
     {
-        OnPropertyChanged(nameof(FechaInicioOffset));
-        OnPropertyChanged(nameof(FechaFinOffset));
+        OnPropertyChanged(nameof(FechaInicioProxy));
+        OnPropertyChanged(nameof(FechaFinProxy));
     }
 
-    public DateTimeOffset? FechaInicioOffset
+    public DateTime? FechaInicioProxy
     {
-        get => new DateTimeOffset(Liquidacion.FechaInicio);
+        get => Liquidacion.FechaInicio;
         set
         {
-            if (value.HasValue && Liquidacion.FechaInicio != value.Value.DateTime)
+            if (value.HasValue && Liquidacion.FechaInicio != value.Value)
             {
-                Liquidacion.FechaInicio = value.Value.DateTime;
-                OnPropertyChanged(nameof(FechaInicioOffset));
+                Liquidacion.FechaInicio = value.Value;
+                OnPropertyChanged(nameof(FechaInicioProxy));
                 _ = ReclacularAutomaticamente();
             }
         }
     }
 
-    public DateTimeOffset? FechaFinOffset
+    public DateTime? FechaFinProxy
     {
-        get => new DateTimeOffset(Liquidacion.FechaFin);
+        get => Liquidacion.FechaFin;
         set
         {
-            if (value.HasValue && Liquidacion.FechaFin != value.Value.DateTime)
+            if (value.HasValue && Liquidacion.FechaFin != value.Value)
             {
-                Liquidacion.FechaFin = value.Value.DateTime;
-                OnPropertyChanged(nameof(FechaFinOffset));
+                Liquidacion.FechaFin = value.Value;
+                OnPropertyChanged(nameof(FechaFinProxy));
                 _ = ReclacularAutomaticamente();
             }
         }
@@ -145,8 +145,8 @@ public partial class LiquidacionEditViewModel : ViewModelBase
         Liquidacion.TarifaAplicada = sugerencia.TarifaAplicada;
         
         OnPropertyChanged(nameof(Liquidacion));
-        OnPropertyChanged(nameof(FechaInicioOffset));
-        OnPropertyChanged(nameof(FechaFinOffset));
+        OnPropertyChanged(nameof(FechaInicioProxy));
+        OnPropertyChanged(nameof(FechaFinProxy));
     }
 
     private async Task SaveAsync()

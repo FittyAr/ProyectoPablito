@@ -93,10 +93,10 @@
         <!-- Overlay de Edición — ocupa toda el área disponible -->
         <ContentControl Content="{Binding EditViewModel}"
                         IsVisible="{Binding IsEditing}"
+                        Focusable="True"
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Stretch"
                         HorizontalContentAlignment="Stretch"
                         VerticalContentAlignment="Stretch" />
     </Grid>
 </UserControl>
-

@@ -21,7 +21,7 @@ public partial class MovimientoEditViewModel : ViewModelBase
 
     partial void OnMovimientoChanged(MovimientoDto value)
     {
-        OnPropertyChanged(nameof(FechaOffset));
+        OnPropertyChanged(nameof(FechaProxy));
     }
 
     [ObservableProperty]
@@ -36,15 +36,15 @@ public partial class MovimientoEditViewModel : ViewModelBase
     [ObservableProperty]
     private string _title = "Nuevo Movimiento";
 
-    public DateTimeOffset? FechaOffset
+    public DateTime? FechaProxy
     {
-        get => new DateTimeOffset(Movimiento.Fecha);
+        get => Movimiento.Fecha;
         set
         {
-            if (value.HasValue && Movimiento.Fecha != value.Value.DateTime)
+            if (value.HasValue && Movimiento.Fecha != value.Value)
             {
-                Movimiento.Fecha = value.Value.DateTime;
-                OnPropertyChanged(nameof(FechaOffset));
+                Movimiento.Fecha = value.Value;
+                OnPropertyChanged(nameof(FechaProxy));
             }
         }
     }
@@ -89,7 +89,7 @@ public partial class MovimientoEditViewModel : ViewModelBase
         
         // Disparamos notificaciones manuales para asegurar que los combos reflejen el valor correcto
         OnPropertyChanged(nameof(Movimiento));
-        OnPropertyChanged(nameof(FechaOffset));
+        OnPropertyChanged(nameof(FechaProxy));
     }
 
     private async Task SaveAsync()

@@ -16,7 +16,7 @@ public partial class EmpleadoEditViewModel : ViewModelBase
 
     partial void OnEmpleadoChanged(EmpleadoDto value)
     {
-        OnPropertyChanged(nameof(FechaIngresoOffset));
+        OnPropertyChanged(nameof(FechaIngresoProxy));
     }
 
     [ObservableProperty]
@@ -24,15 +24,15 @@ public partial class EmpleadoEditViewModel : ViewModelBase
 
     public Core.Enums.PaymentFrequency[] PaymentFrequencies => (Core.Enums.PaymentFrequency[])Enum.GetValues(typeof(Core.Enums.PaymentFrequency));
 
-    public DateTimeOffset? FechaIngresoOffset
+    public DateTime? FechaIngresoProxy
     {
-        get => new DateTimeOffset(Empleado.FechaIngreso);
+        get => Empleado.FechaIngreso;
         set
         {
-            if (value.HasValue && Empleado.FechaIngreso != value.Value.DateTime)
+            if (value.HasValue && Empleado.FechaIngreso != value.Value)
             {
-                Empleado.FechaIngreso = value.Value.DateTime;
-                OnPropertyChanged(nameof(FechaIngresoOffset));
+                Empleado.FechaIngreso = value.Value;
+                OnPropertyChanged(nameof(FechaIngresoProxy));
             }
         }
     }

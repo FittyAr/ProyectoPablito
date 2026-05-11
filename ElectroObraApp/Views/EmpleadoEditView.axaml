@@ -9,53 +9,53 @@
     <UserControl.KeyBindings>
         <KeyBinding Gesture="Escape" Command="{Binding CancelCommand}"/>
     </UserControl.KeyBindings>
-    <Border Padding="20" Background="#2d2d2d" CornerRadius="8">
-        <StackPanel Spacing="15">
-            <TextBlock Text="{Binding Title}" FontSize="20" FontWeight="Bold" Margin="0,0,0,10"/>
+    <Border Padding="25" Background="#2d2d2d" CornerRadius="12" BoxShadow="0 4 10 0 #40000000" Width="600">
+        <StackPanel Spacing="18">
+            <TextBlock Text="{Binding Title}" FontSize="22" FontWeight="Bold" Margin="0,0,0,5" Foreground="White"/>
             
             <StackPanel Spacing="5">
-                <TextBlock Text="Nombre" FontSize="12" Foreground="#aaa"/>
-                <TextBox Text="{Binding Empleado.Nombre}" PlaceholderText="Nombre completo"/>
+                <TextBlock Text="Nombre Completo" FontSize="11" FontWeight="SemiBold" Foreground="#888"/>
+                <TextBox Text="{Binding Empleado.Nombre}" PlaceholderText="Ej: Juan Pérez"/>
             </StackPanel>
 
-            <Grid ColumnDefinitions="*,*">
-                <StackPanel Grid.Column="0" Spacing="5" Margin="0,0,5,0">
-                    <TextBlock Text="DNI" FontSize="12" Foreground="#aaa"/>
-                    <TextBox Text="{Binding Empleado.Dni}"/>
+            <Grid ColumnDefinitions="*, *" ColumnSpacing="20" RowDefinitions="Auto, Auto, Auto" RowSpacing="15">
+                <!-- Fila 1: DNI y Cargo -->
+                <StackPanel Grid.Row="0" Grid.Column="0" Spacing="5">
+                    <TextBlock Text="DNI" FontSize="11" FontWeight="SemiBold" Foreground="#888"/>
+                    <TextBox Text="{Binding Empleado.Dni}" PlaceholderText="8 dígitos"/>
                 </StackPanel>
-                <StackPanel Grid.Column="1" Spacing="5" Margin="5,0,0,0">
-                    <TextBlock Text="Cargo" FontSize="12" Foreground="#aaa"/>
-                    <TextBox Text="{Binding Empleado.Cargo}"/>
+                <StackPanel Grid.Row="0" Grid.Column="1" Spacing="5">
+                    <TextBlock Text="Cargo / Función" FontSize="11" FontWeight="SemiBold" Foreground="#888"/>
+                    <TextBox Text="{Binding Empleado.Cargo}" PlaceholderText="Ej: Electricista"/>
                 </StackPanel>
-            </Grid>
 
-            <Grid ColumnDefinitions="*,*">
-                <StackPanel Grid.Column="0" Spacing="5" Margin="0,0,5,0">
-                    <TextBlock Text="Sueldo Base" FontSize="12" Foreground="#aaa"/>
-                    <NumericUpDown Value="{Binding Empleado.SueldoBase}" FormatString="C2"/>
+                <!-- Fila 2: Sueldo y Frecuencia -->
+                <StackPanel Grid.Row="1" Grid.Column="0" Spacing="5">
+                    <TextBlock Text="Sueldo Base" FontSize="11" FontWeight="SemiBold" Foreground="#888"/>
+                    <NumericUpDown Value="{Binding Empleado.SueldoBase}" FormatString="C2" HorizontalAlignment="Stretch"/>
                 </StackPanel>
-                <StackPanel Grid.Column="1" Spacing="5" Margin="5,0,0,0">
-                    <TextBlock Text="Frecuencia" FontSize="12" Foreground="#aaa"/>
+                <StackPanel Grid.Row="1" Grid.Column="1" Spacing="5">
+                    <TextBlock Text="Frecuencia de Pago" FontSize="11" FontWeight="SemiBold" Foreground="#888"/>
                     <ComboBox ItemsSource="{Binding PaymentFrequencies}" 
                               SelectedItem="{Binding Empleado.PagoFrecuencia}"
                               HorizontalAlignment="Stretch"/>
                 </StackPanel>
+
+                <!-- Fila 3: Tarifa Diaria y Fecha Ingreso -->
+                <StackPanel Grid.Row="2" Grid.Column="0" Spacing="5">
+                    <TextBlock Text="Tarifa Diaria (Calculada)" FontSize="11" FontWeight="SemiBold" Foreground="#888"/>
+                    <NumericUpDown Value="{Binding Empleado.TarifaDiaria}" FormatString="C2" HorizontalAlignment="Stretch"
+                                   ToolTip.Tip="Valor diario para liquidaciones. Si es mensual: Sueldo/30."/>
+                </StackPanel>
+                <StackPanel Grid.Row="2" Grid.Column="1" Spacing="5">
+                    <TextBlock Text="Fecha de Ingreso" FontSize="11" FontWeight="SemiBold" Foreground="#888"/>
+                    <CalendarDatePicker SelectedDate="{Binding FechaIngresoProxy}" HorizontalAlignment="Stretch"/>
+                </StackPanel>
             </Grid>
 
-            <StackPanel Spacing="5">
-                <TextBlock Text="Tarifa Diaria (Calculada)" FontSize="12" Foreground="#aaa"/>
-                <NumericUpDown Value="{Binding Empleado.TarifaDiaria}" FormatString="C2" 
-                               ToolTip.Tip="Valor diario para liquidaciones. Si es mensual: Sueldo/30, Quincenal: Sueldo/15."/>
-            </StackPanel>
-
-            <StackPanel Spacing="5">
-                <TextBlock Text="Fecha Ingreso" FontSize="12" Foreground="#aaa"/>
-                <DatePicker SelectedDate="{Binding FechaIngresoOffset}" HorizontalAlignment="Stretch"/>
-            </StackPanel>
-
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10" Margin="0,20,0,0">
-                <Button Content="Cancelar" Command="{Binding CancelCommand}" IsCancel="True" />
-                <Button Content="Guardar" Classes="accent" Command="{Binding SaveCommand}" IsDefault="True" />
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="12" Margin="0,10,0,0">
+                <Button Content="Cancelar" Command="{Binding CancelCommand}" IsCancel="True" Padding="20,0"/>
+                <Button Content="Guardar" Classes="accent" Command="{Binding SaveCommand}" IsDefault="True" Padding="20,0"/>
             </StackPanel>
         </StackPanel>
     </Border>

@@ -42,7 +42,7 @@
     </UserControl.Styles>
 
     <!-- DockPanel raíz: header arriba, contenido llena el resto -->
-    <DockPanel Background="#181818">
+    <DockPanel Background="#181818" Focusable="True">
 
         <!-- ── HEADER ── -->
         <Border DockPanel.Dock="Top"
