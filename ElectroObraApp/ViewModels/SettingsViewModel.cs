@@ -3,6 +3,9 @@ using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ElectroObraApp.Application.Interfaces;
+using System;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace ElectroObraApp.ViewModels;
 
@@ -37,6 +40,11 @@ public partial class SettingsViewModel : ViewModelBase
     [ObservableProperty]
     private decimal _multiplierHoliday;
 
+    [ObservableProperty]
+    private DateTime? _newHolidayDate = DateTime.Now;
+
+    public ObservableCollection<DateTime> Holidays { get; } = new();
+
     public ObservableCollection<string> Themes { get; } = new() { "Oscuro", "Media Noche", "Industrial", "Solar", "Cibernético", "Océano", "Claro" };
     public ObservableCollection<string> DashboardPeriods { get; } = new() { "Mensual", "Anual", "Total" };
     public ObservableCollection<string> EmailClients { get; } = new() { "SystemDefault", "Gmail", "Yahoo", "OutlookWeb" };
@@ -54,6 +62,36 @@ public partial class SettingsViewModel : ViewModelBase
         _multiplierSaturday = _settingsService.GetDefaultMultiplierSaturday();
         _multiplierSunday = _settingsService.GetDefaultMultiplierSunday();
         _multiplierHoliday = _settingsService.GetDefaultMultiplierHoliday();
+
+        var holidaysJson = _settingsService.GetHolidaysJson();
+        try
+        {
+            var dates = System.Text.Json.JsonSerializer.Deserialize<List<DateTime>>(holidaysJson);
+            if (dates != null)
+            {
+                foreach (var d in dates.OrderBy(x => x)) Holidays.Add(d);
+            }
+        }
+        catch { }
+    }
+
+    [RelayCommand]
+    public void AddHoliday()
+    {
+        if (NewHolidayDate.HasValue && !Holidays.Contains(NewHolidayDate.Value.Date))
+        {
+            Holidays.Add(NewHolidayDate.Value.Date);
+            // Sort holidays
+            var sorted = Holidays.OrderBy(x => x).ToList();
+            Holidays.Clear();
+            foreach (var h in sorted) Holidays.Add(h);
+        }
+    }
+
+    [RelayCommand]
+    public void RemoveHoliday(DateTime holiday)
+    {
+        Holidays.Remove(holiday);
     }
 
     [RelayCommand]
@@ -68,6 +106,9 @@ public partial class SettingsViewModel : ViewModelBase
         await _settingsService.SetDefaultMultiplierSaturdayAsync(MultiplierSaturday);
         await _settingsService.SetDefaultMultiplierSundayAsync(MultiplierSunday);
         await _settingsService.SetDefaultMultiplierHolidayAsync(MultiplierHoliday);
+        
+        var json = System.Text.Json.JsonSerializer.Serialize(Holidays.ToList());
+        await _settingsService.SetHolidaysJsonAsync(json);
         
         if (Avalonia.Application.Current is App app)
         {

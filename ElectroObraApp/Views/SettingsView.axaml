@@ -118,6 +118,28 @@
                                 <TextBlock Grid.Row="2" Grid.Column="0" Text="Feriados:" VerticalAlignment="Center" Margin="0,10,0,0"/>
                                 <NumericUpDown Grid.Row="2" Grid.Column="1" Value="{Binding MultiplierHoliday}" Increment="0.1" Minimum="0" FormatString="0.0" Margin="0,10,0,0"/>
                             </Grid>
+
+                            <TextBlock Text="Calendario de Feriados" FontWeight="Bold" Margin="0,15,0,5"/>
+                            <Grid ColumnDefinitions="*, Auto" ColumnSpacing="10" Margin="0,5">
+                                <CalendarDatePicker SelectedDate="{Binding NewHolidayDate}" HorizontalAlignment="Stretch"/>
+                                <Button Grid.Column="1" Content="Agregar Feriado" Command="{Binding AddHolidayCommand}" Classes="outline"/>
+                            </Grid>
+
+                            <Border Background="#252525" CornerRadius="8" Margin="0,10,0,0" Height="150">
+                                <ListBox ItemsSource="{Binding Holidays}" Background="Transparent">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid ColumnDefinitions="*, Auto" Margin="5">
+                                                <TextBlock Text="{Binding StringFormat=dd/MM/yyyy}" VerticalAlignment="Center"/>
+                                                <Button Grid.Column="1" Content="Eliminar" 
+                                                        Command="{Binding $parent[UserControl].((vm:SettingsViewModel)DataContext).RemoveHolidayCommand}"
+                                                        CommandParameter="{Binding}"
+                                                        Classes="outline" BorderThickness="0"/>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </Border>
                         </StackPanel>
                     </StackPanel>
                 </ScrollViewer>
