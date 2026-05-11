@@ -18,6 +18,9 @@ public partial class SettingsViewModel : ViewModelBase
     private int _selectedCategoryIndex = 0;
 
     [ObservableProperty]
+    private bool _isSaved;
+
+    [ObservableProperty]
     private string _appName;
 
     [ObservableProperty]
@@ -28,6 +31,16 @@ public partial class SettingsViewModel : ViewModelBase
 
     [ObservableProperty]
     private string _selectedTheme;
+
+    partial void OnSelectedThemeChanged(string value)
+    {
+        if (Avalonia.Application.Current is App app && !string.IsNullOrEmpty(value))
+        {
+            app.SetTheme(value);
+            // Save theme automatically
+            _ = _settingsService.SetThemeAsync(value);
+        }
+    }
 
     [ObservableProperty]
     private string _selectedDashboardPeriod;
@@ -162,25 +175,42 @@ public partial class SettingsViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    public async Task SaveAsync()
+    public async Task ApplyChangesAsync()
     {
-        await _settingsService.SetAppNameAsync(AppName);
-        await _settingsService.SetLogoPathAsync(LogoPath);
-        await _settingsService.SetBackgroundPathAsync(BackgroundPath);
-        await _settingsService.SetThemeAsync(SelectedTheme);
-        await _settingsService.SetDashboardPeriodAsync(SelectedDashboardPeriod);
-        await _settingsService.SetPreferredEmailClientAsync(SelectedEmailClient);
-        await _settingsService.SetHolidayApiUrlAsync(HolidayApiUrl);
-        await _settingsService.SetDefaultMultiplierSaturdayAsync(MultiplierSaturday);
-        await _settingsService.SetDefaultMultiplierSundayAsync(MultiplierSunday);
-        await _settingsService.SetDefaultMultiplierHolidayAsync(MultiplierHoliday);
-        
-        var json = System.Text.Json.JsonSerializer.Serialize(Holidays.ToList());
-        await _settingsService.SetHolidaysJsonAsync(json);
-        
-        if (Avalonia.Application.Current is App app)
+        try
         {
-            app.SetTheme(SelectedTheme);
+            IsSaved = false;
+
+            // Serialize holidays
+            var holidayList = Holidays.ToList();
+            var json = System.Text.Json.JsonSerializer.Serialize(holidayList);
+            
+            // Save holidays first to ensure they are captured
+            await _settingsService.SetHolidaysJsonAsync(json);
+            
+            await _settingsService.SetAppNameAsync(AppName);
+            await _settingsService.SetLogoPathAsync(LogoPath);
+            await _settingsService.SetBackgroundPathAsync(BackgroundPath);
+            await _settingsService.SetThemeAsync(SelectedTheme);
+            await _settingsService.SetDashboardPeriodAsync(SelectedDashboardPeriod);
+            await _settingsService.SetPreferredEmailClientAsync(SelectedEmailClient);
+            await _settingsService.SetHolidayApiUrlAsync(HolidayApiUrl);
+            await _settingsService.SetDefaultMultiplierSaturdayAsync(MultiplierSaturday);
+            await _settingsService.SetDefaultMultiplierSundayAsync(MultiplierSunday);
+            await _settingsService.SetDefaultMultiplierHolidayAsync(MultiplierHoliday);
+            
+            if (Avalonia.Application.Current is App app)
+            {
+                app.SetTheme(SelectedTheme);
+            }
+
+            IsSaved = true;
+            await Task.Delay(3000);
+            IsSaved = false;
+        }
+        catch (Exception ex)
+        {
+            Serilog.Log.Error(ex, "Error al guardar la configuración");
         }
     }
 }

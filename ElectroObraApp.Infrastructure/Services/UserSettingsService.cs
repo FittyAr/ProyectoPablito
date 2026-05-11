@@ -13,24 +13,31 @@ public class UserSettingsService : IUserSettingsService
 {
     private readonly IConfiguration _configuration;
     private readonly string _settingsPath;
+    private readonly SemaphoreSlim _fileLock = new(1, 1);
 
     public UserSettingsService(IConfiguration configuration)
     {
         _configuration = configuration;
         _settingsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appsettings.json");
+        
+        // Ensure the file exists with basic structure if it doesn't
+        if (!File.Exists(_settingsPath))
+        {
+            File.WriteAllText(_settingsPath, "{ \"Application\": { } }");
+        }
     }
 
     public int GetPageSize() => _configuration.GetValue<int>("Application:LastPageSize", 30);
-    public Task SetPageSizeAsync(int pageSize) => SaveValueAsync("LastPageSize", pageSize);
+    public Task SetPageSizeAsync(int pageSize) => SetValueAsync("Application:LastPageSize", pageSize);
 
     public string GetTheme() => _configuration.GetValue<string>("Application:Appearance:Theme", "Dark") ?? "Dark";
-    public Task SetThemeAsync(string theme) => SaveValueAsync("Appearance:Theme", theme);
+    public Task SetThemeAsync(string theme) => SetValueAsync("Application:Appearance:Theme", theme);
 
     public string GetLogoPath() => _configuration.GetValue<string>("Application:Branding:LogoPath", "avares://ElectroObraApp/Assets/Images/electro-obra.png") ?? "";
-    public Task SetLogoPathAsync(string path) => SaveValueAsync("Branding:LogoPath", path);
+    public Task SetLogoPathAsync(string path) => SetValueAsync("Application:Branding:LogoPath", path);
 
     public string GetBackgroundPath() => _configuration.GetValue<string>("Application:Branding:BackgroundPath", "avares://ElectroObraApp/Assets/Images/electro-obra3.png") ?? "";
-    public Task SetBackgroundPathAsync(string path) => SaveValueAsync("Branding:BackgroundPath", path);
+    public Task SetBackgroundPathAsync(string path) => SetValueAsync("Application:Branding:BackgroundPath", path);
 
     public string GetAppName() => GetValue("Application:Name", "ElectroObraApp");
     public async Task SetAppNameAsync(string name) => await SetValueAsync("Application:Name", name);
@@ -80,7 +87,19 @@ public class UserSettingsService : IUserSettingsService
             {
                 node = node?[part];
             }
-            return node?.GetValue<string>() ?? defaultValue;
+
+            if (node is null) return defaultValue;
+            
+            // If it's a simple value (string, number, etc.)
+            if (node is JsonValue jValue)
+            {
+                // Try to get as string first
+                if (jValue.TryGetValue<string>(out var s)) return s;
+                return jValue.ToString();
+            }
+            
+            // If it's an object or array, return its JSON representation
+            return node.ToJsonString();
         }
         catch
         {
@@ -90,9 +109,10 @@ public class UserSettingsService : IUserSettingsService
 
     private async Task SetValueAsync(string keyPath, object value)
     {
+        await _fileLock.WaitAsync();
         try
         {
-            var jsonString = await File.ReadAllTextAsync(_settingsPath);
+            var jsonString = File.Exists(_settingsPath) ? await File.ReadAllTextAsync(_settingsPath) : "{}";
             var root = JsonNode.Parse(jsonString) ?? new JsonObject();
 
             var parts = keyPath.Split(':');
@@ -101,51 +121,42 @@ public class UserSettingsService : IUserSettingsService
             for (int i = 0; i < parts.Length - 1; i++)
             {
                 var part = parts[i];
-                currentNode[part] ??= new JsonObject();
+                if (currentNode[part] is not JsonObject)
+                {
+                    currentNode[part] = new JsonObject();
+                }
                 currentNode = currentNode[part]!;
+            }
+
+            // Special handling for strings that are valid JSON (like our Holidays)
+            // We want to save them as native JSON nodes if possible
+            if (value is string s && (s.TrimStart().StartsWith("[") || s.TrimStart().StartsWith("{")))
+            {
+                try
+                {
+                    var node = JsonNode.Parse(s);
+                    if (node != null)
+                    {
+                        currentNode[parts[^1]] = node;
+                        goto Save;
+                    }
+                }
+                catch { /* Not valid JSON or parse failed, fall back to string */ }
             }
 
             currentNode[parts[^1]] = JsonValue.Create(value);
 
+        Save:
             var options = new JsonSerializerOptions { WriteIndented = true };
             await File.WriteAllTextAsync(_settingsPath, root.ToJsonString(options));
         }
         catch (Exception)
         {
-            // Silently fail or log
+            // Fail silently
         }
-    }
-
-    private async Task SaveValueAsync<T>(string keyPath, T value)
-    {
-        try
+        finally
         {
-            var jsonString = await File.ReadAllTextAsync(_settingsPath);
-            var root = JsonNode.Parse(jsonString);
-            if (root != null)
-            {
-                var appSection = root["Application"] ?? (root["Application"] = new JsonObject());
-
-                // Handle nested keys like "Appearance:Theme"
-                var parts = keyPath.Split(':');
-                JsonNode currentNode = appSection;
-
-                for (int i = 0; i < parts.Length - 1; i++)
-                {
-                    var part = parts[i];
-                    currentNode[part] ??= new JsonObject();
-                    currentNode = currentNode[part]!;
-                }
-
-                currentNode[parts[^1]] = JsonValue.Create(value);
-
-                var options = new JsonSerializerOptions { WriteIndented = true };
-                await File.WriteAllTextAsync(_settingsPath, root.ToJsonString(options));
-            }
-        }
-        catch (Exception)
-        {
-            // Silently fail or log
+            _fileLock.Release();
         }
     }
 }

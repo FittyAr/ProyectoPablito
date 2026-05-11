@@ -11,7 +11,7 @@
     <Grid ColumnDefinitions="250, *" Margin="0">
         <!-- Sidebar Navigation -->
         <Border Grid.Column="0" Background="{DynamicResource PaneBackgroundBrush}" BorderBrush="{DynamicResource SidebarSeparatorBrush}" BorderThickness="0,0,1,0">
-            <Grid RowDefinitions="Auto, *, Auto">
+            <Grid RowDefinitions="Auto, *">
                 <StackPanel Grid.Row="0" Margin="20,30,20,20">
                     <TextBlock Text="Configuración" FontSize="20" FontWeight="Bold" Foreground="{DynamicResource MainForegroundBrush}"/>
                     <TextBlock Text="Ajustes del sistema" FontSize="12" Foreground="{DynamicResource SecondaryForegroundBrush}"/>
@@ -59,22 +59,13 @@
                     </ListBoxItem>
                 </ListBox>
 
-                <Button Grid.Row="2" 
-                        Content="Guardar Cambios" 
-                        Command="{Binding SaveCommand}"
-                        HorizontalAlignment="Stretch"
-                        Margin="15,20"
-                        Padding="0,12"
-                        Background="{DynamicResource AccentBrush}"
-                        Foreground="White"
-                        FontWeight="Bold"
-                        CornerRadius="8"/>
             </Grid>
         </Border>
 
         <!-- Main Content Area -->
-        <ScrollViewer Grid.Column="1" Padding="40,30">
-            <Carousel SelectedIndex="{Binding SelectedCategoryIndex}">
+        <Grid Grid.Column="1" RowDefinitions="*, Auto">
+            <ScrollViewer Grid.Row="0" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                <Carousel SelectedIndex="{Binding SelectedCategoryIndex}" Margin="40,30">
                 <Carousel.PageTransition>
                     <PageSlide Duration="0:0:0.3" Orientation="Vertical"/>
                 </Carousel.PageTransition>
@@ -172,19 +163,19 @@
 
                             <Separator Background="{DynamicResource SidebarSeparatorBrush}"/>
 
-                            <Grid ColumnDefinitions="*, *" ColumnSpacing="30">
+                            <StackPanel Spacing="20">
                                 <StackPanel Spacing="5">
                                     <TextBlock Text="Logotipo de la Empresa" FontWeight="Medium"/>
                                     <TextBlock Text="Imagen que aparecerá en reportes PDF." FontSize="12" Foreground="{DynamicResource SecondaryForegroundBrush}" Margin="0,0,0,5"/>
-                                    <TextBox Text="{Binding LogoPath}" Watermark="avares://..."/>
+                                    <TextBox Text="{Binding LogoPath}" PlaceholderText="avares://..."/>
                                 </StackPanel>
                                 
                                 <StackPanel Spacing="5">
                                     <TextBlock Text="Imagen de Fondo" FontWeight="Medium"/>
                                     <TextBlock Text="Fondo personalizado para la vista principal." FontSize="12" Foreground="{DynamicResource SecondaryForegroundBrush}" Margin="0,0,0,5"/>
-                                    <TextBox Text="{Binding BackgroundPath}" Watermark="avares://..."/>
+                                    <TextBox Text="{Binding BackgroundPath}" PlaceholderText="avares://..."/>
                                 </StackPanel>
-                            </Grid>
+                            </StackPanel>
                             
                             <Border Background="#20FFCC00" Padding="15" CornerRadius="8">
                                 <StackPanel Orientation="Horizontal" Spacing="10">
@@ -209,20 +200,20 @@
                             <TextBlock Text="Multiplicadores por Jornada" FontWeight="Medium"/>
                             <TextBlock Text="Define cuánto se incrementa el pago base según el tipo de día." FontSize="12" Foreground="{DynamicResource SecondaryForegroundBrush}"/>
                             
-                            <Grid ColumnDefinitions="*, *, *" ColumnSpacing="15" Margin="0,10">
-                                <StackPanel Spacing="5">
+                            <StackPanel Orientation="Horizontal" Spacing="20" Margin="0,10">
+                                <StackPanel Spacing="5" Width="120">
                                     <TextBlock Text="Sábados" FontSize="12" Opacity="0.7"/>
                                     <NumericUpDown Value="{Binding MultiplierSaturday}" Increment="0.1" Minimum="1.0" Maximum="3.0" FormatString="0.0x"/>
                                 </StackPanel>
-                                <StackPanel Spacing="5">
+                                <StackPanel Spacing="5" Width="120">
                                     <TextBlock Text="Domingos" FontSize="12" Opacity="0.7"/>
                                     <NumericUpDown Value="{Binding MultiplierSunday}" Increment="0.1" Minimum="1.0" Maximum="3.0" FormatString="0.0x"/>
                                 </StackPanel>
-                                <StackPanel Spacing="5">
+                                <StackPanel Spacing="5" Width="120">
                                     <TextBlock Text="Feriados" FontSize="12" Opacity="0.7"/>
                                     <NumericUpDown Value="{Binding MultiplierHoliday}" Increment="0.1" Minimum="1.0" Maximum="3.0" FormatString="0.0x"/>
                                 </StackPanel>
-                            </Grid>
+                            </StackPanel>
 
                             <Separator Background="{DynamicResource SidebarSeparatorBrush}"/>
 
@@ -230,12 +221,12 @@
                             <TextBlock Text="Los días marcados aquí serán calculados con el multiplicador de feriados." FontSize="12" Foreground="{DynamicResource SecondaryForegroundBrush}"/>
                             
                             <Grid ColumnDefinitions="*, *, Auto" ColumnSpacing="10" Margin="0,10">
-                                <CalendarDatePicker SelectedDate="{Binding NewHolidayDate}" HorizontalAlignment="Stretch" Watermark="Fecha..."/>
-                                <TextBox Grid.Column="1" Text="{Binding NewHolidayName}" Watermark="Descripción del feriado..."/>
+                                <CalendarDatePicker SelectedDate="{Binding NewHolidayDate}" HorizontalAlignment="Stretch" PlaceholderText="Fecha..."/>
+                                <TextBox Grid.Column="1" Text="{Binding NewHolidayName}" PlaceholderText="Descripción del feriado..."/>
                                 <Button Grid.Column="2" Content="Agregar" Command="{Binding AddHolidayCommand}" Classes="accent"/>
                             </Grid>
 
-                            <Border Background="{DynamicResource MainBackgroundBrush}" CornerRadius="12" BorderThickness="1" BorderBrush="{DynamicResource SidebarSeparatorBrush}" Height="200">
+                            <Border Background="{DynamicResource MainBackgroundBrush}" CornerRadius="12" BorderThickness="1" BorderBrush="{DynamicResource SidebarSeparatorBrush}" Height="350">
                                 <ListBox ItemsSource="{Binding Holidays}" Background="Transparent">
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
@@ -270,7 +261,7 @@
                                 <TextBlock Text="Sincronización de Feriados" FontWeight="Medium"/>
                                 <TextBlock Text="URL del servicio para actualizar el calendario automáticamente." FontSize="12" Foreground="{DynamicResource SecondaryForegroundBrush}" Margin="0,0,0,5"/>
                                 <Grid ColumnDefinitions="*, Auto" ColumnSpacing="10">
-                                    <TextBox Text="{Binding HolidayApiUrl}" Watermark="https://api..."/>
+                                    <TextBox Text="{Binding HolidayApiUrl}" PlaceholderText="https://api..."/>
                                     <Button Grid.Column="1" Content="Sincronizar Ahora" Command="{Binding SyncHolidaysCommand}" Classes="outline"/>
                                 </Grid>
                             </StackPanel>
@@ -287,8 +278,20 @@
                         </StackPanel>
                     </Border>
                 </StackPanel>
-            </Carousel>
-        </ScrollViewer>
+                </Carousel>
+            </ScrollViewer>
+            
+            <!-- Global Footer Actions -->
+            <Border Grid.Row="1" Background="{DynamicResource MainBackgroundBrush}" Padding="40,20" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource SidebarSeparatorBrush}">
+                <StackPanel Orientation="Horizontal" Spacing="20">
+                    <Button Content="Guardar Cambios" Command="{Binding ApplyChangesCommand}" Classes="accent" Padding="25,10" IsEnabled="{Binding !IsSaved}"/>
+                    <StackPanel Orientation="Horizontal" Spacing="8" IsVisible="{Binding IsSaved}" VerticalAlignment="Center">
+                        <material:MaterialIcon Kind="CheckCircle" Foreground="#FF4CAF50" Width="20" Height="20"/>
+                        <TextBlock Text="Configuración guardada correctamente" Foreground="#FF4CAF50" FontWeight="Medium"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Grid>
 
         <!-- Styles for the page -->
         <Grid.Styles>
