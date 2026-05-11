@@ -74,7 +74,7 @@
                 </StackPanel>
                 <StackPanel Grid.Row="2" Grid.Column="1" Spacing="5">
                     <TextBlock Text="Fecha" FontSize="11" FontWeight="SemiBold" Foreground="#888"/>
-                    <CalendarDatePicker SelectedDate="{Binding FechaProxy}" HorizontalAlignment="Stretch"/>
+                    <CalendarDatePicker SelectedDate="{Binding FechaOffset}" HorizontalAlignment="Stretch"/>
                 </StackPanel>
             </Grid>
 

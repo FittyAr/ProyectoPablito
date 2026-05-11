@@ -18,13 +18,15 @@ public class LiquidacionServiceTests
 {
     private readonly IUnitOfWork _uow;
     private readonly ILogger<LiquidacionService> _logger;
+    private readonly IUserSettingsService _settingsService;
     private readonly LiquidacionService _service;
 
     public LiquidacionServiceTests()
     {
         _uow = Substitute.For<IUnitOfWork>();
         _logger = Substitute.For<ILogger<LiquidacionService>>();
-        _service = new LiquidacionService(_uow, _logger);
+        _settingsService = Substitute.For<IUserSettingsService>();
+        _service = new LiquidacionService(_uow, _logger, _settingsService);
     }
 
     [Fact]

@@ -39,5 +39,14 @@ public interface IUserSettingsService
 
     string GetHolidaysJson();
     Task SetHolidaysJsonAsync(string holidaysJson);
+
+    bool GetDefaultIncludeSaturday();
+    Task SetDefaultIncludeSaturdayAsync(bool value);
+
+    bool GetDefaultIncludeSunday();
+    Task SetDefaultIncludeSundayAsync(bool value);
+
+    bool GetDefaultIncludeHoliday();
+    Task SetDefaultIncludeHolidayAsync(bool value);
 }
 

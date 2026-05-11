@@ -35,12 +35,12 @@
                 <!-- Fila 2: Fechas -->
                 <StackPanel Grid.Row="1" Grid.Column="0" Spacing="5">
                     <TextBlock Text="Fecha Inicio" FontSize="11" FontWeight="SemiBold" Foreground="#888"/>
-                    <CalendarDatePicker SelectedDate="{Binding FechaInicioProxy}" HorizontalAlignment="Stretch"/>
+                    <CalendarDatePicker SelectedDate="{Binding FechaInicioOffset}" HorizontalAlignment="Stretch"/>
                 </StackPanel>
                 
                 <StackPanel Grid.Row="1" Grid.Column="1" Spacing="5">
                     <TextBlock Text="Fecha Fin" FontSize="11" FontWeight="SemiBold" Foreground="#888"/>
-                    <CalendarDatePicker SelectedDate="{Binding FechaFinProxy}" HorizontalAlignment="Stretch"/>
+                    <CalendarDatePicker SelectedDate="{Binding FechaFinOffset}" HorizontalAlignment="Stretch"/>
                 </StackPanel>
             </Grid>
 

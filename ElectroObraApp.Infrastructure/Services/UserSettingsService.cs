@@ -55,6 +55,15 @@ public class UserSettingsService : IUserSettingsService
     public string GetHolidaysJson() => GetValue("Application:Settlement:Holidays", "[]");
     public async Task SetHolidaysJsonAsync(string holidaysJson) => await SetValueAsync("Application:Settlement:Holidays", holidaysJson);
 
+    public bool GetDefaultIncludeSaturday() => _configuration.GetValue<bool>("Application:Settlement:IncludeSaturday", false);
+    public async Task SetDefaultIncludeSaturdayAsync(bool value) => await SetValueAsync("Application:Settlement:IncludeSaturday", value);
+
+    public bool GetDefaultIncludeSunday() => _configuration.GetValue<bool>("Application:Settlement:IncludeSunday", false);
+    public async Task SetDefaultIncludeSundayAsync(bool value) => await SetValueAsync("Application:Settlement:IncludeSunday", value);
+
+    public bool GetDefaultIncludeHoliday() => _configuration.GetValue<bool>("Application:Settlement:IncludeHoliday", false);
+    public async Task SetDefaultIncludeHolidayAsync(bool value) => await SetValueAsync("Application:Settlement:IncludeHoliday", value);
+
     private string GetValue(string key, string defaultValue)
     {
         try

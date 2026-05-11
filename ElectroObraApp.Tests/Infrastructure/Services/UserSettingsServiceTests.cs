@@ -38,5 +38,34 @@ public class UserSettingsServiceTests
         // Assert
         result.Should().Be(50);
     }
+    
+    [Fact]
+    public void GetDefaultIncludeSaturday_ShouldReturnDefault_WhenNotSet()
+    {
+        // Arrange
+        var config = new ConfigurationBuilder().Build();
+        var service = new UserSettingsService(config);
+
+        // Act
+        var result = service.GetDefaultIncludeSaturday();
+
+        // Assert
+        result.Should().BeFalse();
+    }
+
+    [Fact]
+    public void GetDefaultIncludeSaturday_ShouldReturnConfigValue()
+    {
+        // Arrange
+        var settings = new Dictionary<string, string?> { ["Application:Settlement:IncludeSaturday"] = "true" };
+        var config = new ConfigurationBuilder().AddInMemoryCollection(settings).Build();
+        var service = new UserSettingsService(config);
+
+        // Act
+        var result = service.GetDefaultIncludeSaturday();
+
+        // Assert
+        result.Should().BeTrue();
+    }
 }
 

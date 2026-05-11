@@ -27,33 +27,33 @@ public partial class LiquidacionEditViewModel : ViewModelBase
     
     partial void OnLiquidacionChanged(LiquidacionDto value)
     {
-        OnPropertyChanged(nameof(FechaInicioProxy));
-        OnPropertyChanged(nameof(FechaFinProxy));
+        OnPropertyChanged(nameof(FechaInicioOffset));
+        OnPropertyChanged(nameof(FechaFinOffset));
     }
 
-    public DateTime? FechaInicioProxy
+    public DateTimeOffset? FechaInicioOffset
     {
         get => Liquidacion.FechaInicio;
         set
         {
-            if (value.HasValue && Liquidacion.FechaInicio != value.Value)
+            if (value.HasValue && Liquidacion.FechaInicio != value.Value.DateTime)
             {
-                Liquidacion.FechaInicio = value.Value;
-                OnPropertyChanged(nameof(FechaInicioProxy));
+                Liquidacion.FechaInicio = value.Value.DateTime;
+                OnPropertyChanged(nameof(FechaInicioOffset));
                 _ = ReclacularAutomaticamente();
             }
         }
     }
 
-    public DateTime? FechaFinProxy
+    public DateTimeOffset? FechaFinOffset
     {
         get => Liquidacion.FechaFin;
         set
         {
-            if (value.HasValue && Liquidacion.FechaFin != value.Value)
+            if (value.HasValue && Liquidacion.FechaFin != value.Value.DateTime)
             {
-                Liquidacion.FechaFin = value.Value;
-                OnPropertyChanged(nameof(FechaFinProxy));
+                Liquidacion.FechaFin = value.Value.DateTime;
+                OnPropertyChanged(nameof(FechaFinOffset));
                 _ = ReclacularAutomaticamente();
             }
         }
@@ -72,6 +72,9 @@ public partial class LiquidacionEditViewModel : ViewModelBase
         Liquidacion.MultiplicadorSabado = _settingsService.GetDefaultMultiplierSaturday();
         Liquidacion.MultiplicadorDomingo = _settingsService.GetDefaultMultiplierSunday();
         Liquidacion.MultiplicadorFeriado = _settingsService.GetDefaultMultiplierHoliday();
+        Liquidacion.IncluirSabados = _settingsService.GetDefaultIncludeSaturday();
+        Liquidacion.IncluirDomingos = _settingsService.GetDefaultIncludeSunday();
+        Liquidacion.IncluirFeriados = _settingsService.GetDefaultIncludeHoliday();
 
         SaveCommand = new AsyncRelayCommand(SaveAsync);
         CancelCommand = new RelayCommand(Cancel);
@@ -145,8 +148,8 @@ public partial class LiquidacionEditViewModel : ViewModelBase
         Liquidacion.TarifaAplicada = sugerencia.TarifaAplicada;
         
         OnPropertyChanged(nameof(Liquidacion));
-        OnPropertyChanged(nameof(FechaInicioProxy));
-        OnPropertyChanged(nameof(FechaFinProxy));
+        OnPropertyChanged(nameof(FechaInicioOffset));
+        OnPropertyChanged(nameof(FechaFinOffset));
     }
 
     private async Task SaveAsync()

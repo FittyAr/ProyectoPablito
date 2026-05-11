@@ -50,7 +50,7 @@
                 </StackPanel>
                 <StackPanel Grid.Row="2" Grid.Column="1" Spacing="5">
                     <TextBlock Text="Fecha de Ingreso" FontSize="11" FontWeight="SemiBold" Foreground="#888"/>
-                    <CalendarDatePicker SelectedDate="{Binding FechaIngresoProxy}" HorizontalAlignment="Stretch"/>
+                    <CalendarDatePicker SelectedDate="{Binding FechaIngresoOffset}" HorizontalAlignment="Stretch"/>
                 </StackPanel>
             </Grid>
 

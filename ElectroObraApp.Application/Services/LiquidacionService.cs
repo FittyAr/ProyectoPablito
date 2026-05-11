@@ -108,9 +108,9 @@ public class LiquidacionService : ILiquidacionService
             TotalBruto = totalBruto,
             TotalNeto = totalBruto - totalAdelantos,
             // Valores por defecto del sistema
-            IncluirSabados = false,
-            IncluirDomingos = false,
-            IncluirFeriados = false,
+            IncluirSabados = _settingsService.GetDefaultIncludeSaturday(),
+            IncluirDomingos = _settingsService.GetDefaultIncludeSunday(),
+            IncluirFeriados = _settingsService.GetDefaultIncludeHoliday(),
             MultiplicadorSabado = _settingsService.GetDefaultMultiplierSaturday(),
             MultiplicadorDomingo = _settingsService.GetDefaultMultiplierSunday(),
             MultiplicadorFeriado = _settingsService.GetDefaultMultiplierHoliday()
