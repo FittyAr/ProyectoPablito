@@ -9,6 +9,13 @@ $publishDir = ".\publish_win"
 $issPath = ".\installer_config.iss"
 $isccPath = "C:\Program Files\Inno Setup 7\ISCC.exe"
 
+if (-not (Test-Path $isccPath)) {
+    # Fallback a Inno Setup 6 o rutas comunes
+    if (Test-Path "C:\Program Files (x86)\Inno Setup 6\ISCC.exe") {
+        $isccPath = "C:\Program Files (x86)\Inno Setup 6\ISCC.exe"
+    }
+}
+
 Write-Host "--- Iniciando proceso de construccion ---" -ForegroundColor Cyan
 
 # 1. Limpiar carpeta de publicacion previa si existe
@@ -28,14 +35,6 @@ if ($LASTEXITCODE -ne 0) {
 
 # 3. Compilar el instalador con Inno Setup
 Write-Host "Compilando instalador con Inno Setup..." -ForegroundColor Yellow
-if (-not (Test-Path $isccPath)) {
-    # Intentar buscar en x86 o versiones anteriores
-    if (Test-Path "C:\Program Files (x86)\Inno Setup 6\ISCC.exe") {
-        $isccPath = "C:\Program Files (x86)\Inno Setup 6\ISCC.exe"
-    } elseif (Test-Path "C:\Program Files\Inno Setup 6\ISCC.exe") {
-        $isccPath = "C:\Program Files\Inno Setup 6\ISCC.exe"
-    }
-}
 
 if (Test-Path $isccPath) {
     & $isccPath $issPath

@@ -13,7 +13,8 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        var connectionString = configuration.GetConnectionString("DefaultConnection");
+        // Forzamos el uso de la ruta en AppData para la base de datos
+        var connectionString = ElectroObraApp.Core.Helpers.PathHelper.GetSqliteConnectionString();
         
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlite(connectionString));

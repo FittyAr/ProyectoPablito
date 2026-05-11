@@ -15,7 +15,9 @@ using ElectroObraApp.Infrastructure;
 using ElectroObraApp.Infrastructure.Data;
 using ElectroObraApp.ViewModels;
 using ElectroObraApp.Views;
+using ElectroObraApp.Core.Helpers;
 using Serilog;
+using System.IO;
 
 namespace ElectroObraApp;
 
@@ -32,8 +34,21 @@ public partial class App : Avalonia.Application
     public override void OnFrameworkInitializationCompleted()
     {
         // 1. Configuración
+        var appDataPath = PathHelper.GetAppDataPath();
+        var settingsPath = PathHelper.GetSettingsPath();
+
+        // Asegurar que existe el archivo de configuración en AppData
+        if (!File.Exists(settingsPath))
+        {
+            var baseSettings = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appsettings.json");
+            if (File.Exists(baseSettings))
+            {
+                File.Copy(baseSettings, settingsPath);
+            }
+        }
+
         var builder = new ConfigurationBuilder()
-            .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+            .SetBasePath(appDataPath)
             .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
         Configuration = builder.Build();
 

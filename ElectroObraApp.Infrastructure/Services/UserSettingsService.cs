@@ -18,8 +18,15 @@ public class UserSettingsService : IUserSettingsService
     public UserSettingsService(IConfiguration configuration)
     {
         _configuration = configuration;
-        _settingsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appsettings.json");
+        _settingsPath = ElectroObraApp.Core.Helpers.PathHelper.GetSettingsPath();
         
+        // Ensure the directory exists
+        var directory = Path.GetDirectoryName(_settingsPath);
+        if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
+        {
+            Directory.CreateDirectory(directory);
+        }
+
         // Ensure the file exists with basic structure if it doesn't
         if (!File.Exists(_settingsPath))
         {
