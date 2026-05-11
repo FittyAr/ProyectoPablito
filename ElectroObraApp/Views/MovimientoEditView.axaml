@@ -10,8 +10,9 @@
         <KeyBinding Gesture="Escape" Command="{Binding CancelCommand}"/>
     </UserControl.KeyBindings>
     <Border Padding="25" Background="#2d2d2d" CornerRadius="12" BoxShadow="0 4 10 0 #40000000" Width="600">
-        <StackPanel Spacing="18">
-            <TextBlock Text="{Binding Title}" FontSize="22" FontWeight="Bold" Margin="0,0,0,5" Foreground="White"/>
+        <ScrollViewer MaxHeight="700">
+            <StackPanel Spacing="18" Margin="0,0,15,0">
+                <TextBlock Text="{Binding Title}" FontSize="22" FontWeight="Bold" Margin="0,0,0,5" Foreground="White"/>
             
             <StackPanel Spacing="5">
                 <TextBlock Text="Concepto" FontSize="11" FontWeight="SemiBold" Foreground="#888"/>
@@ -81,7 +82,8 @@
                 <Button Content="Cancelar" Command="{Binding CancelCommand}" IsCancel="True" Padding="20,0"/>
                 <Button Content="Guardar" Classes="accent" Command="{Binding SaveCommand}" IsDefault="True" Padding="20,0"/>
             </StackPanel>
-        </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
     </Border>
 </UserControl>
 

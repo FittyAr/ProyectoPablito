@@ -7,8 +7,9 @@
              x:Class="ElectroObraApp.Views.LiquidacionEditView"
              x:DataType="vm:LiquidacionEditViewModel">
     <Border Padding="25" Background="#2d2d2d" CornerRadius="12" BoxShadow="0 4 10 0 #40000000" Width="650">
-        <StackPanel Spacing="18">
-            <TextBlock Text="Generar Nueva Liquidación" FontSize="22" FontWeight="Bold" Margin="0,0,0,5" Foreground="White"/>
+        <ScrollViewer MaxHeight="750">
+            <StackPanel Spacing="18" Margin="0,0,15,0">
+                <TextBlock Text="Generar Nueva Liquidación" FontSize="22" FontWeight="Bold" Margin="0,0,0,5" Foreground="White"/>
             
             <Grid ColumnDefinitions="*, *" RowDefinitions="Auto, Auto" RowSpacing="15" ColumnSpacing="20">
                 <!-- Fila 1: Empleado y Días -->
@@ -91,7 +92,8 @@
                 <Button Content="Cancelar" Command="{Binding CancelCommand}" IsCancel="True" Padding="20,0"/>
                 <Button Content="Confirmar y Guardar" Classes="accent" Command="{Binding SaveCommand}" IsDefault="True" Padding="20,0"/>
             </StackPanel>
-        </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
     </Border>
 </UserControl>
 

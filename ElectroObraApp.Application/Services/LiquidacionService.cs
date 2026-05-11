@@ -15,11 +15,13 @@ public class LiquidacionService : ILiquidacionService
 {
     private readonly IUnitOfWork _uow;
     private readonly ILogger<LiquidacionService> _logger;
+    private readonly IUserSettingsService _settingsService;
 
-    public LiquidacionService(IUnitOfWork uow, ILogger<LiquidacionService> logger)
+    public LiquidacionService(IUnitOfWork uow, ILogger<LiquidacionService> logger, IUserSettingsService settingsService)
     {
         _uow = uow;
         _logger = logger;
+        _settingsService = settingsService;
     }
 
     public async Task<IEnumerable<LiquidacionDto>> GetAllAsync()
@@ -105,13 +107,13 @@ public class LiquidacionService : ILiquidacionService
             TotalAdelantos = totalAdelantos,
             TotalBruto = totalBruto,
             TotalNeto = totalBruto - totalAdelantos,
-            // Valores por defecto para la UI
+            // Valores por defecto del sistema
             IncluirSabados = false,
             IncluirDomingos = false,
             IncluirFeriados = false,
-            MultiplicadorSabado = 1.0m,
-            MultiplicadorDomingo = 1.0m,
-            MultiplicadorFeriado = 1.0m
+            MultiplicadorSabado = _settingsService.GetDefaultMultiplierSaturday(),
+            MultiplicadorDomingo = _settingsService.GetDefaultMultiplierSunday(),
+            MultiplicadorFeriado = _settingsService.GetDefaultMultiplierHoliday()
         };
     }
 }
