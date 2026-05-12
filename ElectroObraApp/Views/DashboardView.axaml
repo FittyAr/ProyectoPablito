@@ -15,6 +15,9 @@
         <conv:BoolToObjectConverter x:Key="BoolToTextConverter" TrueValue="Modo Privado" FalseValue="Modo Público" />
         <conv:BoolToObjectConverter x:Key="BoolToIconConverter" TrueValue="EyeOff" FalseValue="Eye" />
         <conv:BoolToObjectConverter x:Key="BoolToColorConverter" TrueValue="#ff5252" FalseValue="#4caf50" />
+        <conv:BoolToObjectConverter x:Key="AlertBackgroundConverter" TrueValue="#20ff9800" FalseValue="#204caf50" />
+        <conv:BoolToObjectConverter x:Key="AlertBorderConverter" TrueValue="#ff9800" FalseValue="#4caf50" />
+        <conv:BoolToObjectConverter x:Key="AlertIconConverter" TrueValue="⚠️" FalseValue="✅" />
     </UserControl.Resources>
 
     <ScrollViewer>
@@ -185,17 +188,20 @@
                     <StackPanel Spacing="15">
                         <TextBlock Text="📢 Alertas" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource MainForegroundBrush}"/>
                         <Button Classes="alertButton" Command="{Binding NavigateToAlertCommand}" CommandParameter="Liquidaciones">
-                            <Border Background="#20ff9800" Padding="12" CornerRadius="10" BorderBrush="#ff9800" BorderThickness="1">
+                            <Border Background="{Binding ShowLiquidacionesAlert, Converter={StaticResource AlertBackgroundConverter}}" 
+                                    Padding="12" CornerRadius="10" 
+                                    BorderBrush="{Binding ShowLiquidacionesAlert, Converter={StaticResource AlertBorderConverter}}" 
+                                    BorderThickness="1">
                                 <StackPanel Orientation="Horizontal" Spacing="10">
-                                    <TextBlock Text="⚠️" VerticalAlignment="Center"/>
-                                    <TextBlock Text="3 Liquidaciones Pendientes" FontSize="12" VerticalAlignment="Center" Foreground="{DynamicResource MainForegroundBrush}"/>
+                                    <TextBlock Text="{Binding ShowLiquidacionesAlert, Converter={StaticResource AlertIconConverter}}" VerticalAlignment="Center"/>
+                                    <TextBlock Text="{Binding LiquidacionesPendientesText}" FontSize="12" VerticalAlignment="Center" Foreground="{DynamicResource MainForegroundBrush}"/>
                                 </StackPanel>
                             </Border>
                         </Button>
                         <Border Background="#202196f3" Padding="12" CornerRadius="10" BorderBrush="#2196f3" BorderThickness="1">
                             <StackPanel Orientation="Horizontal" Spacing="10">
                                 <TextBlock Text="ℹ️" VerticalAlignment="Center"/>
-                                <TextBlock Text="SQLite: Saludable" FontSize="12" VerticalAlignment="Center" Foreground="{DynamicResource MainForegroundBrush}"/>
+                                <TextBlock Text="{Binding DatabaseStatus, StringFormat='SQLite: \{0\}'}" FontSize="12" VerticalAlignment="Center" Foreground="{DynamicResource MainForegroundBrush}"/>
                             </StackPanel>
                         </Border>
                     </StackPanel>

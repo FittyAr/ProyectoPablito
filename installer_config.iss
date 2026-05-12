@@ -14,8 +14,8 @@ SetupIconFile=ElectroObraApp\Assets\electro-obra-logo.ico
 WizardImageFile=ElectroObraApp\Assets\Images\electro-obra.png
 WizardSmallImageFile=ElectroObraApp\Assets\Images\electro-obra.png
 UninstallDisplayIcon={app}\electro-obra-logo.ico
-ArchitecturesAllowed=x64
-ArchitecturesInstallIn64BitMode=x64
+ArchitecturesAllowed=x64compatible
+ArchitecturesInstallIn64BitMode=x64compatible
 
 [Tasks]
 Name: "enable_seed"; Description: "Habilitar Datos Semilla (Testing)"; GroupDescription: "Configuración Avanzada:"; Flags: unchecked

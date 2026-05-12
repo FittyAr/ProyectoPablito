@@ -29,6 +29,8 @@ public partial class DashboardViewModel : ViewModelBase
     private readonly ITrabajoService _trabajoService;
     private readonly IUserSettingsService _settingsService;
     private readonly IDollarService _dollarService;
+    private readonly ILiquidacionService _liquidacionService;
+    private readonly IEmpleadoService _empleadoService;
 
     [ObservableProperty]
     private string _title = "Dashboard Operativo";
@@ -53,6 +55,12 @@ public partial class DashboardViewModel : ViewModelBase
 
     [ObservableProperty]
     private int _trabajosPendientes;
+
+    [ObservableProperty]
+    private int _liquidacionesPendientesCount;
+
+    [ObservableProperty]
+    private string _databaseStatus = "Saludable";
 
     [ObservableProperty]
     private bool _isPrivacyModeActive;
@@ -91,6 +99,12 @@ public partial class DashboardViewModel : ViewModelBase
         ? LiveChartsCore.Measure.TooltipPosition.Hidden 
         : LiveChartsCore.Measure.TooltipPosition.Right;
 
+    public string LiquidacionesPendientesText => LiquidacionesPendientesCount > 0 
+        ? $"{LiquidacionesPendientesCount} Liquidaciones Pendientes" 
+        : "Personal al día";
+
+    public bool ShowLiquidacionesAlert => LiquidacionesPendientesCount > 0;
+
     public Func<LiveChartsCore.Kernel.ChartPoint, string> PieFormatter => 
         point => $"{point.Context.Series.Name}: {point.Coordinate.PrimaryValue:C}";
 
@@ -108,13 +122,17 @@ public partial class DashboardViewModel : ViewModelBase
         IClienteService clienteService,
         ITrabajoService trabajoService,
         IUserSettingsService settingsService,
-        IDollarService dollarService)
+        IDollarService dollarService,
+        ILiquidacionService liquidacionService,
+        IEmpleadoService empleadoService)
     {
         _movimientoService = movimientoService;
         _clienteService = clienteService;
         _trabajoService = trabajoService;
         _settingsService = settingsService;
         _dollarService = dollarService;
+        _liquidacionService = liquidacionService;
+        _empleadoService = empleadoService;
         
         CurrentTimeRange = settingsService.GetDashboardPeriod();
         IsPrivacyModeActive = settingsService.GetIsPrivacyMode();
@@ -166,6 +184,26 @@ public partial class DashboardViewModel : ViewModelBase
         TotalIngresos = filteredMovimientos.Where(m => m.TipoMovimientoSuma).Sum(m => m.Total);
         TotalGastos = filteredMovimientos.Where(m => !m.TipoMovimientoSuma).Sum(m => m.Total);
         Balance = TotalIngresos - TotalGastos;
+
+        // Trabajos Pendientes
+        var trabajos = await _trabajoService.GetAllAsync();
+        TrabajosPendientes = trabajos.Count(t => !t.Finalizado);
+
+        // Alertas: Liquidaciones Pendientes (Empleados activos sin liquidación este mes)
+        var empleados = await _empleadoService.GetAllAsync();
+        var liquidaciones = await _liquidacionService.GetAllAsync();
+        var mesActual = DateTime.Now.Month;
+        var añoActual = DateTime.Now.Year;
+
+        LiquidacionesPendientesCount = empleados
+            .Where(e => e.Activo)
+            .Count(e => !liquidaciones.Any(l => l.EmpleadoId == e.Id && l.FechaFin.Month == mesActual && l.FechaFin.Year == añoActual));
+        
+        OnPropertyChanged(nameof(LiquidacionesPendientesText));
+        OnPropertyChanged(nameof(ShowLiquidacionesAlert));
+
+        // Estado de DB
+        DatabaseStatus = "Saludable"; // Podríamos agregar un check real aquí si fuera necesario
 
         // Top Clientes (Income)
         TopClientes.Clear();

@@ -54,6 +54,7 @@ public partial class EmpleadosViewModel : ViewModelBase
         EditCommand = new RelayCommand<EmpleadoDto>(Edit);
         LimpiarFiltrosCommand = new RelayCommand(LimpiarFiltros);
         SendEmailCommand = new RelayCommand<EmpleadoDto>(SendEmail);
+        SendWhatsAppCommand = new RelayCommand<EmpleadoDto>(SendWhatsApp);
 
         _ = LoadEmpleadosAsync();
     }
@@ -63,6 +64,7 @@ public partial class EmpleadosViewModel : ViewModelBase
     public IRelayCommand<EmpleadoDto> EditCommand { get; }
     public IRelayCommand LimpiarFiltrosCommand { get; }
     public IRelayCommand<EmpleadoDto> SendEmailCommand { get; }
+    public IRelayCommand<EmpleadoDto> SendWhatsAppCommand { get; }
 
     partial void OnPageSizeChanged(int value)
     {
@@ -144,8 +146,35 @@ public partial class EmpleadosViewModel : ViewModelBase
 
     private void SendEmail(EmpleadoDto? dto)
     {
-        if (dto == null || string.IsNullOrWhiteSpace(dto.Email)) return;
+        if (dto == null) return;
+        if (string.IsNullOrWhiteSpace(dto.Email))
+        {
+            Serilog.Log.Warning("No se puede enviar email: El empleado {Nombre} no tiene un email configurado.", dto.Nombre);
+            return;
+        }
         Application.Helpers.EmailHelper.OpenEmailClient(dto.Email, _settingsService);
+    }
+
+    private void SendWhatsApp(EmpleadoDto? dto)
+    {
+        if (dto == null) return;
+        if (string.IsNullOrWhiteSpace(dto.Telefono))
+        {
+            Serilog.Log.Warning("No se puede enviar WhatsApp: El empleado {Nombre} no tiene un teléfono configurado.", dto.Nombre);
+            return;
+        }
+
+        var mensaje = $"Hola {dto.Nombre}, me pongo en contacto contigo desde ElectroObraApp.";
+        var url = $"https://api.whatsapp.com/send?phone={dto.Telefono}&text={Uri.EscapeDataString(mensaje)}";
+        
+        try
+        {
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(url) { UseShellExecute = true });
+        }
+        catch (Exception ex)
+        {
+            Serilog.Log.Error(ex, "Error al intentar abrir WhatsApp");
+        }
     }
 }
 

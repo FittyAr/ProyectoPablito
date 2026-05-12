@@ -29,7 +29,7 @@ public static class EmailHelper
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                Process.Start(new ProcessStartInfo(url.Replace("&", "^&")) { UseShellExecute = true });
+                Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
             }
             else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
@@ -40,9 +40,9 @@ public static class EmailHelper
                 Process.Start("open", url);
             }
         }
-        catch
+        catch (Exception ex)
         {
-            // Silently fail if unable to open browser/client
+            Debug.WriteLine($"Error al intentar abrir la URL: {url}. Exception: {ex.Message}");
         }
     }
 }

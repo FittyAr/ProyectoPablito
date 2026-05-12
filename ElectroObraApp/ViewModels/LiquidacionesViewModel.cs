@@ -107,33 +107,50 @@ public partial class LiquidacionesViewModel : ViewModelBase
     private async Task ShareEmailAsync(LiquidacionDto? dto)
     {
         if (dto == null) return;
-        var empleado = await _empleadoService.GetByIdAsync(dto.EmpleadoId);
-        if (empleado == null || string.IsNullOrWhiteSpace(empleado.Email)) return;
-
-        var path = await GenerateAndSavePdfAsync(dto);
-        Application.Helpers.EmailHelper.OpenEmailClient(empleado.Email, _settingsService);
         
-        // Nota: No podemos adjuntar automáticamente en webmail, informamos al usuario
-        Serilog.Log.Information("Abriendo cliente de correo para {Email}. Archivo guardado en {Path}", empleado.Email, path);
+        var empleado = await _empleadoService.GetByIdAsync(dto.EmpleadoId);
+        if (empleado == null || string.IsNullOrWhiteSpace(empleado.Email))
+        {
+            Serilog.Log.Warning("No se puede enviar email: El empleado {Nombre} no tiene un email configurado.", dto.EmpleadoNombre);
+            return;
+        }
+
+        try 
+        {
+            var path = await GenerateAndSavePdfAsync(dto);
+            Application.Helpers.EmailHelper.OpenEmailClient(empleado.Email, _settingsService);
+            Serilog.Log.Information("Abriendo cliente de correo para {Email}. Archivo guardado en {Path}", empleado.Email, path);
+        }
+        catch (Exception ex)
+        {
+            Serilog.Log.Error(ex, "Error al compartir liquidación por email");
+        }
     }
 
     private async Task ShareWhatsAppAsync(LiquidacionDto? dto)
     {
         if (dto == null) return;
+        
         var empleado = await _empleadoService.GetByIdAsync(dto.EmpleadoId);
-        if (empleado == null || string.IsNullOrWhiteSpace(empleado.Telefono)) return;
-
-        var path = await GenerateAndSavePdfAsync(dto);
-        
-        var mensaje = $"Hola {empleado.Nombre}, te envío el reporte de tu liquidación del periodo {dto.FechaInicio:dd/MM/yyyy} al {dto.FechaFin:dd/MM/yyyy}.";
-        var url = $"https://api.whatsapp.com/send?phone={empleado.Telefono}&text={Uri.EscapeDataString(mensaje)}";
-        
-        try
+        if (empleado == null || string.IsNullOrWhiteSpace(empleado.Telefono))
         {
-            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(url) { UseShellExecute = true });
-            // Copiar ruta al portapapeles para facilitar adjuntar
-            // Avalonia.Application.Current?.Clipboard?.SetTextAsync(path); // Requiere acceso a top level
+            Serilog.Log.Warning("No se puede enviar WhatsApp: El empleado {Nombre} no tiene un teléfono configurado.", dto.EmpleadoNombre);
+            return;
         }
-        catch { }
+
+        try 
+        {
+            var path = await GenerateAndSavePdfAsync(dto);
+            
+            var mensaje = $"Hola {empleado.Nombre}, te envío el reporte de tu liquidación del periodo {dto.FechaInicio:dd/MM/yyyy} al {dto.FechaFin:dd/MM/yyyy}.";
+            var url = $"https://api.whatsapp.com/send?phone={empleado.Telefono}&text={Uri.EscapeDataString(mensaje)}";
+            
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(url) { UseShellExecute = true });
+            Serilog.Log.Information("Abriendo WhatsApp para {Telefono}. Archivo guardado en {Path}", empleado.Telefono, path);
+        }
+        catch (Exception ex)
+        {
+            Serilog.Log.Error(ex, "Error al compartir liquidación por WhatsApp");
+        }
     }
 }
