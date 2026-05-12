@@ -26,6 +26,9 @@ public class Empleado : BaseEntity
     /// </summary>
     public decimal TarifaDiaria { get; set; }
     
+    public string? Email { get; set; }
+    public string? Telefono { get; set; }
+    
     public DateTime FechaIngreso { get; set; }
     public bool Activo { get; set; } = true;
 

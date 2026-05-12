@@ -53,6 +53,7 @@ public partial class EmpleadosViewModel : ViewModelBase
         AddCommand = new RelayCommand(Add);
         EditCommand = new RelayCommand<EmpleadoDto>(Edit);
         LimpiarFiltrosCommand = new RelayCommand(LimpiarFiltros);
+        SendEmailCommand = new RelayCommand<EmpleadoDto>(SendEmail);
 
         _ = LoadEmpleadosAsync();
     }
@@ -61,6 +62,7 @@ public partial class EmpleadosViewModel : ViewModelBase
     public IRelayCommand AddCommand { get; }
     public IRelayCommand<EmpleadoDto> EditCommand { get; }
     public IRelayCommand LimpiarFiltrosCommand { get; }
+    public IRelayCommand<EmpleadoDto> SendEmailCommand { get; }
 
     partial void OnPageSizeChanged(int value)
     {
@@ -138,6 +140,12 @@ public partial class EmpleadosViewModel : ViewModelBase
         };
         EditViewModel = vm;
         IsEditing = true;
+    }
+
+    private void SendEmail(EmpleadoDto? dto)
+    {
+        if (dto == null || string.IsNullOrWhiteSpace(dto.Email)) return;
+        Application.Helpers.EmailHelper.OpenEmailClient(dto.Email, _settingsService);
     }
 }
 

@@ -61,6 +61,10 @@ public class UserSettingsService : IUserSettingsService
     public string GetPreferredEmailClient() => GetValue("Application:Email:PreferredClient", "SystemDefault");
     public Task SetPreferredEmailClientAsync(string client) => SetValueAsync("Application:Email:PreferredClient", client);
 
+    public string GetGmailUrl() => GetValue("Application:Email:GmailUrl", "https://mail.google.com/mail/u/0/?view=cm&fs=1&to={email}");
+    public string GetOutlookUrl() => GetValue("Application:Email:OutlookUrl", "https://outlook.live.com/mail/0/deeplink/compose?to={email}");
+    public string GetYahooUrl() => GetValue("Application:Email:YahooUrl", "https://mail.yahoo.com/d/compose-message?to={email}");
+
     public decimal GetDefaultMultiplierSaturday() => decimal.TryParse(GetValue("Application:Settlement:MultiplierSaturday", "1.5"), CultureInfo.InvariantCulture, out var result) ? result : 1.5m;
     public Task SetDefaultMultiplierSaturdayAsync(decimal multiplier) => SetValueAsync("Application:Settlement:MultiplierSaturday", multiplier.ToString(CultureInfo.InvariantCulture));
 

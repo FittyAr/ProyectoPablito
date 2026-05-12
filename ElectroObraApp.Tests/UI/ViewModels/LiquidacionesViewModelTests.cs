@@ -15,6 +15,8 @@ public class LiquidacionesViewModelTests
     private readonly ILiquidacionService _liquidacionService;
     private readonly IExportService _exportService;
     private readonly IMovimientoService _movimientoService;
+    private readonly IEmpleadoService _empleadoService;
+    private readonly IUserSettingsService _settingsService;
     private readonly LiquidacionesViewModel _viewModel;
 
     public LiquidacionesViewModelTests()
@@ -22,7 +24,9 @@ public class LiquidacionesViewModelTests
         _liquidacionService = Substitute.For<ILiquidacionService>();
         _exportService = Substitute.For<IExportService>();
         _movimientoService = Substitute.For<IMovimientoService>();
-        _viewModel = new LiquidacionesViewModel(_liquidacionService, _exportService, _movimientoService);
+        _empleadoService = Substitute.For<IEmpleadoService>();
+        _settingsService = Substitute.For<IUserSettingsService>();
+        _viewModel = new LiquidacionesViewModel(_liquidacionService, _exportService, _movimientoService, _empleadoService, _settingsService);
     }
 
     [Fact]

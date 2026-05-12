@@ -215,7 +215,7 @@ public class ExportService : IExportService
                     {
                         row.RelativeItem().Column(col =>
                         {
-                            col.Item().Text("RECIBO DE LIQUIDACIÓN").SemiBold().FontSize(24).FontColor(Colors.Blue.Medium);
+                            col.Item().Text("REPORTE DE LIQUIDACIÓN").SemiBold().FontSize(24).FontColor(Colors.Blue.Medium);
                             col.Item().Text($"Empleado: {liquidacion.EmpleadoNombre}").FontSize(14).SemiBold();
                             col.Item().Text($"Periodo: {liquidacion.FechaInicio:dd/MM/yyyy} al {liquidacion.FechaFin:dd/MM/yyyy}").FontSize(10);
                         });
@@ -327,12 +327,12 @@ public class ExportService : IExportService
                         {
                             row.RelativeItem().Column(c =>
                             {
-                                c.Item().PaddingTop(40).BorderTop(1).AlignCenter().Text("Firma del Empleado");
+                                c.Item().PaddingTop(40).BorderTop(1).AlignCenter().Text("Firma de Revisión");
                             });
                             row.ConstantItem(100);
                             row.RelativeItem().Column(c =>
                             {
-                                c.Item().PaddingTop(40).BorderTop(1).AlignCenter().Text("Firma Empleador");
+                                c.Item().PaddingTop(40).BorderTop(1).AlignCenter().Text("Generado por Administración");
                             });
                         });
                     });

@@ -14,6 +14,8 @@ public partial class LiquidacionesViewModel : ViewModelBase
     private readonly ILiquidacionService _liquidacionService;
     private readonly IExportService _exportService;
     private readonly IMovimientoService _movimientoService;
+    private readonly IEmpleadoService _empleadoService;
+    private readonly IUserSettingsService _settingsService;
 
     [ObservableProperty]
     private ObservableCollection<LiquidacionDto> _liquidaciones = new();
@@ -27,14 +29,20 @@ public partial class LiquidacionesViewModel : ViewModelBase
     public LiquidacionesViewModel(
         ILiquidacionService liquidacionService, 
         IExportService exportService,
-        IMovimientoService movimientoService)
+        IMovimientoService movimientoService,
+        IEmpleadoService empleadoService,
+        IUserSettingsService settingsService)
     {
         _liquidacionService = liquidacionService;
         _exportService = exportService;
         _movimientoService = movimientoService;
+        _empleadoService = empleadoService;
+        _settingsService = settingsService;
 
         LoadCommand = new AsyncRelayCommand(LoadAsync);
         ExportPdfCommand = new AsyncRelayCommand<LiquidacionDto>(ExportPdfAsync);
+        ShareEmailCommand = new AsyncRelayCommand<LiquidacionDto>(ShareEmailAsync);
+        ShareWhatsAppCommand = new AsyncRelayCommand<LiquidacionDto>(ShareWhatsAppAsync);
         NuevaLiquidacionCommand = new RelayCommand(NuevaLiquidacion);
     }
 
@@ -43,6 +51,8 @@ public partial class LiquidacionesViewModel : ViewModelBase
 
     public IAsyncRelayCommand LoadCommand { get; }
     public IAsyncRelayCommand<LiquidacionDto> ExportPdfCommand { get; }
+    public IAsyncRelayCommand<LiquidacionDto> ShareEmailCommand { get; }
+    public IAsyncRelayCommand<LiquidacionDto> ShareWhatsAppCommand { get; }
     public IRelayCommand NuevaLiquidacionCommand { get; }
 
     private void NuevaLiquidacion() => OnNuevaLiquidacion?.Invoke();
@@ -66,7 +76,17 @@ public partial class LiquidacionesViewModel : ViewModelBase
 
     private async Task ExportPdfAsync(LiquidacionDto? dto)
     {
-        if (dto == null) return;
+        var path = await GenerateAndSavePdfAsync(dto);
+        if (path != null)
+        {
+            // Podrías abrir el archivo automáticamente si quieres
+            // System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(path) { UseShellExecute = true });
+        }
+    }
+
+    private async Task<string?> GenerateAndSavePdfAsync(LiquidacionDto? dto)
+    {
+        if (dto == null) return null;
 
         // Buscar los adelantos que formaron parte de esta liquidación
         var todosMovimientos = await _movimientoService.GetAllAsync();
@@ -78,11 +98,42 @@ public partial class LiquidacionesViewModel : ViewModelBase
 
         var pdf = await _exportService.ExportLiquidacionToPdfAsync(dto, adelantos);
         
-        // Lógica para guardar el archivo (usualmente delegada a un servicio de UI o guardado automático en carpeta temporal)
-        var path = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), $"Liquidacion_{dto.EmpleadoNombre}_{dto.FechaFin:yyyyMMdd}.pdf");
+        var fileName = $"Reporte_Liquidacion_{dto.EmpleadoNombre}_{dto.FechaFin:yyyyMMdd}.pdf";
+        var path = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), fileName);
         await System.IO.File.WriteAllBytesAsync(path, pdf);
+        return path;
+    }
+
+    private async Task ShareEmailAsync(LiquidacionDto? dto)
+    {
+        if (dto == null) return;
+        var empleado = await _empleadoService.GetByIdAsync(dto.EmpleadoId);
+        if (empleado == null || string.IsNullOrWhiteSpace(empleado.Email)) return;
+
+        var path = await GenerateAndSavePdfAsync(dto);
+        Application.Helpers.EmailHelper.OpenEmailClient(empleado.Email, _settingsService);
         
-        // Notificar al usuario (aquí se podría usar un servicio de notificaciones)
+        // Nota: No podemos adjuntar automáticamente en webmail, informamos al usuario
+        Serilog.Log.Information("Abriendo cliente de correo para {Email}. Archivo guardado en {Path}", empleado.Email, path);
+    }
+
+    private async Task ShareWhatsAppAsync(LiquidacionDto? dto)
+    {
+        if (dto == null) return;
+        var empleado = await _empleadoService.GetByIdAsync(dto.EmpleadoId);
+        if (empleado == null || string.IsNullOrWhiteSpace(empleado.Telefono)) return;
+
+        var path = await GenerateAndSavePdfAsync(dto);
+        
+        var mensaje = $"Hola {empleado.Nombre}, te envío el reporte de tu liquidación del periodo {dto.FechaInicio:dd/MM/yyyy} al {dto.FechaFin:dd/MM/yyyy}.";
+        var url = $"https://api.whatsapp.com/send?phone={empleado.Telefono}&text={Uri.EscapeDataString(mensaje)}";
+        
+        try
+        {
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(url) { UseShellExecute = true });
+            // Copiar ruta al portapapeles para facilitar adjuntar
+            // Avalonia.Application.Current?.Clipboard?.SetTextAsync(path); // Requiere acceso a top level
+        }
+        catch { }
     }
 }
-

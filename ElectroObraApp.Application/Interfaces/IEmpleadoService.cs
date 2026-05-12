@@ -11,5 +11,5 @@ public interface IEmpleadoService
     Task<bool> CreateAsync(EmpleadoDto dto);
     Task<bool> UpdateAsync(EmpleadoDto dto);
     Task<bool> DeleteAsync(Guid id);
+    Task<EmpleadoDto?> GetByIdAsync(Guid id);
 }
-

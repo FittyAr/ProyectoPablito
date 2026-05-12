@@ -14,9 +14,9 @@ public static class EmailHelper
         var client = settingsService.GetPreferredEmailClient();
         string url = client switch
         {
-            "Gmail" => $"https://mail.google.com/mail/?view=cm&fs=1&to={email}",
-            "Yahoo" => $"https://compose.mail.yahoo.com/?to={email}",
-            "OutlookWeb" => $"https://outlook.live.com/owa/?path=/mail/action/compose&to={email}",
+            "Gmail" => settingsService.GetGmailUrl().Replace("{email}", email),
+            "Yahoo" => settingsService.GetYahooUrl().Replace("{email}", email),
+            "OutlookWeb" => settingsService.GetOutlookUrl().Replace("{email}", email),
             _ => $"mailto:{email}" // SystemDefault or others
         };
 

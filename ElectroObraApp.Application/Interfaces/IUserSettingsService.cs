@@ -27,6 +27,9 @@ public interface IUserSettingsService
 
     string GetPreferredEmailClient();
     Task SetPreferredEmailClientAsync(string client);
+    string GetGmailUrl();
+    string GetOutlookUrl();
+    string GetYahooUrl();
 
     decimal GetDefaultMultiplierSaturday();
     Task SetDefaultMultiplierSaturdayAsync(decimal multiplier);

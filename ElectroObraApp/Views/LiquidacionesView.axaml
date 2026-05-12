@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:ElectroObraApp.ViewModels"
+             xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="ElectroObraApp.Views.LiquidacionesView"
              x:DataType="vm:LiquidacionesViewModel">
@@ -42,10 +43,24 @@
                         <DataGridTemplateColumn Header="Acciones" Width="Auto">
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal" Spacing="5" Margin="5">
-                                    <Button Content="PDF" 
-                                            Command="{Binding $parent[UserControl].((vm:LiquidacionesViewModel)DataContext).ExportPdfCommand}" 
+                                    <Button Command="{Binding $parent[UserControl].((vm:LiquidacionesViewModel)DataContext).ExportPdfCommand}" 
                                             CommandParameter="{Binding}"
-                                            Classes="outline"/>
+                                            ToolTip.Tip="Descargar PDF"
+                                            Classes="outline">
+                                        <materialIcons:MaterialIcon Kind="FilePdfBox" Width="16" Height="16"/>
+                                    </Button>
+                                    <Button Command="{Binding $parent[UserControl].((vm:LiquidacionesViewModel)DataContext).ShareEmailCommand}" 
+                                            CommandParameter="{Binding}"
+                                            ToolTip.Tip="Enviar por Email"
+                                            Classes="outline">
+                                        <materialIcons:MaterialIcon Kind="Email" Width="16" Height="16"/>
+                                    </Button>
+                                    <Button Command="{Binding $parent[UserControl].((vm:LiquidacionesViewModel)DataContext).ShareWhatsAppCommand}" 
+                                            CommandParameter="{Binding}"
+                                            ToolTip.Tip="Enviar por WhatsApp"
+                                            Classes="outline">
+                                        <materialIcons:MaterialIcon Kind="Whatsapp" Width="16" Height="16" Foreground="#25D366"/>
+                                    </Button>
                                 </StackPanel>
                             </DataTemplate>
                         </DataGridTemplateColumn>

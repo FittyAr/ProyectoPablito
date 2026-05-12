@@ -19,7 +19,7 @@
                 <TextBox Text="{Binding Empleado.Nombre}" PlaceholderText="Ej: Juan Pérez"/>
             </StackPanel>
 
-            <Grid ColumnDefinitions="*, *" ColumnSpacing="20" RowDefinitions="Auto, Auto, Auto" RowSpacing="15">
+            <Grid ColumnDefinitions="*, *" ColumnSpacing="20" RowDefinitions="Auto, Auto, Auto, Auto" RowSpacing="15">
                 <!-- Fila 1: DNI y Cargo -->
                 <StackPanel Grid.Row="0" Grid.Column="0" Spacing="5">
                     <TextBlock Text="DNI" FontSize="11" FontWeight="SemiBold" Foreground="#888"/>
@@ -51,6 +51,16 @@
                 <StackPanel Grid.Row="2" Grid.Column="1" Spacing="5">
                     <TextBlock Text="Fecha de Ingreso" FontSize="11" FontWeight="SemiBold" Foreground="#888"/>
                     <CalendarDatePicker SelectedDate="{Binding FechaIngresoOffset}" HorizontalAlignment="Stretch"/>
+                </StackPanel>
+
+                <!-- Fila 4: Email y Teléfono -->
+                <StackPanel Grid.Row="3" Grid.Column="0" Spacing="5">
+                    <TextBlock Text="Email" FontSize="11" FontWeight="SemiBold" Foreground="#888"/>
+                    <TextBox Text="{Binding Empleado.Email}" PlaceholderText="ejemplo@correo.com"/>
+                </StackPanel>
+                <StackPanel Grid.Row="3" Grid.Column="1" Spacing="5">
+                    <TextBlock Text="Teléfono" FontSize="11" FontWeight="SemiBold" Foreground="#888"/>
+                    <TextBox Text="{Binding Empleado.Telefono}" PlaceholderText="Cód. Área + Número"/>
                 </StackPanel>
             </Grid>
 

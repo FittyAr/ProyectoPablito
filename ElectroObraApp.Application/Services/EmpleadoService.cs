@@ -52,5 +52,11 @@ public class EmpleadoService : IEmpleadoService
         repo.Remove(entity);
         return await _uow.SaveChangesAsync() > 0;
     }
+
+    public async Task<EmpleadoDto?> GetByIdAsync(Guid id)
+    {
+        var entity = await _uow.Repository<Empleado>().GetByIdAsync(id);
+        return entity?.Adapt<EmpleadoDto>();
+    }
 }
 
